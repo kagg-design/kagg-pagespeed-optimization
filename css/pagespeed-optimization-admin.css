@@ -1,0 +1,10 @@
+.pso-menu-image {
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 5px;
+}
+
+.pso-menu-title {
+    display: inline-block;
+    vertical-align: middle;
+}
