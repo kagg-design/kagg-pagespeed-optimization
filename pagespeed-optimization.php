@@ -4,7 +4,7 @@
  * Plugin URI:
  * Description: Optimize external scripts by storing them locally
  * Author: KAGG Design
- * Version: 1.0
+ * Version: 1.0.0
  * Author URI: https://kagg.eu/en/
  * Requires at least: 4.4
  * Tested up to: 5.0

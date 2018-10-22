@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class PageSpeed_Optimization.
  *
  * @class PageSpeed_Optimization
- * version 0.3.1
+ * version 1.0.0
  */
 class PageSpeed_Optimization {
 
@@ -25,7 +25,7 @@ class PageSpeed_Optimization {
 	/**
 	 * @var string Plugin version.
 	 */
-	public $version = '0.3.1';
+	public $version = '1.0.0';
 
 	/**
 	 * @var string Absolute plugin path.
@@ -85,10 +85,15 @@ class PageSpeed_Optimization {
 	 * Init various hooks.
 	 */
 	private function init_hooks() {
-		add_filter( 'plugin_action_links_' . plugin_basename( PAGESPEED_OPTIMIZATION_PLUGIN_FILE ), array(
-			$this,
-			'add_settings_link',
-		), 10, 2 );
+		add_filter(
+			'plugin_action_links_' . plugin_basename( PAGESPEED_OPTIMIZATION_PLUGIN_FILE ),
+			array(
+				$this,
+				'add_settings_link',
+			),
+			10,
+			2
+		);
 
 		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
 		add_action( 'admin_init', array( $this, 'setup_sections' ) );
@@ -98,10 +103,13 @@ class PageSpeed_Optimization {
 
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ), 100 );
 		add_action( 'plugins_loaded', array( $this, 'check_cron' ), 100 );
-		add_action( 'update_pagespeed_optimization_cache', array(
-			$this,
-			'update_pagespeed_optimization_cache_action',
-		) );
+		add_action(
+			'update_pagespeed_optimization_cache',
+			array(
+				$this,
+				'update_pagespeed_optimization_cache_action',
+			)
+		);
 
 		$enqueue_priority = $this->get_option( 'enqueue_priority' );
 		if ( 'header' === $this->get_option( 'position' ) ) {
@@ -115,16 +123,22 @@ class PageSpeed_Optimization {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		// Register activation hook to schedule event in wp_cron()
-		register_activation_hook( PAGESPEED_OPTIMIZATION_PLUGIN_FILE, array(
-			$this,
-			'activate_update_pagespeed_optimization_cache',
-		) );
+		register_activation_hook(
+			PAGESPEED_OPTIMIZATION_PLUGIN_FILE,
+			array(
+				$this,
+				'activate_update_pagespeed_optimization_cache',
+			)
+		);
 
 		// Register deactivation hook to remove event from wp_cron()
-		register_deactivation_hook( PAGESPEED_OPTIMIZATION_PLUGIN_FILE, array(
-			$this,
-			'deactivate_update_pagespeed_optimization_cache',
-		) );
+		register_deactivation_hook(
+			PAGESPEED_OPTIMIZATION_PLUGIN_FILE,
+			array(
+				$this,
+				'deactivate_update_pagespeed_optimization_cache',
+			)
+		);
 	}
 
 	public function test_update_pagespeed_optimization_cache_action() {
@@ -174,8 +188,11 @@ class PageSpeed_Optimization {
 	 * Setup settings sections.
 	 */
 	public function setup_sections() {
-		add_settings_section( 'first_section', __( 'Options', 'kagg-pagespeed-optimization' ),
-			array( $this, 'pagespeed_optimization_first_section' ), 'pagespeed-optimization'
+		add_settings_section(
+			'first_section',
+			__( 'Options', 'kagg-pagespeed-optimization' ),
+			array( $this, 'pagespeed_optimization_first_section' ),
+			'pagespeed-optimization'
 		);
 	}
 
@@ -419,8 +436,12 @@ class PageSpeed_Optimization {
 			$field['field_id'] = $key;
 
 			add_settings_field(
-				$key, $field['label'], array( $this, 'field_callback' ),
-				'pagespeed-optimization', $field['section'], $field
+				$key,
+				$field['label'],
+				array( $this, 'field_callback' ),
+				'pagespeed-optimization',
+				$field['section'],
+				$field
 			);
 		}
 	}
@@ -438,7 +459,8 @@ class PageSpeed_Optimization {
 			case 'text':
 			case 'password':
 			case 'number':
-				printf( '<input name="%1$s[%2$s]" id="%2$s" type="%3$s" placeholder="%4$s" value="%5$s" class="regular-text" />',
+				printf(
+					'<input name="%1$s[%2$s]" id="%2$s" type="%3$s" placeholder="%4$s" value="%5$s" class="regular-text" />',
 					esc_html( $this->get_option_key() ),
 					esc_attr( $arguments['field_id'] ),
 					esc_attr( $arguments['type'] ),
@@ -447,7 +469,8 @@ class PageSpeed_Optimization {
 				);
 				break;
 			case 'textarea':
-				printf( '<textarea name="%1$s[%2$s]" id="%2$s" placeholder="%3$s" rows="5" cols="50">%4$s</textarea>',
+				printf(
+					'<textarea name="%1$s[%2$s]" id="%2$s" placeholder="%3$s" rows="5" cols="50">%4$s</textarea>',
 					esc_html( $this->get_option_key() ),
 					esc_attr( $arguments['field_id'] ),
 					esc_attr( $arguments['placeholder'] ),
@@ -476,8 +499,10 @@ class PageSpeed_Optimization {
 							$iterator
 						);
 					}
-					printf( '<fieldset>%s</fieldset>',
-						wp_kses( $options_markup,
+					printf(
+						'<fieldset>%s</fieldset>',
+						wp_kses(
+							$options_markup,
 							array(
 								'label' => array(
 									'for' => array(),
@@ -499,15 +524,19 @@ class PageSpeed_Optimization {
 				if ( ! empty( $arguments['options'] ) && is_array( $arguments['options'] ) ) {
 					$options_markup = '';
 					foreach ( $arguments['options'] as $key => $label ) {
-						$options_markup .= sprintf( '<option value="%s" %s>%s</option>', $key,
-							selected( $value, $key, false ), $label
+						$options_markup .= sprintf(
+							'<option value="%s" %s>%s</option>',
+							$key,
+							selected( $value, $key, false ),
+							$label
 						);
 					}
 					printf(
 						'<select name="%1$s[%2$s]">%3$s</select>',
 						esc_html( $this->get_option_key() ),
 						esc_html( $arguments['field_id'] ),
-						wp_kses( $options_markup,
+						wp_kses(
+							$options_markup,
 							array(
 								'option' => array(
 									'value'    => array(),
@@ -528,15 +557,19 @@ class PageSpeed_Optimization {
 								$selected = selected( $key, $key, false );
 							}
 						}
-						$options_markup .= sprintf( '<option value="%s" %s>%s</option>', $key,
-							$selected, $label
+						$options_markup .= sprintf(
+							'<option value="%s" %s>%s</option>',
+							$key,
+							$selected,
+							$label
 						);
 					}
 					printf(
 						'<select multiple="multiple" name="%1$s[%2$s][]">%3$s</select>',
 						esc_html( $this->get_option_key() ),
 						esc_html( $arguments['field_id'] ),
-						wp_kses( $options_markup,
+						wp_kses(
+							$options_markup,
 							array(
 								'option' => array(
 									'value'    => array(),
@@ -548,7 +581,7 @@ class PageSpeed_Optimization {
 				}
 				break;
 			default:
-		} // End switch().
+		}
 
 		// If there is help text.
 		$helper = $arguments['helper'];
@@ -567,7 +600,9 @@ class PageSpeed_Optimization {
 	 * Load plugin text domain.
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'kagg-pagespeed-optimization', false,
+		load_plugin_textdomain(
+			'kagg-pagespeed-optimization',
+			false,
 			plugin_basename( $this->plugin_path ) . '/languages/'
 		);
 	}
@@ -581,7 +616,10 @@ class PageSpeed_Optimization {
 	 */
 	public function add_settings_link( $links, $file ) {
 		$action_links = array(
-			'settings' => '<a href="' . admin_url( 'options-general.php?page=pagespeed-optimization' ) . '" aria-label="' . esc_attr__( 'View PageSpeed Module settings', 'kagg-pagespeed-optimization' ) . '">' . esc_html__( 'Settings', 'kagg-pagespeed-optimization' ) . '</a>',
+			'settings' =>
+				'<a href="' . admin_url( 'options-general.php?page=pagespeed-optimization' ) .
+				'" aria-label="' . esc_attr__( 'View PageSpeed Module settings', 'kagg-pagespeed-optimization' ) . '">' .
+				esc_html__( 'Settings', 'kagg-pagespeed-optimization' ) . '</a>',
 		);
 
 		return array_merge( $action_links, $links );
@@ -659,8 +697,8 @@ class PageSpeed_Optimization {
 				// Save the response to the local file
 				if ( ! file_exists( $local_file ) ) {
 					// Try to create the file, if doesn't exist
-					fopen( $local_file, 'w' );
-					fclose( $local_file );
+					$fp = fopen( $local_file, 'w' );
+					fclose( $fp );
 				}
 
 				if ( is_writable( $local_file ) ) {
@@ -835,7 +873,6 @@ class PageSpeed_Optimization {
 			return;
 		}
 
-		// $script = 'https://maps.googleapis.com/maps/api/js';
 		$script = $this->plugin_url . $this->local_filenames['gmap'];
 
 		$script .= '?key=' . $gmap_key;
@@ -844,13 +881,18 @@ class PageSpeed_Optimization {
 		} else {
 			$in_footer = true;
 		}
-		wp_enqueue_script( 'pagespeed-optimization-google-maps', $script, array(), null, $in_footer );
+		wp_enqueue_script( 'pagespeed-optimization-google-maps', $script, array(), $this->version, $in_footer );
 	}
 
 	/**
 	 * Enqueue plugin scripts.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_style( 'pagespeed-optimization-admin', $this->plugin_url . 'css/pagespeed-optimization-admin.css', array(), $this->version );
+		wp_enqueue_style(
+			'pagespeed-optimization-admin',
+			$this->plugin_url . 'css/pagespeed-optimization-admin.css',
+			array(),
+			$this->version
+		);
 	}
 }
