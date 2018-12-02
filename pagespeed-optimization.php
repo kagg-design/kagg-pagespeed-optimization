@@ -4,7 +4,7 @@
  * Plugin URI:
  * Description: Optimize external scripts by storing them locally
  * Author: KAGG Design
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author URI: https://kagg.eu/en/
  * Requires at least: 4.4
  * Tested up to: 5.0
@@ -33,8 +33,9 @@ function init_pagespeed_optimization_class() {
 	static $plugin;
 
 	if ( ! isset( $plugin ) ) {
-		// Require main class of the plugin.
+		// Require plugin classes.
 		require_once dirname( __FILE__ ) . '/includes/class-pagespeed-optimization.php';
+		require_once dirname( __FILE__ ) . '/includes/class-pagespeed-filesystem.php';
 
 		$plugin = new PageSpeed_Optimization();
 	}
