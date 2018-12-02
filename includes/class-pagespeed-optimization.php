@@ -1,14 +1,10 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
 /**
  * Class PageSpeed_Optimization.
  *
  * @class PageSpeed_Optimization
- * version 1.0.0
+ * version 1.0.1
  */
 class PageSpeed_Optimization {
 
@@ -25,7 +21,7 @@ class PageSpeed_Optimization {
 	/**
 	 * @var string Plugin version.
 	 */
-	public $version = '1.0.0';
+	public $version = '1.0.1';
 
 	/**
 	 * @var string Absolute plugin path.
@@ -139,10 +135,6 @@ class PageSpeed_Optimization {
 				'deactivate_update_pagespeed_optimization_cache',
 			)
 		);
-	}
-
-	public function test_update_pagespeed_optimization_cache_action() {
-		echo 'test_update_pagespeed_optimization_cache_action';
 	}
 
 	/**
@@ -638,25 +630,14 @@ class PageSpeed_Optimization {
 	}
 
 	/**
-	 * Check if local files are in place. Update them if not.
-	 */
-	private function check_local_files() {
-		foreach ( $this->local_filenames as $local_filename ) {
-			if ( ! file_exists( $this->plugin_path . $local_filename ) ) {
-				do_action( 'update_pagespeed_optimization_cache' );
-
-				return;
-			}
-		}
-	}
-
-	/**
 	 * Update scripts cache.
 	 */
 	public function update_pagespeed_optimization_cache_action() {
+		$filesystem = new PageSpeed_Filesystem();
+
 		$remote_file = $this->remote_filenames['ga'];
 		$local_file  = $this->plugin_path . $this->local_filenames['ga'];
-		$this->update_local_files( $remote_file, $local_file );
+		$this->update_local_file( $filesystem, $remote_file, $local_file );
 
 		$gmap_key = $this->get_option( 'gmap_key' );
 		$key      = '';
@@ -665,20 +646,21 @@ class PageSpeed_Optimization {
 		}
 		$remote_file = $this->remote_filenames['gmap'] . $key;
 		$local_file  = $this->plugin_path . $this->local_filenames['gmap'];
-		$this->update_local_files( $remote_file, $local_file );
+		$this->update_local_file( $filesystem, $remote_file, $local_file );
 
 		$remote_file = $this->remote_filenames['ya_metrika'];
 		$local_file  = $this->plugin_path . $this->local_filenames['ya_metrika'];
-		$this->update_local_files( $remote_file, $local_file );
+		$this->update_local_file( $filesystem, $remote_file, $local_file );
 	}
 
 	/**
 	 * Update local file.
 	 *
+	 * @param PageSpeed_Filesystem $filesystem Filesystem.
 	 * @param string $remote_file Remote file url.
 	 * @param string $local_file Local file name.
 	 */
-	private function update_local_files( $remote_file, $local_file ) {
+	private function update_local_file( $filesystem, $remote_file, $local_file ) {
 		$args   = array(
 			'method'      => 'GET',
 			'redirection' => 1,
@@ -688,28 +670,30 @@ class PageSpeed_Optimization {
 			'body'        => array(),
 			'cookies'     => array(),
 		);
-		$result = wp_remote_post( $remote_file, $args );
+		$result = wp_remote_get( $remote_file, $args );
 
 		if ( ! is_wp_error( $result ) ) {
-			$response = $result['body'];
-			if ( ! empty( $response ) ) {
-				// @codingStandardsIgnoreStart
-				// Save the response to the local file
-				if ( ! file_exists( $local_file ) ) {
-					// Try to create the file, if doesn't exist
-					$fp = fopen( $local_file, 'w' );
-					fclose( $fp );
+			$content = $result['body'];
+			if ( ! empty( $content ) ) {
+				$local_content = $filesystem->read( $local_file );
+				if ( $local_content !== $content ) {
+					$filesystem->write( $local_file, $content );
+					$this->clean_cache();
 				}
-
-				if ( is_writable( $local_file ) ) {
-					$fp = fopen( $local_file, 'w' );
-					if ( $fp ) {
-						fwrite( $fp, $response );
-						fclose( $fp );
-					}
-				}
-				// @codingStandardsIgnoreEnd
 			}
+		}
+	}
+
+	/**
+	 * Clean cache.
+	 */
+	private function clean_cache() {
+
+		// Clean cache of WP Super Cache plugin.
+		if ( function_exists( 'wp_cache_clean_cache' ) ) {
+			global $file_prefix;
+			wp_cache_clean_cache( $file_prefix, true );
+			return;
 		}
 	}
 
@@ -718,8 +702,8 @@ class PageSpeed_Optimization {
 	 */
 	public function activate_update_pagespeed_optimization_cache() {
 		if ( ! wp_next_scheduled( 'update_pagespeed_optimization_cache' ) ) {
-			wp_schedule_event( time(), 'twicedaily', 'update_pagespeed_optimization_cache' );
-			$this->check_local_files();
+			wp_schedule_event( time(), 'hourly', 'update_pagespeed_optimization_cache' );
+			do_action( 'update_pagespeed_optimization_cache' );
 		}
 	}
 
