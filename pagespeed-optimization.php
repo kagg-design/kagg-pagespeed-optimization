@@ -36,8 +36,10 @@ function init_pagespeed_optimization_class() {
 		// Require plugin classes.
 		require_once dirname( __FILE__ ) . '/includes/class-pagespeed-optimization.php';
 		require_once dirname( __FILE__ ) . '/includes/class-pagespeed-filesystem.php';
+		require_once dirname( __FILE__ ) . '/includes/class-pagespeed-resources-to-footer.php';
 
 		$plugin = new PageSpeed_Optimization();
+		new PageSpeed_Resources_To_Footer();
 	}
 }
 

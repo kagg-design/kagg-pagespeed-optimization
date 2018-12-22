@@ -737,7 +737,7 @@ class PageSpeed_Optimization {
 
 		// Google Analytics script.
 		if ( $ga_id ) {
-			echo "<script>
+			echo "<script type='text/javascript' async>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -763,7 +763,7 @@ class PageSpeed_Optimization {
 			// Yandex Metrika script.
 			?>
 			<!-- Yandex.Metrika counter -->
-			<script type="text/javascript">
+			<script type="text/javascript" async>
 				(function (d, w, c) {
 					(w[c] = w[c] || []).push(function () {
 						try {
