@@ -51,5 +51,8 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 
 == Changelog ==
 
+= 1.0.2 =
+* Tested with WordPress 5.4
+
 = 1.0.0 =
 * Initial release.
