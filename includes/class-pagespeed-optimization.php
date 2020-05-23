@@ -1,55 +1,77 @@
 <?php
+/**
+ * PageSpeed_Optimization class file.
+ *
+ * @package kagg_pagespeed_optimization
+ */
 
 /**
  * Class PageSpeed_Optimization.
  *
  * @class PageSpeed_Optimization
- * version 1.0.1
  */
 class PageSpeed_Optimization {
 
 	/**
-	 * @var string The plugin ID. Used for option names.
+	 * The plugin ID. Used for option names.
+	 *
+	 * @var string
 	 */
 	public $plugin_id = 'pagespeed_optimization_';
 
 	/**
-	 * @var string ID of the class extending the settings. Used in option names.
+	 * ID of the class extending the settings. Used in option names.
+	 *
+	 * @var string
 	 */
 	public $id = '';
 
 	/**
-	 * @var string Plugin version.
+	 * Plugin version.
+	 *
+	 * @var string
 	 */
-	public $version = '1.0.1';
+	public $version = '1.0.2';
 
 	/**
-	 * @var string Absolute plugin path.
+	 * Absolute plugin path.
+	 *
+	 * @var string
 	 */
 	public $plugin_path;
 
 	/**
-	 * @var string Absolute plugin URL.
+	 * Absolute plugin URL.
+	 *
+	 * @var string
 	 */
 	public $plugin_url;
 
 	/**
-	 * @var array Form fields.
+	 * Form fields.
+	 *
+	 * @var array
 	 */
 	public $form_fields;
 
 	/**
-	 * @var array Plugin options.
+	 * Plugin options.
+	 *
+	 * @var array
 	 */
 	public $settings;
 
 	/**
-	 * @var array Remote script file names.
+	 * Remote script file names.
+	 *
+	 * @var array
 	 */
 	public $remote_filenames;
 
 	/**
-	 * @var array Cache file names.
+	 * Cache file names.
+	 *
+	 * @var array
 	 */
 	public $local_filenames;
 
@@ -109,31 +131,31 @@ class PageSpeed_Optimization {
 
 		$enqueue_priority = $this->get_option( 'enqueue_priority' );
 		if ( 'header' === $this->get_option( 'position' ) ) {
-			add_action( 'wp_print_scripts', array( $this, 'print_scripts_action' ), $enqueue_priority );
+			add_action( 'wp_print_scripts', [ $this, 'print_scripts_action' ], $enqueue_priority );
 		} else {
-			add_action( 'wp_print_footer_scripts', array( $this, 'print_scripts_action' ), $enqueue_priority );
+			add_action( 'wp_print_footer_scripts', [ $this, 'print_scripts_action' ], $enqueue_priority );
 		}
-		add_action( 'wp_print_scripts', array( $this, 'print_prevent_gmap_roboto' ), 0 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts_action' ), $enqueue_priority );
+		add_action( 'wp_print_scripts', [ $this, 'print_prevent_gmap_roboto' ], 0 );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts_action' ], $enqueue_priority );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
 
-		// Register activation hook to schedule event in wp_cron()
+		// Register activation hook to schedule event in wp_cron().
 		register_activation_hook(
 			PAGESPEED_OPTIMIZATION_PLUGIN_FILE,
-			array(
+			[
 				$this,
 				'activate_update_pagespeed_optimization_cache',
-			)
+			]
 		);
 
-		// Register deactivation hook to remove event from wp_cron()
+		// Register deactivation hook to remove event from wp_cron().
 		register_deactivation_hook(
 			PAGESPEED_OPTIMIZATION_PLUGIN_FILE,
-			array(
+			[
 				$this,
 				'deactivate_update_pagespeed_optimization_cache',
-			)
+			]
 		);
 	}
 
@@ -332,7 +354,7 @@ class PageSpeed_Optimization {
 	/**
 	 * Set default required properties for each field.
 	 *
-	 * @param array $field
+	 * @param array $field Field.
 	 *
 	 * @return array
 	 */
@@ -356,8 +378,8 @@ class PageSpeed_Optimization {
 	/**
 	 * Get plugin option.
 	 *
-	 * @param string $key
-	 * @param mixed $empty_value
+	 * @param string $key         Key.
+	 * @param mixed  $empty_value Empty value.
 	 *
 	 * @return string The value specified for the option or a default value for the option.
 	 */
@@ -382,7 +404,7 @@ class PageSpeed_Optimization {
 	/**
 	 * Get a fields default value. Defaults to '' if not set.
 	 *
-	 * @param $field
+	 * @param array $field Field.
 	 *
 	 * @return string
 	 */
@@ -393,9 +415,9 @@ class PageSpeed_Optimization {
 	/**
 	 * Filter plugin option update.
 	 *
-	 * @param mixed $value New option value.
-	 * @param mixed $old_value Old option value.
-	 * @param string $option Option name.
+	 * @param mixed  $value     New option value.
+	 * @param mixed  $old_value Old option value.
+	 * @param string $option    Option name.
 	 *
 	 * @return mixed
 	 */
@@ -602,7 +624,8 @@ class PageSpeed_Optimization {
 	/**
 	 * Add link to plugin setting page on plugins page.
 	 *
-	 * @param array $links Plugin links
+	 * @param array  $links Plugin links.
+	 * @param string $file  Filename.
 	 *
 	 * @return array|mixed Plugin links
 	 */
@@ -621,7 +644,7 @@ class PageSpeed_Optimization {
 	 * Check cron status.
 	 */
 	public function check_cron() {
-		//@todo Add selection of interval to options
+		// @todo Add selection of interval to options.
 		if ( 'yes' === $this->get_option( 'remove_from_wp_cron' ) ) {
 			$this->deactivate_update_pagespeed_optimization_cache();
 		} else {
@@ -656,9 +679,9 @@ class PageSpeed_Optimization {
 	/**
 	 * Update local file.
 	 *
-	 * @param PageSpeed_Filesystem $filesystem Filesystem.
-	 * @param string $remote_file Remote file url.
-	 * @param string $local_file Local file name.
+	 * @param PageSpeed_Filesystem $filesystem  Filesystem.
+	 * @param string               $remote_file Remote file url.
+	 * @param string               $local_file  Local file name.
 	 */
 	private function update_local_file( $filesystem, $remote_file, $local_file ) {
 		$args   = array(

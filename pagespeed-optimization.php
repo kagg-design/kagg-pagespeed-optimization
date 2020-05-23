@@ -12,7 +12,7 @@
  * Text Domain: kagg-pagespeed-optimization
  * Domain Path: /languages/
  *
- * @package PageSpeed Optimization
+ * @package kagg_pagespeed_optimization
  * @author  KAGG Design
  */
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * PageSpeed_Resources_To_Footer class file.
+ *
+ * @package kagg_pagespeed_optimization
+ */
 
 /**
  * Class PageSpeed_Resources_To_Footer
@@ -6,8 +11,13 @@
  * Move scripts and styles from header to footer.
  */
 class PageSpeed_Resources_To_Footer {
-	/** @var array Scripts to move from header to footer. */
-	private $scripts = array(
+
+	/**
+	 * Scripts to move from header to footer.
+	 *
+	 * @var string[]
+	 */
+	private $scripts = [
 		'admin-bar',
 		'comment-reply',
 		'layerslider',
@@ -54,10 +64,14 @@ class PageSpeed_Resources_To_Footer {
 		'cmb2-scripts',
 		'jquery-parsley',
 		'parsley-localization',
-	);
+	];
 
-	/** @var array Scripts to block. */
-	private $block_scripts = array(
+	/**
+	 * Scripts to block.
+	 *
+	 * @var string[]
+	 */
+	private $block_scripts = [
 		'jquery-blackandwhite',
 		'social-likes',
 		'jquery-parsley',
@@ -69,10 +83,14 @@ class PageSpeed_Resources_To_Footer {
 		'jquery-ui-slider-access',
 		'jquery-ui-widget',
 		'jquery-ui-core',
-	);
+	];
 
-	/** @var array Styles to move from header to footer. */
-	private $styles = array(
+	/**
+	 * Styles to move from header to footer.
+	 *
+	 * @var string[]
+	 */
+	private $styles = [
 		'layerslider',
 		'contact-form-7',
 		'sb_instagram_styles',
@@ -93,10 +111,14 @@ class PageSpeed_Resources_To_Footer {
 		'jquery-ui-timepicker',
 		'dashicons',
 		'cmb2-styles',
-	);
+	];
 
-	/** @var array Styles to block. */
-	private $block_styles = array(
+	/**
+	 * Styles to block.
+	 *
+	 * @var string[]
+	 */
+	private $block_styles = [
 		'sb-font-awesome',
 		'font-awesome',
 		'dashicons',
@@ -104,7 +126,7 @@ class PageSpeed_Resources_To_Footer {
 		'bodhi-svgs-attachment',
 		'wpml-legacy-dropdown-0',
 		'ball-clip-rotate-style',
-	);
+	];
 
 	/**
 	 * PageSpeed_Resources_To_Footer constructor.
@@ -118,11 +140,11 @@ class PageSpeed_Resources_To_Footer {
 	 */
 	public function init() {
 		if ( ! is_admin() ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'remove_scripts_from_header' ), PHP_INT_MAX );
-			add_action( 'get_footer', array( $this, 'add_scripts_to_footer' ) );
+			add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
+			add_action( 'get_footer', [ $this, 'add_scripts_to_footer' ] );
 
-			add_action( 'wp_enqueue_scripts', array( $this, 'remove_styles_from_header' ), PHP_INT_MAX );
-			add_action( 'get_footer', array( $this, 'add_styles_to_footer' ) );
+			add_action( 'wp_enqueue_scripts', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
+			add_action( 'get_footer', [ $this, 'add_styles_to_footer' ] );
 		}
 	}
 
@@ -156,7 +178,6 @@ class PageSpeed_Resources_To_Footer {
 	 * Remove styles from header.
 	 */
 	public function remove_styles_from_header() {
-		/** @var $wp_styles WP_Styles */
 		global $wp_styles;
 
 		$styles = array_unique( array_merge( $this->styles, $this->block_styles ) );
@@ -172,7 +193,6 @@ class PageSpeed_Resources_To_Footer {
 	 * Add styles to footer.
 	 */
 	public function add_styles_to_footer() {
-		/** @var $wp_styles WP_Styles */
 		global $wp_styles;
 
 		$styles = array_diff( $this->styles, $this->block_styles );

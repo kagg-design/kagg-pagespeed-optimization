@@ -1,4 +1,9 @@
 <?php
+/**
+ * PageSpeed_Filesystem class file.
+ *
+ * @package kagg_pagespeed_optimization
+ */
 
 /**
  * Class PageSpeed_Filesystem
@@ -6,6 +11,8 @@
 class PageSpeed_Filesystem {
 
 	/**
+	 * Filesystem.
+	 *
 	 * @var WP_Filesystem_Direct
 	 */
 	private $wp_filesystem = null;
@@ -19,9 +26,10 @@ class PageSpeed_Filesystem {
 
 	/**
 	 * Init filesystem.
+	 *
+	 * @throws RuntimeException RuntimeException.
 	 */
 	private function init() {
-		/** @var $wp_filesystem WP_Filesystem_Direct */
 		global $wp_filesystem;
 
 		add_filter( 'filesystem_method', 'set_direct_fs_method', PHP_INT_MAX );
