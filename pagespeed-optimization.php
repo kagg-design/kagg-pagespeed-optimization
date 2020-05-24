@@ -34,7 +34,7 @@ define( 'PAGESPEED_OPTIMIZATION_PLUGIN_FILE', __FILE__ );
  */
 require_once dirname( __FILE__ ) . '/includes/class-pagespeed-optimization.php';
 require_once dirname( __FILE__ ) . '/includes/class-pagespeed-filesystem.php';
-require_once dirname( __FILE__ ) . '/includes/class-pagespeed-resources-to-footer.php';
+require_once dirname( __FILE__ ) . '/includes/class-pagespeed-resources.php';
 
 new PageSpeed_Optimization();
-new PageSpeed_Resources_To_Footer();
+new PageSpeed_Resources();

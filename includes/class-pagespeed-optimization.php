@@ -82,16 +82,16 @@ class PageSpeed_Optimization {
 		// Init fields.
 		$this->plugin_path      = trailingslashit( plugin_dir_path( __DIR__ ) );
 		$this->plugin_url       = trailingslashit( plugin_dir_url( __DIR__ ) );
-		$this->remote_filenames = array(
+		$this->remote_filenames = [
 			'ga'         => 'https://www.google-analytics.com/analytics.js',
 			'gmap'       => 'https://maps.googleapis.com/maps/api/js',
 			'ya_metrika' => 'https://mc.yandex.ru/metrika/watch.js',
-		);
-		$this->local_filenames  = array(
+		];
+		$this->local_filenames  = [
 			'ga'         => 'cache/ga.js',
 			'gmap'       => 'cache/gmap.js',
 			'ya_metrika' => 'cache/ya_metrika.js',
-		);
+		];
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -105,28 +105,22 @@ class PageSpeed_Optimization {
 	private function init_hooks() {
 		add_filter(
 			'plugin_action_links_' . plugin_basename( PAGESPEED_OPTIMIZATION_PLUGIN_FILE ),
-			array(
-				$this,
-				'add_settings_link',
-			),
+			[ $this, 'add_settings_link' ],
 			10,
 			2
 		);
 
-		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
-		add_action( 'admin_init', array( $this, 'setup_sections' ) );
-		add_action( 'admin_init', array( $this, 'setup_fields' ) );
+		add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
+		add_action( 'admin_init', [ $this, 'setup_sections' ] );
+		add_action( 'admin_init', [ $this, 'setup_fields' ] );
 
-		add_filter( 'pre_update_option_' . $this->get_option_key(), array( $this, 'pre_update_option_filter' ), 10, 3 );
+		add_filter( 'pre_update_option_' . $this->get_option_key(), [ $this, 'pre_update_option_filter' ], 10, 3 );
 
-		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ), 100 );
-		add_action( 'plugins_loaded', array( $this, 'check_cron' ), 100 );
+		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ], 100 );
+		add_action( 'plugins_loaded', [ $this, 'check_cron' ], 100 );
 		add_action(
 			'update_pagespeed_optimization_cache',
-			array(
-				$this,
-				'update_pagespeed_optimization_cache_action',
-			)
+			[ $this, 'update_pagespeed_optimization_cache_action' ]
 		);
 
 		$enqueue_priority = $this->get_option( 'enqueue_priority' );
@@ -139,6 +133,9 @@ class PageSpeed_Optimization {
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts_action' ], $enqueue_priority );
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
+
+		// Block emoji.
+		add_action( 'init', [ $this, 'block_emoji' ] );
 
 		// Register activation hook to schedule event in wp_cron().
 		register_activation_hook(
@@ -167,7 +164,7 @@ class PageSpeed_Optimization {
 		$menu_title = __( 'PageSpeed Opt.', 'kagg-pagespeed-optimization' );
 		$capability = 'manage_options';
 		$slug       = 'pagespeed-optimization';
-		$callback   = array( $this, 'pagespeed_optimization_settings_page' );
+		$callback   = [ $this, 'pagespeed_optimization_settings_page' ];
 		$icon       = $this->plugin_url . 'images/icon-16x16.png';
 		$icon       = '<img class="pso-menu-image" src="' . $icon . '">';
 		$menu_title = $icon . '<span class="pso-menu-title">' . $menu_title . '</span>';
@@ -205,7 +202,7 @@ class PageSpeed_Optimization {
 		add_settings_section(
 			'first_section',
 			__( 'Options', 'kagg-pagespeed-optimization' ),
-			array( $this, 'pagespeed_optimization_first_section' ),
+			[ $this, 'pagespeed_optimization_first_section' ],
 			'pagespeed-optimization'
 		);
 	}
@@ -218,8 +215,24 @@ class PageSpeed_Optimization {
 	public function pagespeed_optimization_first_section( $arguments ) {
 		switch ( $arguments['id'] ) {
 			case 'first_section':
-				echo '<p>' . esc_html__( 'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.', 'kagg-pagespeed-optimization' ) . '</p>';
-				echo '<p>' . esc_html__( 'You can use other options for fine tuning.', 'kagg-pagespeed-optimization' ) . '</p>';
+				?>
+				<p>
+					<?php
+					echo esc_html__(
+						'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
+						'kagg-pagespeed-optimization'
+					);
+					?>
+				</p>
+				<p>
+					<?php
+					echo esc_html__(
+						'You can use other options for fine tuning.',
+						'kagg-pagespeed-optimization'
+					);
+					?>
+				</p>
+				<?php
 				break;
 			default:
 		}
@@ -229,53 +242,53 @@ class PageSpeed_Optimization {
 	 * Init options form fields.
 	 */
 	public function init_form_fields() {
-		$this->form_fields = array(
-			'ga_id'                    => array(
+		$this->form_fields = [
+			'ga_id'                    => [
 				'label'        => __( 'Google Analytics tracking ID', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'text',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-			),
-			'gmap_key'                 => array(
+			],
+			'gmap_key'                 => [
 				'label'        => __( 'Google Maps API key', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'text',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-			),
-			'ya_metrika_id'            => array(
+			],
+			'ya_metrika_id'            => [
 				'label'        => __( 'Yandex Metrika tracking ID', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'text',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-			),
-			'position'                 => array(
+			],
+			'position'                 => [
 				'label'        => __( 'Position of tracking code', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'radio',
-				'options'      => array(
+				'options'      => [
 					'header' => 'Header',
 					'footer' => 'Footer',
-				),
+				],
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
 				'default'      => 'header',
-			),
-			'bounce_rate'              => array(
+			],
+			'bounce_rate'              => [
 				'label'        => __( 'Adjusted bounce rate', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'text',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-			),
-			'enqueue_priority'         => array(
+			],
+			'enqueue_priority'         => [
 				'label'        => __( 'Enqueue priority', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'text',
@@ -283,16 +296,17 @@ class PageSpeed_Optimization {
 				'helper'       => '',
 				'supplemental' => '',
 				'default'      => '10',
-			),
-			'disable_display_features' => array(
+			],
+			'disable_display_features' => [
 				'label'        => __( 'Disable display features functionality', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-			),
-			'anonymize_ip'             => array(
+				'default'      => 'no',
+			],
+			'anonymize_ip'             => [
 				'label'        => __( 'Anonymize IP', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
@@ -300,8 +314,8 @@ class PageSpeed_Optimization {
 				'helper'       => '',
 				'supplemental' => '',
 				'default'      => 'yes',
-			),
-			'prevent_gmap_roboto'      => array(
+			],
+			'prevent_gmap_roboto'      => [
 				'label'        => __( 'Prevent Google Maps from loading Roboto font', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
@@ -309,16 +323,17 @@ class PageSpeed_Optimization {
 				'helper'       => '',
 				'supplemental' => '',
 				'default'      => 'yes',
-			),
-			'remove_from_wp_cron'      => array(
+			],
+			'remove_from_wp_cron'      => [
 				'label'        => __( 'Remove script from WP-Cron', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-			),
-		);
+				'default'      => 'no',
+			],
+		];
 	}
 
 	/**
@@ -334,7 +349,10 @@ class PageSpeed_Optimization {
 		// If there are no settings defined, use defaults.
 		if ( ! is_array( $this->settings ) ) {
 			$form_fields    = $this->get_form_fields();
-			$this->settings = array_merge( array_fill_keys( array_keys( $form_fields ), '' ), wp_list_pluck( $form_fields, 'default' ) );
+			$this->settings = array_merge(
+				array_fill_keys( array_keys( $form_fields ), '' ),
+				wp_list_pluck( $form_fields, 'default' )
+			);
 		}
 	}
 
@@ -348,7 +366,7 @@ class PageSpeed_Optimization {
 			$this->init_form_fields();
 		}
 
-		return array_map( array( $this, 'set_defaults' ), $this->form_fields );
+		return array_map( [ $this, 'set_defaults' ], $this->form_fields );
 	}
 
 	/**
@@ -428,6 +446,7 @@ class PageSpeed_Optimization {
 
 		$form_fields = $this->get_form_fields();
 		foreach ( $form_fields as $key => $form_field ) {
+			$value[ $key ] = isset( $value[ $key ] ) ? $value[ $key ] : $form_fields[ $key ];
 			switch ( $form_field['type'] ) {
 				case 'checkbox':
 					$value[ $key ] = '1' === $value[ $key ] || 'yes' === $value[ $key ] ? 'yes' : 'no';
@@ -443,7 +462,6 @@ class PageSpeed_Optimization {
 	 * Setup options fields.
 	 */
 	public function setup_fields() {
-
 		register_setting( 'pagespeed_optimization_group', $this->get_option_key() );
 
 		foreach ( $this->form_fields as $key => $field ) {
@@ -452,7 +470,7 @@ class PageSpeed_Optimization {
 			add_settings_field(
 				$key,
 				$field['label'],
-				array( $this, 'field_callback' ),
+				[ $this, 'field_callback' ],
 				'pagespeed-optimization',
 				$field['section'],
 				$field
@@ -494,7 +512,7 @@ class PageSpeed_Optimization {
 			case 'checkbox':
 			case 'radio':
 				if ( 'checkbox' === $arguments['type'] ) {
-					$arguments['options'] = array( 'yes' => '' );
+					$arguments['options'] = [ 'yes' => '' ];
 				}
 
 				if ( ! empty( $arguments['options'] ) && is_array( $arguments['options'] ) ) {
@@ -517,19 +535,19 @@ class PageSpeed_Optimization {
 						'<fieldset>%s</fieldset>',
 						wp_kses(
 							$options_markup,
-							array(
-								'label' => array(
-									'for' => array(),
-								),
-								'input' => array(
-									'id'      => array(),
-									'name'    => array(),
-									'type'    => array(),
-									'value'   => array(),
-									'checked' => array(),
-								),
-								'br'    => array(),
-							)
+							[
+								'label' => [
+									'for' => [],
+								],
+								'input' => [
+									'id'      => [],
+									'name'    => [],
+									'type'    => [],
+									'value'   => [],
+									'checked' => [],
+								],
+								'br'    => [],
+							]
 						)
 					);
 				}
@@ -551,12 +569,12 @@ class PageSpeed_Optimization {
 						esc_html( $arguments['field_id'] ),
 						wp_kses(
 							$options_markup,
-							array(
-								'option' => array(
-									'value'    => array(),
-									'selected' => array(),
-								),
-							)
+							[
+								'option' => [
+									'value'    => [],
+									'selected' => [],
+								],
+							]
 						)
 					);
 				}
@@ -584,12 +602,12 @@ class PageSpeed_Optimization {
 						esc_html( $arguments['field_id'] ),
 						wp_kses(
 							$options_markup,
-							array(
-								'option' => array(
-									'value'    => array(),
-									'selected' => array(),
-								),
-							)
+							[
+								'option' => [
+									'value'    => [],
+									'selected' => [],
+								],
+							]
 						)
 					);
 				}
@@ -630,12 +648,14 @@ class PageSpeed_Optimization {
 	 * @return array|mixed Plugin links
 	 */
 	public function add_settings_link( $links, $file ) {
-		$action_links = array(
+		$action_links = [
 			'settings' =>
 				'<a href="' . admin_url( 'options-general.php?page=pagespeed-optimization' ) .
-				'" aria-label="' . esc_attr__( 'View PageSpeed Module settings', 'kagg-pagespeed-optimization' ) . '">' .
+				'" aria-label="' .
+				esc_attr__( 'View PageSpeed Module settings', 'kagg-pagespeed-optimization' ) .
+				'">' .
 				esc_html__( 'Settings', 'kagg-pagespeed-optimization' ) . '</a>',
-		);
+		];
 
 		return array_merge( $action_links, $links );
 	}
@@ -684,15 +704,15 @@ class PageSpeed_Optimization {
 	 * @param string               $local_file  Local file name.
 	 */
 	private function update_local_file( $filesystem, $remote_file, $local_file ) {
-		$args   = array(
+		$args   = [
 			'method'      => 'GET',
 			'redirection' => 1,
 			'httpversion' => '1.0',
 			'blocking'    => true,
-			'headers'     => array(),
-			'body'        => array(),
-			'cookies'     => array(),
-		);
+			'headers'     => [],
+			'body'        => [],
+			'cookies'     => [],
+		];
 		$result = wp_remote_get( $remote_file, $args );
 
 		if ( ! is_wp_error( $result ) ) {
@@ -711,11 +731,11 @@ class PageSpeed_Optimization {
 	 * Clean cache.
 	 */
 	private function clean_cache() {
-
 		// Clean cache of WP Super Cache plugin.
 		if ( function_exists( 'wp_cache_clean_cache' ) ) {
 			global $file_prefix;
 			wp_cache_clean_cache( $file_prefix, true );
+
 			return;
 		}
 	}
@@ -787,34 +807,34 @@ class PageSpeed_Optimization {
 			?>
 			<!-- Yandex.Metrika counter -->
 			<script type="text/javascript" async>
-				(function (d, w, c) {
-					(w[c] = w[c] || []).push(function () {
+				( function( d, w, c ) {
+					( w[c] = w[c] || [] ).push( function() {
 						try {
-							w.yaCounter<?php echo esc_html( $ya_metrika_id ); ?> = new Ya.Metrika({
+							w.yaCounter<?php echo esc_html( $ya_metrika_id ); ?> = new Ya.Metrika( {
 								id:<?php echo esc_html( $ya_metrika_id ); ?>,
 								enableAll: true,
 								webvisor: true
-							});
-						} catch (e) {
+							} );
+						} catch ( e ) {
 						}
-					});
+					} );
 
-					var n = d.getElementsByTagName("script")[0],
-						s = d.createElement("script"),
-						f = function () {
-							n.parentNode.insertBefore(s, n);
+					var n   = d.getElementsByTagName( 'script' )[0],
+						s   = d.createElement( 'script' ),
+						f   = function() {
+							n.parentNode.insertBefore( s, n );
 						};
-					s.type = "text/javascript";
+					s.type  = 'text/javascript';
 					s.async = true;
 					// s.src = "https://mc.yandex.ru/metrika/watch.js";
-					s.src = "<?php echo esc_url( $this->plugin_url . $this->local_filenames['ya_metrika'] ); ?>";
+					s.src   = "<?php echo esc_url( $this->plugin_url . $this->local_filenames['ya_metrika'] ); ?>";
 
-					if (w.opera == "[object Opera]") {
-						d.addEventListener("DOMContentLoaded", f, false);
+					if ( w.opera == '[object Opera]' ) {
+						d.addEventListener( 'DOMContentLoaded', f, false );
 					} else {
 						f();
 					}
-				})(document, window, "yandex_metrika_callbacks");
+				} )( document, window, 'yandex_metrika_callbacks' );
 			</script>
 			<noscript>
 				<div><img
@@ -824,7 +844,6 @@ class PageSpeed_Optimization {
 			</noscript>
 			<!-- /Yandex.Metrika counter -->
 			<?php
-
 		}
 	}
 
@@ -852,20 +871,20 @@ class PageSpeed_Optimization {
 
 		?>
 		<script type="text/javascript">
-			var head = document.getElementsByTagName('head')[0];
+			var head = document.getElementsByTagName( 'head' )[0];
 
 			// Save the original method
 			var insertBefore = head.insertBefore;
 
 			// Replace it!
-			head.insertBefore = function (newElement, referenceElement) {
+			head.insertBefore = function( newElement, referenceElement ) {
 
-				if (newElement.href && newElement.href.indexOf('//fonts.googleapis.com/css?family=Roboto') > -1) {
+				if ( newElement.href && newElement.href.indexOf( '//fonts.googleapis.com/css?family=Roboto' ) > - 1 ) {
 
 					return;
 				}
 
-				insertBefore.call(head, newElement, referenceElement);
+				insertBefore.call( head, newElement, referenceElement );
 			};
 		</script>
 		<?php
@@ -888,7 +907,7 @@ class PageSpeed_Optimization {
 		} else {
 			$in_footer = true;
 		}
-		wp_enqueue_script( 'pagespeed-optimization-google-maps', $script, array(), $this->version, $in_footer );
+		wp_enqueue_script( 'pagespeed-optimization-google-maps', $script, [], $this->version, $in_footer );
 	}
 
 	/**
@@ -898,8 +917,59 @@ class PageSpeed_Optimization {
 		wp_enqueue_style(
 			'pagespeed-optimization-admin',
 			$this->plugin_url . 'css/pagespeed-optimization-admin.css',
-			array(),
+			[],
 			$this->version
 		);
+	}
+
+	/**
+	 * Block emoji
+	 */
+	public function block_emoji() {
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+		remove_action( 'embed_head', 'print_emoji_detection_script' );
+		remove_action( 'wp_print_styles', 'print_emoji_styles' );
+		remove_action( 'admin_print_styles', 'print_emoji_styles' );
+		remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+		remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+		remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+
+		add_filter( 'tiny_mce_plugins', [ $this, 'disable_emojis_tinymce' ] );
+		add_filter( 'wp_resource_hints', [ $this, 'disable_emojis_remove_dns_prefetch' ], 10, 2 );
+	}
+
+	/**
+	 * Filter function used to remove the tinymce emoji plugin.
+	 *
+	 * @param array $plugins Plugins.
+	 *
+	 * @return array Difference betwen the two arrays
+	 */
+	public function disable_emojis_tinymce( $plugins ) {
+		if ( is_array( $plugins ) ) {
+			return array_diff( $plugins, [ 'wpemoji' ] );
+		} else {
+			return [];
+		}
+	}
+
+	/**
+	 * Remove emoji CDN hostname from DNS prefetching hints.
+	 *
+	 * @param array  $urls          URLs to print for resource hints.
+	 * @param string $relation_type The relation type the URLs are printed for.
+	 *
+	 * @return array Difference betwen the two arrays.
+	 */
+	public function disable_emojis_remove_dns_prefetch( $urls, $relation_type ) {
+		if ( 'dns-prefetch' === $relation_type ) {
+			// This filter is documented in wp-includes/formatting.php.
+			$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/' );
+
+			$urls = array_diff( $urls, [ $emoji_svg_url ] );
+		}
+
+		return $urls;
 	}
 }
