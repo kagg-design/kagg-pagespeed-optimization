@@ -32,9 +32,11 @@ define( 'PAGESPEED_OPTIMIZATION_PLUGIN_FILE', __FILE__ );
 /**
  * Init PageSpeed Optimization classes on plugin load.
  */
-require_once dirname( __FILE__ ) . '/includes/class-pagespeed-optimization.php';
-require_once dirname( __FILE__ ) . '/includes/class-pagespeed-filesystem.php';
-require_once dirname( __FILE__ ) . '/includes/class-pagespeed-resources.php';
+require_once dirname( __FILE__ ) . '/classes/class-pagespeed-optimization.php';
+require_once dirname( __FILE__ ) . '/classes/class-pagespeed-filesystem.php';
+require_once dirname( __FILE__ ) . '/classes/class-pagespeed-resources.php';
+require_once dirname( __FILE__ ) . '/classes/class-pagespeed-loader.php';
 
 new PageSpeed_Optimization();
 new PageSpeed_Resources();
+new PageSpeed_Loader();
