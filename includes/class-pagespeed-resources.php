@@ -22,7 +22,6 @@ class PageSpeed_Resources {
 	private $scripts = [
 		'admin-bar',
 		'font-awesome-4-shim',
-		'jquery',
 		'jquery-core',
 		'jquery-migrate',
 	];
@@ -33,6 +32,13 @@ class PageSpeed_Resources {
 	 * @var string[]
 	 */
 	private $block_scripts = [];
+
+	/**
+	 * Scripts moved to footer.
+	 *
+	 * @var string[]
+	 */
+	private $moved_scripts = [];
 
 	/**
 	 * Styles to move from header to footer.
@@ -78,6 +84,13 @@ class PageSpeed_Resources {
 	private $block_styles = [];
 
 	/**
+	 * Styles moved to footer.
+	 *
+	 * @var string[]
+	 */
+	private $moved_styles = [];
+
+	/**
 	 * PageSpeed_Resources_To_Footer constructor.
 	 */
 	public function __construct() {
@@ -90,9 +103,11 @@ class PageSpeed_Resources {
 	public function init() {
 		if ( ! is_admin() ) {
 			add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
+			add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
 			add_action( 'get_footer', [ $this, 'add_scripts_to_footer' ] );
 
 			add_action( 'wp_enqueue_scripts', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
+			add_action( 'wp_print_styles', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
 			add_action( 'get_footer', [ $this, 'add_styles_to_footer' ] );
 
 			// Make some scripts defer.
@@ -114,21 +129,43 @@ class PageSpeed_Resources {
 	 */
 	public function remove_scripts_from_header() {
 		$scripts = array_unique( array_merge( $this->scripts, $this->block_scripts ) );
+		$scripts = array_unique( array_merge( $scripts, $this->parent_scripts( $scripts ) ) );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script, 'enqueued' ) ) {
+				$this->moved_scripts[] = $script;
 				wp_dequeue_script( $script );
 			}
 		}
 	}
 
 	/**
+	 * Find all parent scripts, which need $scripts as dependencies.
+	 *
+	 * @param string[] $scripts Scripts.
+	 *
+	 * @return string[]
+	 */
+	private function parent_scripts( $scripts ) {
+		global $wp_scripts;
+
+		$parents = [];
+
+		foreach ( $wp_scripts->registered as $handle => $style ) {
+			$deps = $style->deps;
+			if ( array_intersect( $scripts, $deps ) ) {
+				$parents[] = $handle;
+			}
+		}
+
+		return array_unique( $parents );
+	}
+
+	/**
 	 * Add scripts to footer.
 	 */
 	public function add_scripts_to_footer() {
-		$scripts = array_diff( $this->scripts, $this->block_scripts );
-
-		foreach ( $scripts as $script ) {
+		foreach ( $this->moved_scripts as $script ) {
 			if ( wp_script_is( $script, 'registered' ) ) {
 				wp_enqueue_script( $script );
 			}
@@ -142,12 +179,36 @@ class PageSpeed_Resources {
 		global $wp_styles;
 
 		$styles = array_unique( array_merge( $this->styles, $this->block_styles ) );
+		$styles = array_unique( array_merge( $styles, $this->parent_styles( $styles ) ) );
 
 		foreach ( $styles as $style ) {
 			if ( in_array( $style, $wp_styles->queue, true ) ) {
+				$this->moved_styles[] = $style;
 				wp_dequeue_style( $style );
 			}
 		}
+	}
+
+	/**
+	 * Find all parent styles, which need $styles as dependencies.
+	 *
+	 * @param string[] $styles Styles.
+	 *
+	 * @return string[]
+	 */
+	private function parent_styles( $styles ) {
+		global $wp_styles;
+
+		$parents = [];
+
+		foreach ( $wp_styles->registered as $handle => $style ) {
+			$deps = $style->deps;
+			if ( array_intersect( $styles, $deps ) ) {
+				$parents[] = $handle;
+			}
+		}
+
+		return array_unique( $parents );
 	}
 
 	/**
@@ -156,9 +217,7 @@ class PageSpeed_Resources {
 	public function add_styles_to_footer() {
 		global $wp_styles;
 
-		$styles = array_diff( $this->styles, $this->block_styles );
-
-		foreach ( $styles as $style ) {
+		foreach ( $this->moved_styles as $style ) {
 			if ( isset( $wp_styles->registered[ $style ] ) ) {
 				wp_enqueue_style( $style );
 			}
