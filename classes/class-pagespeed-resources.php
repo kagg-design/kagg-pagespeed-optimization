@@ -5,6 +5,8 @@
  * @package kagg_pagespeed_optimization
  */
 
+namespace KAGG\PageSpeed\Optimization;
+
 /**
  * Class PageSpeed_Resources
  *
@@ -269,10 +271,7 @@ class PageSpeed_Resources {
 		$links = [
 			'/wp-includes/js/jquery/jquery.js',
 			'/wp-includes/js/jquery/jquery-migrate.min.js',
-//			'/wp-content/plugins/lazy-loading-responsive-images/js/lazysizes.min.js',
-
 			'/wp-includes/js/wp-embed.min.js',
-
 			'//an.yandex.ru/system/context.js',
 			'https://mc.yandex.ru/metrika/tag.js',
 

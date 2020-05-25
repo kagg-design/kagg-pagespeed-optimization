@@ -5,6 +5,8 @@
  * @package kagg_pagespeed_optimization
  */
 
+namespace KAGG\PageSpeed\Optimization;
+
 /**
  * Class PageSpeed_Optimization.
  *
@@ -25,13 +27,6 @@ class PageSpeed_Optimization {
 	 * @var string
 	 */
 	public $id = '';
-
-	/**
-	 * Plugin version.
-	 *
-	 * @var string
-	 */
-	public $version = '1.0.2';
 
 	/**
 	 * Absolute plugin path.
@@ -923,7 +918,14 @@ class PageSpeed_Optimization {
 		} else {
 			$in_footer = true;
 		}
-		wp_enqueue_script( 'pagespeed-optimization-google-maps', $script, [], $this->version, $in_footer );
+
+		wp_enqueue_script(
+			'pagespeed-optimization-google-maps',
+			$script,
+			[],
+			PAGESPEED_OPTIMIZATION_VERSION,
+			$in_footer
+		);
 	}
 
 	/**
@@ -934,7 +936,7 @@ class PageSpeed_Optimization {
 			'pagespeed-optimization-admin',
 			$this->plugin_url . 'css/pagespeed-optimization-admin.css',
 			[],
-			$this->version
+			PAGESPEED_OPTIMIZATION_VERSION
 		);
 	}
 

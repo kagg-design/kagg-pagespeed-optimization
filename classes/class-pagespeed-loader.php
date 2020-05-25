@@ -5,6 +5,8 @@
  * @package kagg_pagespeed_optimization
  */
 
+namespace KAGG\PageSpeed\Optimization;
+
 /**
  * Class PageSpeed_Loader
  */
@@ -21,10 +23,6 @@ class PageSpeed_Loader {
 	 * PageSpeed_Loader constructor.
 	 */
 	public function __construct() {
-//		if ( is_admin() ) {
-//			return;
-//		}
-
 		$this->init();
 	}
 
@@ -32,15 +30,14 @@ class PageSpeed_Loader {
 	 * Init.
 	 */
 	public function init() {
-		// Output loader.
+		// Show loader.
 		add_action( 'wp_head', [ $this, 'loader' ], - PHP_INT_MAX );
 	}
 
 	/**
-	 * Output loader.
+	 * Show loader.
 	 */
 	public function loader() {
-		// Show loader img.
 		// data-skip-lazy works with Optimole.
 		?>
 		<style>

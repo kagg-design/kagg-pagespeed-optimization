@@ -4,7 +4,7 @@
  * Plugin URI:
  * Description: Optimize external scripts by storing them locally
  * Author: KAGG Design
- * Version: 1.0.2
+ * Version: 1.1.0
  * Author URI: https://kagg.eu/en/
  * Requires at least: 4.4
  * Tested up to: 5.4
@@ -16,13 +16,20 @@
  * @author  KAGG Design
  */
 
+namespace KAGG\PageSpeed\Optimization;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( defined( 'PAGESPEED_OPTIMIZATION_PLUGIN_FILE' ) ) {
+if ( defined( 'PAGESPEED_OPTIMIZATION_VERSION' ) ) {
 	return;
 }
+
+/**
+ * Plugin version
+ */
+define( 'PAGESPEED_OPTIMIZATION_VERSION', '1.1.0' );
 
 /**
  * Plugin main file.
