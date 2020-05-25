@@ -86,11 +86,13 @@ class PageSpeed_Optimization {
 			'ga'         => 'https://www.google-analytics.com/analytics.js',
 			'gmap'       => 'https://maps.googleapis.com/maps/api/js',
 			'ya_metrika' => 'https://mc.yandex.ru/metrika/watch.js',
+			'ya_an'      => '//an.yandex.ru/system/context.js',
 		];
 		$this->local_filenames  = [
 			'ga'         => 'cache/ga.js',
 			'gmap'       => 'cache/gmap.js',
 			'ya_metrika' => 'cache/ya_metrika.js',
+			'ya_an'      => 'cache/ya_an.js',
 		];
 
 		$this->init_form_fields();
@@ -154,6 +156,8 @@ class PageSpeed_Optimization {
 				'deactivate_update_pagespeed_optimization_cache',
 			]
 		);
+
+		add_filter( 'aiosp_google_analytics', [ $this, 'aiosp_google_analytics' ] );
 	}
 
 	/**
@@ -702,7 +706,7 @@ class PageSpeed_Optimization {
 	 * @param string               $local_file  Local file name.
 	 */
 	private function update_local_file( $filesystem, $remote_file, $local_file ) {
-		$args   = [
+		$args = [
 			'method'      => 'GET',
 			'redirection' => 1,
 			'httpversion' => '1.0',
@@ -711,6 +715,13 @@ class PageSpeed_Optimization {
 			'body'        => [],
 			'cookies'     => [],
 		];
+
+		$remote_file_arr = wp_parse_url( $remote_file );
+		if ( ! isset( $remote_file_arr['schema'] ) ) {
+			$remote_file_arr['schema'] = is_ssl() ? 'https' : 'http';
+		}
+		$remote_file = $remote_file_arr['schema'] . '://' . $remote_file_arr['host'] . $remote_file_arr['path'];
+
 		$result = wp_remote_get( $remote_file, $args );
 
 		if ( is_wp_error( $result ) ) {
@@ -978,5 +989,18 @@ class PageSpeed_Optimization {
 		}
 
 		return $urls;
+	}
+
+	/**
+	 * Filter All-in-One SEO google analytics code html.
+	 *
+	 * @param string $analytics Html code of google analytics.
+	 *
+	 * @return string
+	 */
+	public function aiosp_google_analytics( $analytics ) {
+		return str_replace( $this->remote_filenames['ga'],
+		                    $this->plugin_url . $this->local_filenames['ga'],
+		                    $analytics );
 	}
 }
