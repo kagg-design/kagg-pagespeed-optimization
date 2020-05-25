@@ -66,34 +66,32 @@ class PageSpeed_Optimization {
 	 *
 	 * @var array
 	 */
-	public $remote_filenames;
+	private $remote_urls = [
+		'ga'         => 'https://www.google-analytics.com/analytics.js',
+		'gmap'       => 'https://maps.googleapis.com/maps/api/js',
+		'ya_metrika' => 'https://mc.yandex.ru/metrika/watch.js',
+		'ya_an'      => '//an.yandex.ru/system/context.js',
+	];
 
 	/**
 	 * Cache file names.
 	 *
 	 * @var array
 	 */
-	public $local_filenames;
+	private $local_filenames = [
+		'ga'         => 'cache/ga.js',
+		'gmap'       => 'cache/gmap.js',
+		'ya_metrika' => 'cache/ya_metrika.js',
+		'ya_an'      => 'cache/ya_an.js',
+	];
 
 	/**
 	 * PageSpeed_Optimization constructor.
 	 */
 	public function __construct() {
 		// Init fields.
-		$this->plugin_path      = trailingslashit( plugin_dir_path( __DIR__ ) );
-		$this->plugin_url       = trailingslashit( plugin_dir_url( __DIR__ ) );
-		$this->remote_filenames = [
-			'ga'         => 'https://www.google-analytics.com/analytics.js',
-			'gmap'       => 'https://maps.googleapis.com/maps/api/js',
-			'ya_metrika' => 'https://mc.yandex.ru/metrika/watch.js',
-			'ya_an'      => '//an.yandex.ru/system/context.js',
-		];
-		$this->local_filenames  = [
-			'ga'         => 'cache/ga.js',
-			'gmap'       => 'cache/gmap.js',
-			'ya_metrika' => 'cache/ya_metrika.js',
-			'ya_an'      => 'cache/ya_an.js',
-		];
+		$this->plugin_path = trailingslashit( plugin_dir_path( __DIR__ ) );
+		$this->plugin_url  = trailingslashit( plugin_dir_url( __DIR__ ) );
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -157,7 +155,7 @@ class PageSpeed_Optimization {
 			]
 		);
 
-		add_filter( 'aiosp_google_analytics', [ $this, 'aiosp_google_analytics' ] );
+		add_filter( 'aiosp_google_analytics', [ $this, 'replace_filename' ] );
 	}
 
 	/**
@@ -682,7 +680,7 @@ class PageSpeed_Optimization {
 	public function update_pagespeed_optimization_cache_action() {
 		$filesystem = new PageSpeed_Filesystem();
 
-		foreach ( $this->remote_filenames as $service => $remote_filename ) {
+		foreach ( $this->remote_urls as $service => $remote_filename ) {
 			$key = '';
 			if ( 'gmap' === $service ) {
 				$gmap_key = $this->get_option( 'gmap_key' );
@@ -692,7 +690,7 @@ class PageSpeed_Optimization {
 				$key = '?key=' . $gmap_key;
 			}
 
-			$remote_file = $this->remote_filenames[ $service ] . $key;
+			$remote_file = $this->remote_urls[ $service ] . $key;
 			$local_file  = $this->plugin_path . $this->local_filenames[ $service ];
 			$this->update_local_file( $filesystem, $remote_file, $local_file );
 		}
@@ -992,15 +990,19 @@ class PageSpeed_Optimization {
 	}
 
 	/**
-	 * Filter All-in-One SEO google analytics code html.
+	 * Filter code html and replace remote url by local.
 	 *
-	 * @param string $analytics Html code of google analytics.
+	 * @param string $html Html code.
 	 *
 	 * @return string
 	 */
-	public function aiosp_google_analytics( $analytics ) {
-		return str_replace( $this->remote_filenames['ga'],
-		                    $this->plugin_url . $this->local_filenames['ga'],
-		                    $analytics );
+	public function replace_filename( $html ) {
+		$html = str_replace(
+			$this->remote_urls['ga'],
+			$this->plugin_url . $this->local_filenames['ga'],
+			$html
+		);
+
+		return $html;
 	}
 }
