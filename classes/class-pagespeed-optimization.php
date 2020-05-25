@@ -29,20 +29,6 @@ class PageSpeed_Optimization {
 	public $id = '';
 
 	/**
-	 * Absolute plugin path.
-	 *
-	 * @var string
-	 */
-	public $plugin_path;
-
-	/**
-	 * Absolute plugin URL.
-	 *
-	 * @var string
-	 */
-	public $plugin_url;
-
-	/**
 	 * Form fields.
 	 *
 	 * @var array
@@ -85,9 +71,6 @@ class PageSpeed_Optimization {
 	 */
 	public function __construct() {
 		// Init fields.
-		$this->plugin_path = trailingslashit( plugin_dir_path( __DIR__ ) );
-		$this->plugin_url  = trailingslashit( plugin_dir_url( __DIR__ ) );
-
 		$this->init_form_fields();
 		$this->init_settings();
 
@@ -99,7 +82,7 @@ class PageSpeed_Optimization {
 	 */
 	private function init_hooks() {
 		add_filter(
-			'plugin_action_links_' . plugin_basename( PAGESPEED_OPTIMIZATION_PLUGIN_FILE ),
+			'plugin_action_links_' . plugin_basename( KAGG_PAGESPEED_OPTIMIZATION_FILE ),
 			[ $this, 'add_settings_link' ],
 			10,
 			2
@@ -134,7 +117,7 @@ class PageSpeed_Optimization {
 
 		// Register activation hook to schedule event in wp_cron().
 		register_activation_hook(
-			PAGESPEED_OPTIMIZATION_PLUGIN_FILE,
+			KAGG_PAGESPEED_OPTIMIZATION_FILE,
 			[
 				$this,
 				'activate_update_pagespeed_optimization_cache',
@@ -143,7 +126,7 @@ class PageSpeed_Optimization {
 
 		// Register deactivation hook to remove event from wp_cron().
 		register_deactivation_hook(
-			PAGESPEED_OPTIMIZATION_PLUGIN_FILE,
+			KAGG_PAGESPEED_OPTIMIZATION_FILE,
 			[
 				$this,
 				'deactivate_update_pagespeed_optimization_cache',
@@ -162,7 +145,7 @@ class PageSpeed_Optimization {
 		$capability = 'manage_options';
 		$slug       = 'pagespeed-optimization';
 		$callback   = [ $this, 'pagespeed_optimization_settings_page' ];
-		$icon       = $this->plugin_url . 'images/icon-16x16.png';
+		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/images/icon-16x16.png';
 		$icon       = '<img class="pso-menu-image" src="' . $icon . '">';
 		$menu_title = $icon . '<span class="pso-menu-title">' . $menu_title . '</span>';
 		add_options_page( $page_title, $menu_title, $capability, $slug, $callback );
@@ -632,7 +615,7 @@ class PageSpeed_Optimization {
 		load_plugin_textdomain(
 			'kagg-pagespeed-optimization',
 			false,
-			plugin_basename( $this->plugin_path ) . '/languages/'
+			plugin_basename( KAGG_PAGESPEED_OPTIMIZATION_PATH ) . '/languages/'
 		);
 	}
 
@@ -686,7 +669,7 @@ class PageSpeed_Optimization {
 			}
 
 			$remote_file = $this->remote_urls[ $service ] . $key;
-			$local_file  = $this->plugin_path . $this->local_filenames[ $service ];
+			$local_file  = KAGG_PAGESPEED_OPTIMIZATION_PATH . '/' . $this->local_filenames[ $service ];
 			$this->update_local_file( $filesystem, $remote_file, $local_file );
 		}
 	}
@@ -795,7 +778,7 @@ class PageSpeed_Optimization {
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','" . esc_url( $this->plugin_url . $this->local_filenames['ga'] ) . "','ga');";
+			})(window,document,'script','" . esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ga'] ) . "','ga');";
 
 			echo "\nga('create', '" . esc_html( $ga_id ) . "', 'auto');";
 
@@ -838,7 +821,7 @@ class PageSpeed_Optimization {
 					s.type  = 'text/javascript';
 					s.async = true;
 					// s.src = "https://mc.yandex.ru/metrika/watch.js";
-					s.src   = "<?php echo esc_url( $this->plugin_url . $this->local_filenames['ya_metrika'] ); ?>";
+					s.src   = "<?php echo esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ya_metrika'] ); ?>";
 
 					if ( w.opera == '[object Opera]' ) {
 						d.addEventListener( 'DOMContentLoaded', f, false );
@@ -910,7 +893,7 @@ class PageSpeed_Optimization {
 			return;
 		}
 
-		$script = $this->plugin_url . $this->local_filenames['gmap'];
+		$script = KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['gmap'];
 
 		$script .= '?key=' . $gmap_key;
 		if ( 'header' === $this->get_option( 'position' ) ) {
@@ -923,7 +906,7 @@ class PageSpeed_Optimization {
 			'pagespeed-optimization-google-maps',
 			$script,
 			[],
-			PAGESPEED_OPTIMIZATION_VERSION,
+			KAGG_PAGESPEED_OPTIMIZATION_VERSION,
 			$in_footer
 		);
 	}
@@ -934,9 +917,9 @@ class PageSpeed_Optimization {
 	public function admin_enqueue_scripts() {
 		wp_enqueue_style(
 			'pagespeed-optimization-admin',
-			$this->plugin_url . 'css/pagespeed-optimization-admin.css',
+			KAGG_PAGESPEED_OPTIMIZATION_URL . '/css/pagespeed-optimization-admin.css',
 			[],
-			PAGESPEED_OPTIMIZATION_VERSION
+			KAGG_PAGESPEED_OPTIMIZATION_VERSION
 		);
 	}
 
@@ -1001,7 +984,7 @@ class PageSpeed_Optimization {
 	public function replace_filename( $html ) {
 		$html = str_replace(
 			$this->remote_urls['ga'],
-			$this->plugin_url . $this->local_filenames['ga'],
+			KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ga'],
 			$html
 		);
 

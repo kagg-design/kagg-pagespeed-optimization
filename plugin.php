@@ -22,27 +22,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( defined( 'PAGESPEED_OPTIMIZATION_VERSION' ) ) {
+if ( defined( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION' ) ) {
 	return;
 }
 
 /**
  * Plugin version
  */
-define( 'PAGESPEED_OPTIMIZATION_VERSION', '1.1.0' );
+define( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION', '1.1.0' );
+
+/**
+ * Path to the plugin dir.
+ */
+define( 'KAGG_PAGESPEED_OPTIMIZATION_PATH', dirname( __FILE__ ) );
+
+/**
+ * Plugin dir url.
+ */
+define( 'KAGG_PAGESPEED_OPTIMIZATION_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
 
 /**
  * Plugin main file.
  */
-define( 'PAGESPEED_OPTIMIZATION_PLUGIN_FILE', __FILE__ );
+define( 'KAGG_PAGESPEED_OPTIMIZATION_FILE', __FILE__ );
 
 /**
- * Init PageSpeed Optimization classes on plugin load.
+ * Init plugin on plugin load.
  */
-require_once dirname( __FILE__ ) . '/classes/class-pagespeed-optimization.php';
-require_once dirname( __FILE__ ) . '/classes/class-pagespeed-filesystem.php';
-require_once dirname( __FILE__ ) . '/classes/class-pagespeed-resources.php';
-require_once dirname( __FILE__ ) . '/classes/class-pagespeed-loader.php';
+require_once constant( 'KAGG_PAGESPEED_OPTIMIZATION_PATH' ) . '/vendor/autoload.php';
 
 new PageSpeed_Optimization();
 new PageSpeed_Resources();

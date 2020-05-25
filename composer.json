@@ -1,0 +1,43 @@
+{
+  "name": "kagg-design/kagg-pagespeed-optimization",
+  "description": "KAGG PageSpeed Optimization",
+  "license": "GPL-2.0",
+  "keywords": [
+    "pagespeed",
+    "pagespeed insights",
+    "optimization"
+  ],
+  "homepage": "https://kagg.eu/en/",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "KAGG Design",
+      "email": "info@kagg.eu",
+      "homepage": "https://kagg.eu/en/"
+    }
+  ],
+  "support": {
+    "issues": "https://wordpress.org/support/plugin/kagg-pagespeed-optimization"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "platform": {
+      "php": "5.6"
+    }
+  },
+  "require": {
+    "composer/installers": "^1.9"
+  },
+  "autoload": {
+    "classmap": [
+      "classes"
+    ]
+  }
+}
