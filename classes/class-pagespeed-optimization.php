@@ -678,22 +678,20 @@ class PageSpeed_Optimization {
 	public function update_pagespeed_optimization_cache_action() {
 		$filesystem = new PageSpeed_Filesystem();
 
-		$remote_file = $this->remote_filenames['ga'];
-		$local_file  = $this->plugin_path . $this->local_filenames['ga'];
-		$this->update_local_file( $filesystem, $remote_file, $local_file );
+		foreach ( $this->remote_filenames as $service => $remote_filename ) {
+			$key = '';
+			if ( 'gmap' === $service ) {
+				$gmap_key = $this->get_option( 'gmap_key' );
+				if ( ! $gmap_key ) {
+					continue;
+				}
+				$key = '?key=' . $gmap_key;
+			}
 
-		$gmap_key = $this->get_option( 'gmap_key' );
-		$key      = '';
-		if ( '' !== $gmap_key ) {
-			$key = '?key=' . $gmap_key;
+			$remote_file = $this->remote_filenames[ $service ] . $key;
+			$local_file  = $this->plugin_path . $this->local_filenames[ $service ];
+			$this->update_local_file( $filesystem, $remote_file, $local_file );
 		}
-		$remote_file = $this->remote_filenames['gmap'] . $key;
-		$local_file  = $this->plugin_path . $this->local_filenames['gmap'];
-		$this->update_local_file( $filesystem, $remote_file, $local_file );
-
-		$remote_file = $this->remote_filenames['ya_metrika'];
-		$local_file  = $this->plugin_path . $this->local_filenames['ya_metrika'];
-		$this->update_local_file( $filesystem, $remote_file, $local_file );
 	}
 
 	/**
@@ -715,16 +713,25 @@ class PageSpeed_Optimization {
 		];
 		$result = wp_remote_get( $remote_file, $args );
 
-		if ( ! is_wp_error( $result ) ) {
-			$content = $result['body'];
-			if ( ! empty( $content ) ) {
-				$local_content = $filesystem->read( $local_file );
-				if ( $local_content !== $content ) {
-					$filesystem->write( $local_file, $content );
-					$this->clean_cache();
-				}
-			}
+		if ( is_wp_error( $result ) ) {
+			return;
 		}
+
+		$content = $result['body'];
+		if ( empty( $content ) ) {
+			return;
+		}
+
+		$local_content = $filesystem->read( $local_file );
+		if ( $local_content === $content ) {
+			return;
+		}
+
+		$dirname = pathinfo( $local_file, PATHINFO_DIRNAME );
+		wp_mkdir_p( $dirname );
+
+		$filesystem->write( $local_file, $content );
+		$this->clean_cache();
 	}
 
 	/**

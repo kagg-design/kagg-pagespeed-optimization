@@ -32,7 +32,7 @@ class PageSpeed_Filesystem {
 	private function init() {
 		global $wp_filesystem;
 
-		add_filter( 'filesystem_method', 'set_direct_fs_method', PHP_INT_MAX );
+		add_filter( 'filesystem_method', [ $this, 'set_direct_fs_method' ], PHP_INT_MAX );
 
 		if ( ! function_exists( 'WP_Filesystem' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
