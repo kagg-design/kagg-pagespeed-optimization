@@ -12,7 +12,7 @@ namespace KAGG\PageSpeed\Optimization;
  *
  * @class PageSpeed_Optimization
  */
-class PageSpeed_Optimization {
+class Main {
 
 	/**
 	 * The plugin ID. Used for option names.
@@ -75,6 +75,10 @@ class PageSpeed_Optimization {
 		$this->init_settings();
 
 		$this->init_hooks();
+
+		new Resources();
+		new Loader();
+		new Yandex_Advertising_Network( $this );
 	}
 
 	/**
@@ -133,7 +137,7 @@ class PageSpeed_Optimization {
 			]
 		);
 
-		add_filter( 'aiosp_google_analytics', [ $this, 'replace_filename' ] );
+		add_filter( 'aiosp_google_analytics', [ $this, 'replace_urls' ] );
 	}
 
 	/**
@@ -656,7 +660,7 @@ class PageSpeed_Optimization {
 	 * Update scripts cache.
 	 */
 	public function update_pagespeed_optimization_cache_action() {
-		$filesystem = new PageSpeed_Filesystem();
+		$filesystem = new Filesystem();
 
 		foreach ( $this->remote_urls as $service => $remote_filename ) {
 			$key = '';
@@ -677,9 +681,9 @@ class PageSpeed_Optimization {
 	/**
 	 * Update local file.
 	 *
-	 * @param PageSpeed_Filesystem $filesystem  Filesystem.
-	 * @param string               $remote_file Remote file url.
-	 * @param string               $local_file  Local file name.
+	 * @param Filesystem $filesystem  Filesystem.
+	 * @param string     $remote_file Remote file url.
+	 * @param string     $local_file  Local file name.
 	 */
 	private function update_local_file( $filesystem, $remote_file, $local_file ) {
 		$args = [
@@ -981,10 +985,17 @@ class PageSpeed_Optimization {
 	 *
 	 * @return string
 	 */
-	public function replace_filename( $html ) {
+	public function replace_urls( $html ) {
+		$local_filenames = array_map(
+			function ( $item ) {
+				return KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $item;
+			},
+			$this->local_filenames
+		);
+
 		$html = str_replace(
-			$this->remote_urls['ga'],
-			KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ga'],
+			$this->remote_urls,
+			$local_filenames,
 			$html
 		);
 

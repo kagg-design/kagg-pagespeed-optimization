@@ -51,6 +51,4 @@ define( 'KAGG_PAGESPEED_OPTIMIZATION_FILE', __FILE__ );
  */
 require_once constant( 'KAGG_PAGESPEED_OPTIMIZATION_PATH' ) . '/vendor/autoload.php';
 
-new PageSpeed_Optimization();
-new PageSpeed_Resources();
-new PageSpeed_Loader();
+new Main();

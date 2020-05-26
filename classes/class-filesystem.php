@@ -13,7 +13,7 @@ use WP_Filesystem_Direct;
 /**
  * Class PageSpeed_Filesystem
  */
-class PageSpeed_Filesystem {
+class Filesystem {
 
 	/**
 	 * Filesystem.

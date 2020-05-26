@@ -10,7 +10,7 @@ namespace KAGG\PageSpeed\Optimization;
 /**
  * Class PageSpeed_Loader
  */
-class PageSpeed_Loader {
+class Loader {
 
 	/**
 	 * Loader image url.

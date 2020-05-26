@@ -14,7 +14,7 @@ namespace KAGG\PageSpeed\Optimization;
  * Make scripts defer.
  * Add display=swap to fonts.
  */
-class PageSpeed_Resources {
+class Resources {
 
 	/**
 	 * Scripts to move from header to footer.
@@ -272,7 +272,7 @@ class PageSpeed_Resources {
 			'/wp-includes/js/jquery/jquery.js',
 			'/wp-includes/js/jquery/jquery-migrate.min.js',
 			'/wp-includes/js/wp-embed.min.js',
-			'//an.yandex.ru/system/context.js',
+			'http://vp.test/wp-content/plugins/kagg-pagespeed-optimization/cache/ya_an.js',
 			'https://mc.yandex.ru/metrika/tag.js',
 
 			'http://vp.kagg.eu/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css',
