@@ -76,9 +76,11 @@ class Main {
 
 		$this->init_hooks();
 
-		new Resources();
-		new Loader();
-		new Yandex_Advertising_Network( $this );
+		if ( ! is_admin() ) {
+			new Resources();
+			new Loader();
+			new Yandex_Advertising_Network( $this );
+		}
 	}
 
 	/**
