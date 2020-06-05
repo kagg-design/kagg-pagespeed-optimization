@@ -229,6 +229,14 @@ class Main {
 	 */
 	public function init_form_fields() {
 		$this->form_fields = [
+			'gas_id'                   => [
+				'label'        => __( 'Google AdSense ID', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'text',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+			],
 			'ga_id'                    => [
 				'label'        => __( 'Google Analytics tracking ID', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
@@ -239,6 +247,14 @@ class Main {
 			],
 			'gmap_key'                 => [
 				'label'        => __( 'Google Maps API key', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'text',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+			],
+			'gtag_id'                  => [
+				'label'        => __( 'Google Tag Manager ID', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'text',
 				'placeholder'  => '',
@@ -772,11 +788,19 @@ class Main {
 
 		$done = true;
 
+		$gas_id                   = $this->get_option( 'gas_id' );
 		$ga_id                    = $this->get_option( 'ga_id' );
+		$gtag_id                  = $this->get_option( 'gtag_id' );
 		$ya_metrika_id            = $this->get_option( 'ya_metrika_id' );
 		$bounce_rate              = $this->get_option( 'bounce_rate' );
 		$disable_display_features = $this->get_option( 'disable_display_features' );
 		$anonymize_ip             = $this->get_option( 'anonymize_ip' );
+
+		if ( $gas_id ) {
+			?>
+			<script data-ad-client="<?php echo esc_html( $gas_id ); ?>" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<?php
+		}
 
 		// Google Analytics script.
 		if ( $ga_id ) {
@@ -800,6 +824,25 @@ class Main {
 			echo esc_html( "\n" . $bounce_rate_code );
 
 			echo "\n" . '</script>' . "\n";
+		}
+
+		if ( $gtag_id ) {
+			?>
+			<!-- Global site tag (gtag.js) - Google Analytics -->
+			<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
+			<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_html( $gtag_id ); ?>>"></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+
+				function gtag() {
+					dataLayer.push( arguments );
+				}
+
+				gtag( 'js', new Date() );
+
+				gtag( 'config', '<?php echo esc_html( $gtag_id ); ?>' );
+			</script>
+			<?php
 		}
 
 		if ( $ya_metrika_id ) {
