@@ -17,7 +17,7 @@ class Loader {
 	 *
 	 * @var string
 	 */
-	private $loader_image_url = '/wp-content/themes/hello-elementor-child/images/newlogo-vox-black@2x.svg';
+	private $loader_image_url = '/wp-content/themes/hello-elementor-child/images/voxpopuli-logo.svg';
 
 	/**
 	 * PageSpeed_Loader constructor.
