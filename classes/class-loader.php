@@ -30,8 +30,12 @@ class Loader {
 	 * Init.
 	 */
 	public function init() {
+		// Show site icon before any inline styles. Otherwise, it does not work.
+		remove_action( 'wp_head', 'wp_site_icon' );
+		add_action( 'wp_head', 'wp_site_icon', - PHP_INT_MAX );
+
 		// Show loader.
-		add_action( 'wp_head', [ $this, 'loader' ], - PHP_INT_MAX );
+		add_action( 'wp_head', [ $this, 'loader' ], - PHP_INT_MAX + 1 );
 	}
 
 	/**
