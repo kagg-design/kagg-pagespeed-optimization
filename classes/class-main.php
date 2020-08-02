@@ -80,6 +80,7 @@ class Main {
 			new Resources();
 			new Loader();
 			new Yandex_Advertising_Network( $this );
+			new Passive_Events();
 		}
 	}
 
