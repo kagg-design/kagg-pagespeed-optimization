@@ -153,8 +153,6 @@ class Yandex_Advertising_Network {
 					);
 				}
 			);
-
-			// window.addEventListener("wheel", func, {passive: true});
 		</script>
 		<?php
 
