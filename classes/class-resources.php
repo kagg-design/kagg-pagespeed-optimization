@@ -120,9 +120,6 @@ class Resources {
 
 			// Print preload links.
 			add_action( 'wp_head', [ $this, 'head' ], - PHP_INT_MAX );
-
-			// Modify display=swap.
-//			add_action( 'wp_head', [ $this, 'font_display_swap' ], PHP_INT_MAX );
 		}
 	}
 
@@ -268,6 +265,33 @@ class Resources {
 			'html'  => [ 'document', 'text/html' ],
 		];
 
+		$fonts = [
+			'eicons'                => '/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2?5.7.0',
+			'Font Awesome 5 Brands' => '/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff2',
+			'Font Awesome 5 Free'   => [
+				'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff2',
+				'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2',
+			],
+			'Exo 2'                 => [
+				'https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYoK-4.woff2',
+				'https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYsK-4E4Q.woff2',
+			],
+			'PT Serif'              => [
+				'https://fonts.gstatic.com/s/ptserif/v11/EJRSQgYoZZY2vCFuvAnt66qSVys.woff2',
+				'https://fonts.gstatic.com/s/ptserif/v11/EJRSQgYoZZY2vCFuvAnt66qWVyvHpA.woff2',
+				'https://fonts.gstatic.com/s/ptserif/v11/EJRTQgYoZZY2vCFuvAFT_r21cg.woff2',
+				'https://fonts.gstatic.com/s/ptserif/v11/EJRVQgYoZZY2vCFuvAFSzr-tdg.woff2',
+			],
+			'Roboto Condensed'      => [
+				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meGCAYb8td.woff2',
+				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meGCQYbw.woff2',
+				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-33mZGCAYb8td.woff2',
+				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-33mZGCQYbw.woff2',
+				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2',
+				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19a7DRs5.woff2',
+			],
+		];
+
 		$links = [
 			'/wp-includes/js/jquery/jquery.js',
 			'/wp-includes/js/jquery/jquery-migrate.min.js',
@@ -279,25 +303,13 @@ class Resources {
 			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.min.css',
 			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/regular.min.css',
 			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css',
-
-			'/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2',
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff2',
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff2',
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2',
-			'/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2',
-			'https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYoK-4.woff2',
-			'https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYsK-4E4Q.woff2',
-			'https://fonts.gstatic.com/s/ptserif/v11/EJRSQgYoZZY2vCFuvAnt66qSVys.woff2',
-			'https://fonts.gstatic.com/s/ptserif/v11/EJRSQgYoZZY2vCFuvAnt66qWVyvHpA.woff2',
-			'https://fonts.gstatic.com/s/ptserif/v11/EJRTQgYoZZY2vCFuvAFT_r21cg.woff2',
-			'https://fonts.gstatic.com/s/ptserif/v11/EJRVQgYoZZY2vCFuvAFSzr-tdg.woff2',
-			'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meGCAYb8td.woff2',
-			'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meGCQYbw.woff2',
-			'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-33mZGCAYb8td.woff2',
-			'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-33mZGCQYbw.woff2',
-			'https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2',
-			'https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19a7DRs5.woff2',
 		];
+
+		$this->font_display_swap( $fonts );
+
+		foreach ( $fonts as $font_links ) {
+			$links = array_merge( $links, (array) $font_links );
+		}
 
 		foreach ( $links as $link ) {
 			$ext = pathinfo( $link, PATHINFO_EXTENSION );
@@ -329,9 +341,36 @@ class Resources {
 
 	/**
 	 * Add display: swap to fonts.
+	 *
+	 * @param array $fonts Fonts.
 	 */
-	public function font_display_swap() {
-		echo '<style id="kagg-pagespeed-optimizaion-font-swap" type="text/css">@font-face{font-family:"Font Awesome 5 Brands";font-display:swap}</style>';
+	private function font_display_swap( $fonts ) {
+		?>
+		<style id="kagg-pagespeed-optimization-font-swap" type="text/css">
+			<?php
+			foreach ( $fonts as $font_family => $font_links ) {
+				$font_links = (array) $font_links;
+				$urls       = [];
+
+				foreach ( $font_links as $font_link ) {
+					// @todo: Allow to specify format, not only woff2.
+					$urls[] = 'url(' . esc_html( $font_link ) . ') format("woff2")';
+				}
+
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+				?>
+				@font-face {
+					font-family: <?php echo "'" . $font_family . "'"; ?>;
+					src: <?php echo implode( ', ', $urls ); ?>;
+					font-display: swap;
+				}
+
+				<?php
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+			?>
+		</style>
+		<?php
 	}
 
 	/**
