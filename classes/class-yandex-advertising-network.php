@@ -27,6 +27,13 @@ class Yandex_Advertising_Network {
 	private $rtb_scripts = [];
 
 	/**
+	 * RTB blocks.
+	 *
+	 * @var array
+	 */
+	private $rtb_blocks = [];
+
+	/**
 	 * Yandex_Advertising_Network constructor.
 	 *
 	 * @param Main $main Main class instance.
@@ -43,7 +50,7 @@ class Yandex_Advertising_Network {
 	public function init() {
 		add_filter( 'the_content', [ $this, 'remove_rtb_blocks' ], PHP_INT_MAX );
 		add_filter( 'do_shortcode_tag', [ $this, 'remove_rtb_blocks' ], PHP_INT_MAX );
-		add_action( 'wp_print_footer_scripts', [ $this, 'print_rtb_scripts' ] );
+		add_action( 'wp_print_footer_scripts', [ $this, 'print_rtb_script' ] );
 	}
 
 	/**
@@ -80,6 +87,24 @@ class Yandex_Advertising_Network {
 		) {
 			$this->rtb_scripts[] = $script;
 
+			$block_id  = '';
+			$render_to = '';
+
+			if ( preg_match( '/blockId:\s+"(.+)"/', $script, $m ) ) {
+				$block_id = $m[1];
+			}
+
+			if ( preg_match( '/renderTo:\s+"(.+)"/', $script, $m ) ) {
+				$render_to = $m[1];
+			}
+
+			if ( $block_id && $render_to ) {
+				$this->rtb_blocks[] = [
+					'blockId'  => $block_id,
+					'renderTo' => $render_to,
+				];
+			}
+
 			return '';
 		}
 
@@ -87,18 +112,56 @@ class Yandex_Advertising_Network {
 	}
 
 	/**
-	 * Print RTB scripts extracted from the content.
+	 * Print RTB script using info extracted from the content.
 	 */
-	public function print_rtb_scripts() {
-		if ( ! $this->rtb_scripts ) {
+	public function print_rtb_script() {
+		if ( ! $this->rtb_blocks ) {
 			return;
 		}
 
-		foreach ( $this->rtb_scripts as $script ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo "\n" . $this->main->replace_urls( $script );
-		}
+		ob_start();
 
+		?>
+		<script type="text/javascript">
+			window.addEventListener(
+				'load',
+				function() {
+					setTimeout(
+						() => ( function( w, d, n, s, t ) {
+							w[n] = w[n] || [];
+							w[n].push( function() {
+								<?php
+								foreach ( $this->rtb_blocks as $rtb_block ) {
+								?>
+								Ya.Context.AdvManager.render( {
+									blockId: '<?php echo esc_html( $rtb_block['blockId'] ); ?>',
+									renderTo: '<?php echo esc_html( $rtb_block['renderTo'] ); ?>',
+									async: true
+								} );
+								<?php
+								}
+								?>
+							} );
+							t       = d.getElementsByTagName( 'script' )[0];
+							s       = d.createElement( 'script' );
+							s.type  = 'text/javascript';
+							s.src   = '//an.yandex.ru/system/context.js';
+							s.async = true;
+							t.parentNode.insertBefore( s, t );
+						} )( this, this.document, 'yandexContextAsyncCallbacks' ),
+						3000
+					);
+				}
+			);
+
+			// window.addEventListener("wheel", func, {passive: true});
+		</script>
+		<?php
+
+		$script = ob_get_clean();
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo "\n" . $this->main->replace_urls( $script );
 		echo "\n";
 	}
 }
