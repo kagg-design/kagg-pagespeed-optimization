@@ -312,30 +312,33 @@ class Resources {
 		}
 
 		foreach ( $links as $link ) {
-			$ext = pathinfo( $link, PATHINFO_EXTENSION );
-			if ( isset( $content_types[ $ext ] ) ) {
-				$as   = $content_types[ $ext ][0];
-				$type = $content_types[ $ext ][1];
+			$ext = pathinfo( preg_replace( '/(.+)\?.+$/', '$1', $link ), PATHINFO_EXTENSION );
 
-				$crossorigin = '';
-				if ( 'font' === $as ) {
-					$crossorigin = ' crossorigin="anonymous"';
-				}
-
-				$onload = '';
-				if ( 'style' === $as ) {
-					// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-					$onload = ' onload="this.rel=\'stylesheet\'"';
-					// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-				}
-
-				$output =
-					'<link rel="preload" href="' . esc_url( $link ) . '" as="' . $as . '" type="' . $type .
-					'"' . $crossorigin . $onload . ">\n";
-				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $output;
-				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+			if ( ! isset( $content_types[ $ext ] ) ) {
+				continue;
 			}
+
+			$as   = $content_types[ $ext ][0];
+			$type = $content_types[ $ext ][1];
+
+			$crossorigin = '';
+			if ( 'font' === $as ) {
+				$crossorigin = ' crossorigin="anonymous"';
+			}
+
+			$onload = '';
+			if ( 'style' === $as ) {
+				// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+				$onload = ' onload="this.rel=\'stylesheet\'"';
+				// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+			}
+
+			$output =
+				'<link rel="preload" href="' . esc_url( $link ) . '" as="' . $as . '" type="' . $type .
+				'"' . $crossorigin . $onload . ">\n";
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $output;
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
