@@ -798,10 +798,15 @@ class Main {
 		$anonymize_ip             = $this->get_option( 'anonymize_ip' );
 
 		if ( $gas_id ) {
-			?>
-			<script data-ad-client="<?php echo esc_html( $gas_id ); ?>" async
-					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<?php
+			Delayed_Script::launch(
+				[
+					'src'  => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+					'data' => [
+						'adClient' => esc_attr( $gas_id ),
+					],
+				],
+				5000
+			);
 		}
 
 		// Google Analytics script.
@@ -832,7 +837,9 @@ class Main {
 			?>
 			<!-- Global site tag (gtag.js) - Google Analytics -->
 			<?php
-			Delayed_Script::launch( 'https://www.googletagmanager.com/gtag/js?id=' . $gtag_id );
+			Delayed_Script::launch(
+				[ 'src' => 'https://www.googletagmanager.com/gtag/js?id=' . $gtag_id ]
+			);
 			?>
 			<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
 			<script>

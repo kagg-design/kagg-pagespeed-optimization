@@ -13,18 +13,14 @@ namespace KAGG\PageSpeed\Optimization;
 class Delayed_Script {
 
 	/**
-	 * Script delay timeout.
-	 */
-	const TIMEOUT = 3000;
-
-	/**
 	 * Create delayed script.
 	 *
-	 * @param string $js js code to wrap in setTimeout().
+	 * @param string $js    js code to wrap in setTimeout().
+	 * @param int    $delay Delay in ms.
 	 *
 	 * @return false|string
 	 */
-	public static function create( $js ) {
+	public static function create( $js, $delay = 3000 ) {
 		ob_start();
 
 		?>
@@ -38,7 +34,7 @@ class Delayed_Script {
 						echo $js;
 						?>
 						,
-						<?php echo intval( self::TIMEOUT ); ?>
+						<?php echo intval( $delay ); ?>
 					);
 				}
 			);
@@ -51,17 +47,30 @@ class Delayed_Script {
 	/**
 	 * Launch script specified by source url.
 	 *
-	 * @param string $src Script source url.
+	 * @param array $args  Arguments.
+	 * @param int   $delay Delay in ms.
 	 */
-	public static function launch( $src ) {
+	public static function launch( $args, $delay = 3000 ) {
 		ob_start();
 
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 		() => {
 		const t = document.getElementsByTagName( 'script' )[0];
 		const s = document.createElement('script');
 		s.type  = 'text/javascript';
-		s.src = '<?php echo esc_url( $src ); ?>';
+		<?php
+		foreach ( $args as $key => $arg ) {
+			if ( 'data' === $key ) {
+				foreach ( $arg as $data_key => $data_arg ) {
+					echo "s.dataset.$data_key = '$data_arg';\n";
+				}
+				continue;
+			}
+
+			echo "s['$key'] = '$arg';\n";
+		}
+		?>
 		s.async = true;
 		t.parentNode.insertBefore( s, t );
 		}
@@ -69,7 +78,7 @@ class Delayed_Script {
 
 		$js = ob_get_clean();
 
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo self::create( $js );
+		echo self::create( $js, $delay );
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
