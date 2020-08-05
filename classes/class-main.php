@@ -799,7 +799,8 @@ class Main {
 
 		if ( $gas_id ) {
 			?>
-			<script data-ad-client="<?php echo esc_html( $gas_id ); ?>" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<script data-ad-client="<?php echo esc_html( $gas_id ); ?>" async
+					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 			<?php
 		}
 
@@ -830,8 +831,10 @@ class Main {
 		if ( $gtag_id ) {
 			?>
 			<!-- Global site tag (gtag.js) - Google Analytics -->
+			<?php
+			Delayed_Script::launch( 'https://www.googletagmanager.com/gtag/js?id=' . $gtag_id );
+			?>
 			<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
-			<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_html( $gtag_id ); ?>>"></script>
 			<script>
 				window.dataLayer = window.dataLayer || [];
 
