@@ -122,44 +122,36 @@ class Yandex_Advertising_Network {
 		ob_start();
 
 		?>
-		<script type="text/javascript">
-			window.addEventListener(
-				'load',
-				function() {
-					setTimeout(
-						() => ( function( w, d, n, s, t ) {
-							w[n] = w[n] || [];
-							w[n].push( function() {
-								<?php
-								foreach ( $this->rtb_blocks as $rtb_block ) {
-								?>
-								Ya.Context.AdvManager.render( {
-									blockId: '<?php echo esc_html( $rtb_block['blockId'] ); ?>',
-									renderTo: '<?php echo esc_html( $rtb_block['renderTo'] ); ?>',
-									async: true
-								} );
-								<?php
-								}
-								?>
-							} );
-							t       = d.getElementsByTagName( 'script' )[0];
-							s       = d.createElement( 'script' );
-							s.type  = 'text/javascript';
-							s.src   = '//an.yandex.ru/system/context.js';
-							s.async = true;
-							t.parentNode.insertBefore( s, t );
-						} )( this, this.document, 'yandexContextAsyncCallbacks' ),
-						3000
-					);
-				}
-			);
-		</script>
+		() => ( function( w, d, n, s, t ) {
+		w[n] = w[n] || [];
+		w[n].push( function() {
+		<?php
+		foreach ( $this->rtb_blocks as $rtb_block ) {
+			?>
+			Ya.Context.AdvManager.render( {
+			blockId: '<?php echo esc_html( $rtb_block['blockId'] ); ?>',
+			renderTo: '<?php echo esc_html( $rtb_block['renderTo'] ); ?>',
+			async: true
+			} );
+			<?php
+		}
+		?>
+		} );
+		t       = d.getElementsByTagName( 'script' )[0];
+		s       = d.createElement( 'script' );
+		s.type  = 'text/javascript';
+		s.src   = '//an.yandex.ru/system/context.js';
+		s.async = true;
+		t.parentNode.insertBefore( s, t );
+		} )( this, this.document, 'yandexContextAsyncCallbacks' )
 		<?php
 
-		$script = ob_get_clean();
+		$js = ob_get_clean();
+
+		$js     = $this->main->replace_urls( $js );
+		$script = Delayed_Script::create( $js );
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo "\n" . $this->main->replace_urls( $script );
-		echo "\n";
+		echo "\n" . $script . "\n";
 	}
 }
