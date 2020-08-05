@@ -858,45 +858,52 @@ class Main {
 
 		if ( $ya_metrika_id ) {
 			// Yandex Metrika script.
+			ob_start();
+
 			?>
-			<!-- Yandex.Metrika counter -->
-			<script type="text/javascript" async>
-				( function( d, w, c ) {
-					( w[c] = w[c] || [] ).push( function() {
-						try {
-							w.yaCounter<?php echo esc_html( $ya_metrika_id ); ?> = new Ya.Metrika( {
-								id:<?php echo esc_html( $ya_metrika_id ); ?>,
-								enableAll: true,
-								webvisor: true
-							} );
-						} catch ( e ) {
-						}
-					} );
+			() => ( function( d, w, c ) {
+			( w[c] = w[c] || [] ).push( function() {
+			try {
+			w.yaCounter<?php echo esc_html( $ya_metrika_id ); ?> = new Ya.Metrika( {
+			id:<?php echo esc_html( $ya_metrika_id ); ?>,
+			enableAll: true,
+			webvisor: true
+			} );
+			} catch ( e ) {
+			}
+			} );
 
-					var n   = d.getElementsByTagName( 'script' )[0],
-						s   = d.createElement( 'script' ),
-						f   = function() {
-							n.parentNode.insertBefore( s, n );
-						};
-					s.type  = 'text/javascript';
-					s.async = true;
-					// s.src = "https://mc.yandex.ru/metrika/watch.js";
-					s.src   = "<?php echo esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ya_metrika'] ); ?>";
+			var n   = d.getElementsByTagName( 'script' )[0],
+			s   = d.createElement( 'script' ),
+			f   = function() {
+			n.parentNode.insertBefore( s, n );
+			};
+			s.type  = 'text/javascript';
+			s.async = true;
+			// s.src = "https://mc.yandex.ru/metrika/watch.js";
+			s.src   = "<?php echo esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ya_metrika'] ); ?>";
 
-					if ( w.opera == '[object Opera]' ) {
-						d.addEventListener( 'DOMContentLoaded', f, false );
-					} else {
-						f();
-					}
-				} )( document, window, 'yandex_metrika_callbacks' );
-			</script>
+			if ( w.opera == '[object Opera]' ) {
+			d.addEventListener( 'DOMContentLoaded', f, false );
+			} else {
+			f();
+			}
+			} )( document, window, 'yandex_metrika_callbacks' )
+			<?php
+
+			$js     = ob_get_clean();
+			$script = Delayed_Script::create( $js );
+
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo "\n" . $script . "\n";
+
+			?>
 			<noscript>
 				<div><img
 							src="//mc.yandex.ru/watch/<?php echo esc_html( $ya_metrika_id ); ?>"
 							style="position:absolute; left:-9999px;" alt=""/>
 				</div>
 			</noscript>
-			<!-- /Yandex.Metrika counter -->
 			<?php
 		}
 	}
