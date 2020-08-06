@@ -34,8 +34,11 @@ class Loader {
 		remove_action( 'wp_head', 'wp_site_icon' );
 		add_action( 'wp_head', 'wp_site_icon', - PHP_INT_MAX );
 
-		// Show loader.
+		// Print loader style and script.
 		add_action( 'wp_head', [ $this, 'loader' ], - PHP_INT_MAX + 1 );
+
+		// Show loader div.
+		add_action( 'wp_body_open', [ $this, 'loader_div' ], - PHP_INT_MAX );
 	}
 
 	/**
@@ -52,24 +55,24 @@ class Loader {
 
 			#kagg-pagespeed-loader {
 				position: fixed;
-				width: 100%;
-				height: 100%;
+				width: 100vw;
+				height: 100vh;
 				left: 0;
 				top: 0;
 				background: #fff;
 				z-index: 99999;
 				text-align: center;
-				-webkit-transition: all 0.3s ease;
-				-moz-transition: all 0.3s ease;
-				-o-transition: all 0.3s ease;
-				transition: all 0.3s ease;
+				-webkit-transition: opacity 0.3s ease;
+				-moz-transition: opacity 0.3s ease;
+				-o-transition: opacity 0.3s ease;
+				transition: opacity 0.3s ease;
 			}
 
 			#kagg-pagespeed-loader img {
 				position: absolute;
 				max-width: 80%;
-				top: 50%;
-				left: 50%;
+				top: 50vh;
+				left: 50vw;
 				transform: translate(-50%, -50%);
 			}
 		</style>
@@ -81,6 +84,14 @@ class Loader {
 				}
 			);
 		</script>
+		<?php
+	}
+
+	/**
+	 * Show loader div.
+	 */
+	public function loader_div() {
+		?>
 		<div id="kagg-pagespeed-loader">
 			<img alt="KAGG PageSpeed Loader" src="<?php echo esc_url( $this->loader_image_url ); ?>" data-skip-lazy>
 		</div>
