@@ -23,6 +23,13 @@ class Passive_Events {
 	 * Init class.
 	 */
 	public function init() {
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+	}
+
+	/**
+	 * Enqueue passive event script.
+	 */
+	public function enqueue_scripts() {
 		wp_enqueue_script(
 			'pagespeed-optimization-passive-events',
 			KAGG_PAGESPEED_OPTIMIZATION_URL . '/js/passive-events.js',
