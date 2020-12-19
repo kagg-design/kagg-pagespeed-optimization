@@ -78,7 +78,7 @@ class Main {
 			return;
 		}
 
-		new Resources();
+		new Resources( $this );
 		new Loader( $this );
 		new Yandex_Advertising_Network( $this );
 		new One_Signal();
@@ -345,6 +345,60 @@ class Main {
 				'helper'       => '',
 				'supplemental' => '',
 			],
+			'scripts_to_footer'        => [
+				'label'        => __( 'Scripts to move from header to footer', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'default'      => [],
+			],
+			'block_scripts'            => [
+				'label'        => __( 'Scripts to block', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'default'      => [],
+			],
+			'styles_to_footer'         => [
+				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'default'      => [],
+			],
+			'block_styles'             => [
+				'label'        => __( 'Styles to block', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'default'      => [],
+			],
+			'links_to_preload'         => [
+				'label'        => __( 'Links to preload', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter URLs, one per line', 'kagg-pagespeed-optimization' ),
+				'default'      => [],
+			],
+			'fonts_to_preload'         => [
+				'label'        => __( 'Fonts to preload', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter json array as font_family => array_of_font_links. Example:', 'kagg-pagespeed-optimization' ) . ' {"Exo 2":["https:\/\/fonts.gstatic.com\/s\/exo2\/v8\/7cHmv4okm5zmbtYoK-4.woff2","https:\/\/fonts.gstatic.com\/s\/exo2\/v8\/7cHmv4okm5zmbtYsK-4E4Q.woff2"]}',
+				'default'      => [],
+			],
 		];
 	}
 
@@ -411,7 +465,7 @@ class Main {
 	 * @param string $key         Key.
 	 * @param mixed  $empty_value Empty value.
 	 *
-	 * @return string The value specified for the option or a default value for the option.
+	 * @return mixed The value specified for the option or a default value for the option.
 	 */
 	public function get_option( $key, $empty_value = null ) {
 		if ( empty( $this->settings ) ) {

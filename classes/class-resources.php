@@ -17,16 +17,18 @@ namespace KAGG\PageSpeed\Optimization;
 class Resources {
 
 	/**
+	 * Main class instance.
+	 *
+	 * @var Main
+	 */
+	private $main;
+
+	/**
 	 * Scripts to move from header to footer.
 	 *
 	 * @var string[]
 	 */
-	private $scripts = [
-		'admin-bar',
-		'font-awesome-4-shim',
-		'jquery-core',
-		'jquery-migrate',
-	];
+	private $scripts_to_footer = [];
 
 	/**
 	 * Scripts to block.
@@ -47,36 +49,7 @@ class Resources {
 	 *
 	 * @var string[]
 	 */
-	private $styles = [
-		'ads-for-wp-front-css',
-		'cvdw_cards_css',
-		'cvdw_tooltip_style',
-		'elementor-animations',
-		'elementor-extras-frontend',
-		'elementor-frontend',
-		'elementor-global',
-		'elementor-icons',
-		'elementor-icons-fa-brands',
-		'elementor-icons-fa-regular',
-		'elementor-icons-fa-solid',
-		'elementor-icons-shared-0',
-		'elementor-pro',
-		'font-awesome-4-shim',
-		'font-awesome-5-all',
-		'google-fonts-1',
-		'hello-elementor',
-		'hello-elementor-theme-style',
-		'jet-blog',
-		'jet-search',
-		'jquery-chosen',
-		'namogo-icons',
-		'swiper-css-library',
-		'swiper-css-main',
-		'uael-frontend',
-		'wp-block-library',
-		'wp-polls',
-		'wtr-css',
-	];
+	private $styles_to_footer = [];
 
 	/**
 	 * Styles to block.
@@ -93,9 +66,13 @@ class Resources {
 	private $moved_styles = [];
 
 	/**
-	 * PageSpeed_Resources_To_Footer constructor.
+	 * Resources constructor.
+	 *
+	 * @param Main $main Main class instance.
 	 */
-	public function __construct() {
+	public function __construct( $main ) {
+		$this->main = $main;
+
 		$this->init();
 	}
 
@@ -103,31 +80,38 @@ class Resources {
 	 * Init class hooks.
 	 */
 	public function init() {
-		if ( ! is_admin() ) {
-			add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
-			add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
-			add_action( 'get_footer', [ $this, 'add_scripts_to_footer' ] );
-
-			add_action( 'wp_enqueue_scripts', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
-			add_action( 'wp_print_styles', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
-			add_action( 'get_footer', [ $this, 'add_styles_to_footer' ] );
-
-			// Make some scripts defer.
-			add_filter( 'script_loader_tag', [ $this, 'script_loader_tag_filter' ], 10, 2 );
-
-			// Add display=swap to Google fonts.
-			add_filter( 'style_loader_tag', [ $this, 'style_loader_tag_filter' ], 10, 4 );
-
-			// Print preload links.
-			add_action( 'wp_head', [ $this, 'head' ], - PHP_INT_MAX );
+		if ( is_admin() ) {
+			return;
 		}
+
+		$this->scripts_to_footer = $this->main->get_option( 'scripts_to_footer', [] );
+		$this->block_scripts     = $this->main->get_option( 'block_scripts', [] );
+		$this->styles_to_footer  = $this->main->get_option( 'styles_to_footer', [] );
+		$this->block_styles      = $this->main->get_option( 'block_styles', [] );
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
+		add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
+		add_action( 'get_footer', [ $this, 'add_scripts_to_footer' ] );
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
+		add_action( 'wp_print_styles', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
+		add_action( 'get_footer', [ $this, 'add_styles_to_footer' ] );
+
+		// Make some scripts defer.
+		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag_filter' ], 10, 2 );
+
+		// Add display=swap to Google fonts.
+		add_filter( 'style_loader_tag', [ $this, 'style_loader_tag_filter' ], 10, 4 );
+
+		// Print preload links.
+		add_action( 'wp_head', [ $this, 'head' ], - PHP_INT_MAX );
 	}
 
 	/**
 	 * Remove scripts from header.
 	 */
 	public function remove_scripts_from_header() {
-		$scripts = array_unique( array_merge( $this->scripts, $this->block_scripts ) );
+		$scripts = array_unique( array_merge( $this->scripts_to_footer, $this->block_scripts ) );
 		$scripts = array_unique( array_merge( $scripts, $this->parent_scripts( $scripts ) ) );
 
 		foreach ( $scripts as $script ) {
@@ -177,7 +161,7 @@ class Resources {
 	public function remove_styles_from_header() {
 		global $wp_styles;
 
-		$styles = array_unique( array_merge( $this->styles, $this->block_styles ) );
+		$styles = array_unique( array_merge( $this->styles_to_footer, $this->block_styles ) );
 		$styles = array_unique( array_merge( $styles, $this->parent_styles( $styles ) ) );
 
 		foreach ( $styles as $style ) {
@@ -242,7 +226,7 @@ class Resources {
 	}
 
 	/**
-	 * Print preload links
+	 * Print preload links.
 	 */
 	public function head() {
 		$content_types = [
@@ -265,53 +249,17 @@ class Resources {
 			'html'  => [ 'document', 'text/html' ],
 		];
 
-		$fonts = [
-			'eicons'                => '/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2?5.7.0',
-			'Font Awesome 5 Brands' => '/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-brands-400.woff2',
-			'Font Awesome 5 Free'   => [
-				'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-regular-400.woff2',
-				'/wp-content/plugins/elementor/assets/lib/font-awesome/webfonts/fa-solid-900.woff2',
-			],
-			'Exo 2'                 => [
-				'https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYoK-4.woff2',
-				'https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYsK-4E4Q.woff2',
-			],
-			'PT Serif'              => [
-				'https://fonts.gstatic.com/s/ptserif/v11/EJRSQgYoZZY2vCFuvAnt66qSVys.woff2',
-				'https://fonts.gstatic.com/s/ptserif/v11/EJRSQgYoZZY2vCFuvAnt66qWVyvHpA.woff2',
-				'https://fonts.gstatic.com/s/ptserif/v11/EJRTQgYoZZY2vCFuvAFT_r21cg.woff2',
-				'https://fonts.gstatic.com/s/ptserif/v11/EJRVQgYoZZY2vCFuvAFSzr-tdg.woff2',
-			],
-			'Roboto Condensed'      => [
-				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meGCAYb8td.woff2',
-				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meGCQYbw.woff2',
-				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-33mZGCAYb8td.woff2',
-				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVi2ZhZI2eCN5jzbjEETS9weq8-33mZGCQYbw.woff2',
-				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2',
-				'https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19a7DRs5.woff2',
-			],
-		];
+		$fonts_to_preload = json_decode( $this->main->get_option( 'fonts_to_preload', '[]' ) );
 
-		$links = [
-			'/wp-includes/js/jquery/jquery.js',
-			'/wp-includes/js/jquery/jquery-migrate.min.js',
-			'/wp-includes/js/wp-embed.min.js',
-			'/wp-content/plugins/kagg-pagespeed-optimization/cache/ya_an.js',
-			'https://mc.yandex.ru/metrika/tag.js',
+		$links_to_preload = $this->main->get_option( 'links_to_preload', [] );
 
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css',
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.min.css',
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/regular.min.css',
-			'/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css',
-		];
+		$this->font_display_swap( $fonts_to_preload );
 
-		$this->font_display_swap( $fonts );
-
-		foreach ( $fonts as $font_links ) {
-			$links = array_merge( $links, (array) $font_links );
+		foreach ( $fonts_to_preload as $font_links ) {
+			$links_to_preload = array_merge( $links_to_preload, (array) $font_links );
 		}
 
-		foreach ( $links as $link ) {
+		foreach ( $links_to_preload as $link ) {
 			$ext = pathinfo( preg_replace( '/(.+)\?.+$/', '$1', $link ), PATHINFO_EXTENSION );
 
 			if ( ! isset( $content_types[ $ext ] ) ) {
