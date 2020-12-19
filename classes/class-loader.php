@@ -13,16 +13,20 @@ namespace KAGG\PageSpeed\Optimization;
 class Loader {
 
 	/**
-	 * Loader image url.
+	 * Main class instance.
 	 *
-	 * @var string
+	 * @var Main
 	 */
-	private $loader_image_url = '/wp-content/themes/hello-elementor-child/images/voxpopuli-logo.svg';
+	private $main;
 
 	/**
-	 * PageSpeed_Loader constructor.
+	 * Loader constructor.
+	 *
+	 * @param Main $main Main class instance.
 	 */
-	public function __construct() {
+	public function __construct( $main ) {
+		$this->main = $main;
+
 		$this->init();
 	}
 
@@ -45,12 +49,10 @@ class Loader {
 	 * Show loader.
 	 */
 	public function loader() {
-		// data-skip-lazy works with Optimole.
 		?>
 		<style>
-			#kagg-pagespeed-loader.hide {
+			#kagg-pagespeed-loader.hidden-loader {
 				opacity: 0;
-				z-index: -1;
 			}
 
 			#kagg-pagespeed-loader {
@@ -62,10 +64,6 @@ class Loader {
 				background: #fff;
 				z-index: 99999;
 				text-align: center;
-				-webkit-transition: opacity 0.3s ease;
-				-moz-transition: opacity 0.3s ease;
-				-o-transition: opacity 0.3s ease;
-				transition: opacity 0.3s ease;
 			}
 
 			#kagg-pagespeed-loader img {
@@ -74,13 +72,38 @@ class Loader {
 				top: 50vh;
 				left: 50vw;
 				transform: translate(-50%, -50%);
+				opacity: 0;
+				-o-animation: kagg-pagespeed-loader-animation ease 1s forwards;
+				-moz-animation: kagg-pagespeed-loader-animation ease 1s forwards;
+				-webkit-animation: kagg-pagespeed-loader-animation ease 1s forwards;
+				animation: kagg-pagespeed-loader-animation ease 1s forwards;
+			}
+
+			@-o-keyframes kagg-pagespeed-loader-animation {
+				0% {opacity:0;}
+				100% {opacity:1;}
+			}
+
+			@-moz-keyframes kagg-pagespeed-loader-animation {
+				0% {opacity:0;}
+				100% {opacity:1;}
+			}
+
+			@-webkit-keyframes kagg-pagespeed-loader-animation {
+				0% {opacity:0;}
+				100% {opacity:1;}
+			}
+
+			@keyframes kagg-pagespeed-loader-animation {
+				0%   {opacity: 0;}
+				100% {opacity: 1;}
 			}
 		</style>
 		<script type="text/javascript">
 			document.addEventListener(
 				'DOMContentLoaded',
 				function() {
-					document.getElementById( 'kagg-pagespeed-loader' ).classList.add( 'hide' );
+					document.getElementById( 'kagg-pagespeed-loader' ).classList.add( 'hidden-loader' );
 				}
 			);
 		</script>
@@ -91,9 +114,14 @@ class Loader {
 	 * Show loader div.
 	 */
 	public function loader_div() {
+		// data-skip-lazy works with Optimole plugin.
+
 		?>
 		<div id="kagg-pagespeed-loader">
-			<img alt="KAGG PageSpeed Loader" src="<?php echo esc_url( $this->loader_image_url ); ?>" data-skip-lazy>
+			<img
+					alt="KAGG PageSpeed Loader"
+					src="<?php echo esc_url( $this->main->get_option( 'loader_image_url' ) ); ?>"
+					data-skip-lazy>
 		</div>
 		<?php
 	}

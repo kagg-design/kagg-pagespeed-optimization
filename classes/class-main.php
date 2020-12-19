@@ -81,7 +81,7 @@ class Main {
 		}
 
 		new Resources();
-		new Loader();
+		new Loader( $this );
 		new Yandex_Advertising_Network( $this );
 		new One_Signal();
 		new Passive_Events();
@@ -338,6 +338,14 @@ class Main {
 				'helper'       => '',
 				'supplemental' => '',
 				'default'      => 'no',
+			],
+			'loader_image_url'         => [
+				'label'        => __( 'Loader image URL', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'text',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
 			],
 		];
 	}
