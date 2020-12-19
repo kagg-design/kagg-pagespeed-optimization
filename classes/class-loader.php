@@ -103,7 +103,7 @@ class Loader {
 			document.addEventListener(
 				'DOMContentLoaded',
 				function() {
-					document.getElementById( 'kagg-pagespeed-loader' ).classList.add( 'hidden-loader' );
+					document.getElementById( 'kagg-pagespeed-loader' ).remove();
 				}
 			);
 		</script>
