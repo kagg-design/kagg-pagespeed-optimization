@@ -1,6 +1,6 @@
 <?php
 /**
- * PageSpeed_Optimization class file.
+ * Main class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -8,9 +8,7 @@
 namespace KAGG\PageSpeed\Optimization;
 
 /**
- * Class PageSpeed_Optimization.
- *
- * @class PageSpeed_Optimization
+ * Class Main.
  */
 class Main {
 

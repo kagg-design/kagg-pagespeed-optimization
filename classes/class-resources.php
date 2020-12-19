@@ -1,6 +1,6 @@
 <?php
 /**
- * PageSpeed_Resources class file.
+ * Resources class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -8,7 +8,7 @@
 namespace KAGG\PageSpeed\Optimization;
 
 /**
- * Class PageSpeed_Resources
+ * Class Resources
  *
  * Move scripts and styles from header to footer.
  * Make scripts defer.

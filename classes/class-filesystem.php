@@ -1,6 +1,6 @@
 <?php
 /**
- * PageSpeed_Filesystem class file.
+ * Filesystem class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -11,7 +11,7 @@ use RuntimeException;
 use WP_Filesystem_Direct;
 
 /**
- * Class PageSpeed_Filesystem
+ * Class Filesystem
  */
 class Filesystem {
 

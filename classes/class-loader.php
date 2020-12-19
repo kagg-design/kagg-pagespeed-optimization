@@ -1,6 +1,6 @@
 <?php
 /**
- * PageSpeed_Loader class file.
+ * Loader class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -8,7 +8,7 @@
 namespace KAGG\PageSpeed\Optimization;
 
 /**
- * Class PageSpeed_Loader
+ * Class Loader
  */
 class Loader {
 
