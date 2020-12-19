@@ -3,7 +3,7 @@ Contributors: kaggdesign
 Donate link: https://kagg.eu/en/
 Tags: PageSpeed, PageSpeed Optimization
 Requires at least: 4.4
-Tested up to: 5.0
+Tested up to: 5.6
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,7 +14,7 @@ This is the fork of CAOS (Complete Analytics Optimization Suite) by Daan van den
 
 == Description ==
 
-After activation of the plugin, scripts for above mentioned services will be cached on local server. They are updated twice daily.
+After activation of the plugin, scripts for above mentioned services will be cached on a local server. They are updated hourly.
 
 Whenever you run an analysis of your website on Google Pagespeed Insights, Pingdom or GTMetrix, it’ll tell you to leverage browser cache when you’re using Google Analytics. Because Google has set the cache expiry time to 2 hours. This plugin will get you a higher score on Pagespeed and Pingdom and make your website load faster, because the user’s browser doesn’t have to make a roundtrip to download the file from Google’s external server.
 
@@ -22,7 +22,7 @@ Whenever you run an analysis of your website on Google Pagespeed Insights, Pingd
 
 = Minimum Requirements =
 
-* PHP version 5.5 or greater (PHP 5.6 or greater is recommended)
+* PHP version 5.6 or greater (PHP 8.0 or greater is recommended)
 * MySQL version 5.0 or greater (MySQL 5.6 or greater is recommended)
 
 = Automatic installation =
@@ -50,6 +50,24 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 1. The PageSpeed Optimization settings page.
 
 == Changelog ==
+
+= 1.2 =
+* Tested with WordPress 5.6
+* Cache an.yandex.ru/system/context.js
+* Cache Google AdSense and Google Tag Manager
+* Process Yandex advertising network blocks
+* Add loader
+* Move site icon upper than any inline style (fixes bug in Chrome)
+* Fix passive event listener problem in Google PageSpeed Insights
+* Run Google Tag Manager, Google AdSense, Yandex Metrika, One Signal as delayed scripts
+* No optimization in admin
+* Namespace and composer
+
+= 1.1.0 =
+* Create cache dir during local files updating
+* Disable emoji
+* Defer scripts
+* Add display:swap for Google fonts
 
 = 1.0.2 =
 * Tested with WordPress 5.4

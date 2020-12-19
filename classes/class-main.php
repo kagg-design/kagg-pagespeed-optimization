@@ -76,13 +76,15 @@ class Main {
 
 		$this->init_hooks();
 
-		if ( ! is_admin() ) {
-			new Resources();
-			new Loader();
-			new Yandex_Advertising_Network( $this );
-			new One_Signal();
-			new Passive_Events();
+		if ( is_admin() ) {
+			return;
 		}
+
+		new Resources();
+		new Loader();
+		new Yandex_Advertising_Network( $this );
+		new One_Signal();
+		new Passive_Events();
 	}
 
 	/**

@@ -4,10 +4,10 @@
  * Plugin URI:
  * Description: Optimize external scripts by storing them locally
  * Author: KAGG Design
- * Version: 1.1.0
+ * Version: 1.2
  * Author URI: https://kagg.eu/en/
  * Requires at least: 4.4
- * Tested up to: 5.4
+ * Tested up to: 5.6
  *
  * Text Domain: kagg-pagespeed-optimization
  * Domain Path: /languages/
@@ -29,7 +29,7 @@ if ( defined( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION' ) ) {
 /**
  * Plugin version
  */
-define( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION', '1.1.0' );
+define( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION', '1.2' );
 
 /**
  * Path to the plugin dir.
