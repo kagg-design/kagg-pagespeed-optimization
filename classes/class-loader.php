@@ -52,7 +52,7 @@ class Loader {
 		?>
 		<style>
 			#kagg-pagespeed-loader.hidden-loader {
-				opacity: 0;
+				display: none;
 			}
 
 			#kagg-pagespeed-loader {
@@ -103,7 +103,7 @@ class Loader {
 			document.addEventListener(
 				'DOMContentLoaded',
 				function() {
-					document.getElementById( 'kagg-pagespeed-loader' ).remove();
+					document.getElementById( 'kagg-pagespeed-loader' ).classList.add( 'hidden-loader' );
 				}
 			);
 		</script>
