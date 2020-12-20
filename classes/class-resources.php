@@ -144,10 +144,12 @@ class Resources {
 
 		$parents = [];
 
-		foreach ( $wp_scripts->registered as $handle => $style ) {
-			$deps = $style->deps;
+		foreach ( $wp_scripts->registered as $handle => $script ) {
+			$deps = $script->deps;
 			if ( array_intersect( $scripts, $deps ) ) {
-				$parents[] = $handle;
+				if ( ! in_array( $handle, $parents, true ) ) {
+					$parents = array_unique( array_merge( $parents, $this->add_parent_scripts( [ $handle ] ) ) );
+				}
 			}
 		}
 
@@ -207,7 +209,9 @@ class Resources {
 		foreach ( $wp_styles->registered as $handle => $style ) {
 			$deps = $style->deps;
 			if ( array_intersect( $styles, $deps ) ) {
-				$parents[] = $handle;
+				if ( ! in_array( $handle, $parents, true ) ) {
+					$parents = array_unique( array_merge( $parents, $this->add_parent_styles( [ $handle ] ) ) );
+				}
 			}
 		}
 
