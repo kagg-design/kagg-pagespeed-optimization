@@ -17,7 +17,7 @@ class Layer_Slider {
 	 *
 	 * @var string
 	 */
-	private $layer_slider_script;
+	private $layer_slider_script = '';
 
 	/**
 	 * Layer_Slider constructor.
@@ -61,6 +61,10 @@ class Layer_Slider {
 	 * Print Layer Slider script in footer.
 	 */
 	public function print_script_in_footer() {
+		if ( '' === $this->layer_slider_script ) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo str_replace( '<script ', '<script async ', $this->layer_slider_script );
 	}
