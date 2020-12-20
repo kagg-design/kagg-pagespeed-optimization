@@ -365,6 +365,15 @@ class Main {
 				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
+			'delay_scripts'            => [
+				'label'        => __( 'Scripts to delay', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'default'      => [],
+			],
 			'styles_to_footer'         => [
 				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',

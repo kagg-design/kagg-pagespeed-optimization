@@ -31,6 +31,13 @@ class Resources {
 	private $scripts_to_footer = [];
 
 	/**
+	 * Scripts moved to footer.
+	 *
+	 * @var string[]
+	 */
+	private $moved_scripts = [];
+
+	/**
 	 * Scripts to block.
 	 *
 	 * @var string[]
@@ -38,11 +45,11 @@ class Resources {
 	private $block_scripts = [];
 
 	/**
-	 * Scripts moved to footer.
+	 * Scripts to delay.
 	 *
 	 * @var string[]
 	 */
-	private $moved_scripts = [];
+	private $delay_scripts = [];
 
 	/**
 	 * Styles to move from header to footer.
@@ -52,18 +59,18 @@ class Resources {
 	private $styles_to_footer = [];
 
 	/**
-	 * Styles to block.
-	 *
-	 * @var string[]
-	 */
-	private $block_styles = [];
-
-	/**
 	 * Styles moved to footer.
 	 *
 	 * @var string[]
 	 */
 	private $moved_styles = [];
+
+	/**
+	 * Styles to block.
+	 *
+	 * @var string[]
+	 */
+	private $block_styles = [];
 
 	/**
 	 * Resources constructor.
@@ -82,6 +89,7 @@ class Resources {
 	private function init() {
 		$this->scripts_to_footer = $this->get_option( 'scripts_to_footer' );
 		$this->block_scripts     = $this->get_option( 'block_scripts' );
+		$this->delay_scripts     = $this->get_option( 'delay_scripts' );
 		$this->styles_to_footer  = $this->get_option( 'styles_to_footer' );
 		$this->block_styles      = $this->get_option( 'block_styles' );
 
@@ -101,6 +109,9 @@ class Resources {
 
 		// Print preload links.
 		add_action( 'wp_head', [ $this, 'head' ], - PHP_INT_MAX );
+
+		// Delay some scripts.
+		add_action( 'wp_print_footer_scripts', [ $this, 'delay_scripts' ], - PHP_INT_MAX );
 	}
 
 	/**
@@ -360,6 +371,23 @@ class Resources {
 		}
 
 		return $tag;
+	}
+
+	/**
+	 * Delay some scripts.
+	 */
+	public function delay_scripts() {
+		global $wp_scripts;
+
+		foreach ( $this->delay_scripts as $handle ) {
+			if ( wp_script_is( $handle, 'enqueued' ) ) {
+				$src = $wp_scripts->registered[ $handle ]->src;
+				$src = str_replace( '#asyncload', '', $src );
+
+				wp_dequeue_script( $handle );
+				Delayed_Script::launch( [ 'src' => $src ] );
+			}
+		}
 	}
 
 	/**
