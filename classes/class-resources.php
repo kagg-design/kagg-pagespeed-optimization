@@ -84,10 +84,10 @@ class Resources {
 			return;
 		}
 
-		$this->scripts_to_footer = $this->main->get_option( 'scripts_to_footer', [] );
-		$this->block_scripts     = $this->main->get_option( 'block_scripts', [] );
-		$this->styles_to_footer  = $this->main->get_option( 'styles_to_footer', [] );
-		$this->block_styles      = $this->main->get_option( 'block_styles', [] );
+		$this->scripts_to_footer = $this->get_option( 'scripts_to_footer' );
+		$this->block_scripts     = $this->get_option( 'block_scripts' );
+		$this->styles_to_footer  = $this->get_option( 'styles_to_footer' );
+		$this->block_styles      = $this->get_option( 'block_styles' );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
 		add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
@@ -111,26 +111,36 @@ class Resources {
 	 * Remove scripts from header.
 	 */
 	public function remove_scripts_from_header() {
-		$scripts = array_unique( array_merge( $this->scripts_to_footer, $this->block_scripts ) );
-		$scripts = array_unique( array_merge( $scripts, $this->parent_scripts( $scripts ) ) );
+		$scripts = $this->add_parent_scripts( $this->block_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script, 'enqueued' ) ) {
-				$this->moved_scripts[] = $script;
+				wp_deregister_script( $script );
+			}
+		}
+
+		$scripts = $this->add_parent_scripts( $this->scripts_to_footer );
+
+		foreach ( $scripts as $script ) {
+			if ( wp_script_is( $script, 'enqueued' ) ) {
 				wp_dequeue_script( $script );
+				$this->moved_scripts[] = $script;
 			}
 		}
 	}
 
 	/**
 	 * Find all parent scripts, which need $scripts as dependencies.
+	 * Return all scripts with parents.
 	 *
 	 * @param string[] $scripts Scripts.
 	 *
 	 * @return string[]
 	 */
-	private function parent_scripts( $scripts ) {
+	private function add_parent_scripts( $scripts ) {
 		global $wp_scripts;
+
+		$scripts = array_unique( $scripts );
 
 		$parents = [];
 
@@ -141,7 +151,7 @@ class Resources {
 			}
 		}
 
-		return array_unique( $parents );
+		return array_unique( array_merge( $scripts, $parents ) );
 	}
 
 	/**
@@ -161,26 +171,36 @@ class Resources {
 	public function remove_styles_from_header() {
 		global $wp_styles;
 
-		$styles = array_unique( array_merge( $this->styles_to_footer, $this->block_styles ) );
-		$styles = array_unique( array_merge( $styles, $this->parent_styles( $styles ) ) );
+		$styles = $this->add_parent_styles( $this->block_styles );
 
 		foreach ( $styles as $style ) {
 			if ( in_array( $style, $wp_styles->queue, true ) ) {
-				$this->moved_styles[] = $style;
+				wp_deregister_style( $style );
+			}
+		}
+
+		$styles = $this->add_parent_styles( $this->styles_to_footer );
+
+		foreach ( $styles as $style ) {
+			if ( in_array( $style, $wp_styles->queue, true ) ) {
 				wp_dequeue_style( $style );
+				$this->moved_styles[] = $style;
 			}
 		}
 	}
 
 	/**
 	 * Find all parent styles, which need $styles as dependencies.
+	 * Return all styles with parents.
 	 *
 	 * @param string[] $styles Styles.
 	 *
 	 * @return string[]
 	 */
-	private function parent_styles( $styles ) {
+	private function add_parent_styles( $styles ) {
 		global $wp_styles;
+
+		$styles = array_unique( $styles );
 
 		$parents = [];
 
@@ -191,7 +211,7 @@ class Resources {
 			}
 		}
 
-		return array_unique( $parents );
+		return array_unique( array_merge( $styles, $parents ) );
 	}
 
 	/**
@@ -249,9 +269,9 @@ class Resources {
 			'html'  => [ 'document', 'text/html' ],
 		];
 
-		$fonts_to_preload = json_decode( $this->main->get_option( 'fonts_to_preload', '[]' ) );
+		$fonts_to_preload = $this->get_option( 'fonts_to_preload', 'json' );
 
-		$links_to_preload = $this->main->get_option( 'links_to_preload', [] );
+		$links_to_preload = $this->get_option( 'links_to_preload' );
 
 		$this->font_display_swap( $fonts_to_preload );
 
@@ -340,5 +360,27 @@ class Resources {
 		}
 
 		return $tag;
+	}
+
+	/**
+	 * Get array or json option.
+	 *
+	 * @param string $name Option name.
+	 * @param string $type Option type.
+	 *
+	 * @return array
+	 */
+	private function get_option( $name, $type = 'array' ) {
+		$option = $this->main->get_option( $name );
+
+		switch ( $type ) {
+			case 'array':
+				return array_filter( array_map( 'trim', explode( "\n", $option ) ) );
+			case 'json':
+				return (array) json_decode( $option );
+			default:
+		}
+
+		return [];
 	}
 }
