@@ -79,11 +79,7 @@ class Resources {
 	/**
 	 * Init class hooks.
 	 */
-	public function init() {
-		if ( is_admin() ) {
-			return;
-		}
-
+	private function init() {
 		$this->scripts_to_footer = $this->get_option( 'scripts_to_footer' );
 		$this->block_scripts     = $this->get_option( 'block_scripts' );
 		$this->styles_to_footer  = $this->get_option( 'styles_to_footer' );
