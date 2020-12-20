@@ -52,7 +52,7 @@ class Layer_Slider {
 		}
 
 		preg_match( '#<script.+_initLayerSlider.+</script>#', $output, $matches );
-		$this->layer_slider_script = str_replace( '<script ', '<script async ', $matches[0] );
+		$this->layer_slider_script = $matches[0];
 
 		return str_replace( $this->layer_slider_script, '', $output );
 	}
@@ -62,6 +62,6 @@ class Layer_Slider {
 	 */
 	public function print_script_in_footer() {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $this->layer_slider_script;
+		echo str_replace( '<script ', '<script async ', $this->layer_slider_script );
 	}
 }
