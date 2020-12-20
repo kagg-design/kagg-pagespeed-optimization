@@ -398,7 +398,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter json array as font_family => array_of_font_links. Example:', 'kagg-pagespeed-optimization' ) . ' {"Exo 2":["https:\/\/fonts.gstatic.com\/s\/exo2\/v8\/7cHmv4okm5zmbtYoK-4.woff2","https:\/\/fonts.gstatic.com\/s\/exo2\/v8\/7cHmv4okm5zmbtYsK-4E4Q.woff2"]}',
+				'supplemental' => __( 'Enter json array as font_family => array_of_font_links. Example:', 'kagg-pagespeed-optimization' ) . ' {"Exo 2":["https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYoK-4.woff2","https://fonts.gstatic.com/s/exo2/v8/7cHmv4okm5zmbtYsK-4E4Q.woff2"]}',
 				'default'      => [],
 			],
 		];
