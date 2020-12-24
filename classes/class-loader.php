@@ -20,6 +20,13 @@ class Loader {
 	private $main;
 
 	/**
+	 * Loader image url.
+	 *
+	 * @var string
+	 */
+	private $loader_image_url;
+
+	/**
 	 * Loader constructor.
 	 *
 	 * @param Main $main Main class instance.
@@ -37,6 +44,8 @@ class Loader {
 		// Show site icon before any inline styles. Otherwise, it does not work.
 		remove_action( 'wp_head', 'wp_site_icon' );
 		add_action( 'wp_head', 'wp_site_icon', - PHP_INT_MAX );
+
+		$this->loader_image_url = trim( $this->main->get_option( 'loader_image_url' ) );
 
 		// Print loader style and script.
 		add_action( 'wp_head', [ $this, 'loader' ], - PHP_INT_MAX + 1 );
@@ -115,13 +124,18 @@ class Loader {
 	 */
 	public function loader_div() {
 		// data-skip-lazy works with Optimole plugin.
-
 		?>
 		<div id="kagg-pagespeed-loader">
-			<img
-					alt="KAGG PageSpeed Loader"
-					src="<?php echo esc_url( $this->main->get_option( 'loader_image_url' ) ); ?>"
-					data-skip-lazy>
+			<?php
+			if ( $this->loader_image_url ) {
+				?>
+				<img
+						alt="KAGG PageSpeed Loader"
+						src="<?php echo esc_url( $this->loader_image_url ); ?>"
+						data-skip-lazy>
+				<?php
+			}
+			?>
 		</div>
 		<?php
 	}
