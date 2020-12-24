@@ -380,7 +380,7 @@ class Resources {
 		global $wp_scripts;
 
 		foreach ( $this->delay_scripts as $handle ) {
-			if ( wp_script_is( $handle, 'enqueued' ) ) {
+			if ( wp_script_is( $handle, 'registered' ) && wp_script_is( $handle, 'enqueued' ) ) {
 				$src = $wp_scripts->registered[ $handle ]->src;
 				$src = str_replace( '#asyncload', '', $src );
 
