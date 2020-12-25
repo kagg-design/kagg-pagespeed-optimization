@@ -1085,14 +1085,14 @@ class Main {
 	 *
 	 * @param array $plugins Plugins.
 	 *
-	 * @return array Difference betwen the two arrays
+	 * @return array Difference between the two arrays
 	 */
 	public function disable_emojis_tinymce( $plugins ) {
 		if ( is_array( $plugins ) ) {
 			return array_diff( $plugins, [ 'wpemoji' ] );
-		} else {
-			return [];
 		}
+
+		return [];
 	}
 
 	/**
@@ -1123,7 +1123,7 @@ class Main {
 	 */
 	public function replace_urls( $html ) {
 		$local_filenames = array_map(
-			function ( $item ) {
+			static function ( $item ) {
 				return KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $item;
 			},
 			$this->local_filenames

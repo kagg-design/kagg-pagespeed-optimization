@@ -286,9 +286,13 @@ class Resources {
 
 		$this->font_display_swap( $fonts_to_preload );
 
-		foreach ( $fonts_to_preload as $font_links ) {
-			$links_to_preload = array_merge( $links_to_preload, (array) $font_links );
-		}
+		$fonts_to_preload = array_map(
+			static function ( $font_links ) {
+				return (array) $font_links;
+			},
+			array_values( $fonts_to_preload )
+		);
+		$links_to_preload = array_unique( array_merge( $links_to_preload, ...$fonts_to_preload ) );
 
 		foreach ( $links_to_preload as $link ) {
 			$ext = pathinfo( preg_replace( '/(.+)\?.+$/', '$1', $link ), PATHINFO_EXTENSION );
@@ -297,8 +301,7 @@ class Resources {
 				continue;
 			}
 
-			$as   = $content_types[ $ext ][0];
-			$type = $content_types[ $ext ][1];
+			list( $as, $type ) = $content_types[ $ext ];
 
 			$crossorigin = '';
 			if ( 'font' === $as ) {

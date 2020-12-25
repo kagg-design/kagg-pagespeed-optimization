@@ -34,7 +34,7 @@ class Delayed_Script {
 						echo $js;
 						?>
 						,
-						<?php echo intval( $delay ); ?>
+						<?php echo (int) $delay; ?>
 					);
 				}
 			);

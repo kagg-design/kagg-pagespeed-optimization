@@ -34,7 +34,7 @@ define( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION', '1.2' );
 /**
  * Path to the plugin dir.
  */
-define( 'KAGG_PAGESPEED_OPTIMIZATION_PATH', dirname( __FILE__ ) );
+define( 'KAGG_PAGESPEED_OPTIMIZATION_PATH', __DIR__ );
 
 /**
  * Plugin dir url.
