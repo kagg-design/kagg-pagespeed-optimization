@@ -1151,12 +1151,11 @@ class Main {
 	 * @return mixed
 	 */
 	private function generate_font_css( $value, $old_value ) {
-		// @todo: Add option to select font formats to preload.
-		// 'otf' -> 'font/otf'
-		// 'truetype' -> 'font/ttf'
 		$font_face_formats_to_types = [
-			'woff'  => 'font/woff',
-			'woff2' => 'font/woff2',
+			'otf'      => 'font/otf',
+			'truetype' => 'font/ttf',
+			'woff'     => 'font/woff',
+			'woff2'    => 'font/woff2',
 		];
 
 		if ( $value['fonts_to_preload'] === $old_value['fonts_to_preload'] ) {
@@ -1200,6 +1199,11 @@ class Main {
 				for ( $i = 0; $i < $url_result; $i ++ ) {
 					$url    = $this->absolute_url( trim( $m[1][ $i ], "'" ), $css_url );
 					$format = trim( $m[2][ $i ], "'" );
+
+					// @todo: Add option to select font formats to preload.
+					if ( ( 'woff' !== $format ) && ( 'woff2' !== $format ) ) {
+						continue;
+					}
 
 					$type = isset( $font_face_formats_to_types[ $format ] ) ?
 						'type="' . $font_face_formats_to_types[ $format ] . '" ' :
