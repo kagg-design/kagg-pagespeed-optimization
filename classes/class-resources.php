@@ -73,6 +73,20 @@ class Resources {
 	private $block_styles = [];
 
 	/**
+	 * Fonts to preload.
+	 *
+	 * @var array
+	 */
+	private $fonts_to_preload;
+
+	/**
+	 * All font links.
+	 *
+	 * @var array
+	 */
+	private $all_font_links;
+
+	/**
 	 * Resources constructor.
 	 *
 	 * @param Main $main Main class instance.
@@ -92,6 +106,16 @@ class Resources {
 		$this->delay_scripts     = $this->get_option( 'delay_scripts' );
 		$this->styles_to_footer  = $this->get_option( 'styles_to_footer' );
 		$this->block_styles      = $this->get_option( 'block_styles' );
+		$this->fonts_to_preload  = $this->get_option( 'fonts_to_preload', 'json' );
+
+		$this->all_font_links = array_map(
+			static function ( $font_links ) {
+				return (array) $font_links;
+			},
+			array_values( $this->fonts_to_preload )
+		);
+
+		$this->all_font_links = array_unique( array_filter( array_merge( [], ...$this->all_font_links ), 'trim' ) );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
 		add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
@@ -280,19 +304,26 @@ class Resources {
 			'html'  => [ 'document', 'text/html' ],
 		];
 
-		$fonts_to_preload = $this->get_option( 'fonts_to_preload', 'json' );
-
 		$links_to_preload = $this->get_option( 'links_to_preload' );
 
-		$this->font_display_swap( $fonts_to_preload );
+		$links_to_preload = array_unique( array_merge( $links_to_preload, $this->all_font_links ) );
 
-		$fonts_to_preload = array_map(
-			static function ( $font_links ) {
-				return (array) $font_links;
-			},
-			array_values( $fonts_to_preload )
+		$links_to_preconnect = array_unique(
+			array_map(
+				static function ( $link ) {
+					$parsed_url = wp_parse_url( $link );
+					$scheme     = $parsed_url['scheme'] ?: 'http';
+					$host       = $parsed_url['host'] ?: '';
+
+					return $scheme . '://' . $host;
+				},
+				$links_to_preload
+			)
 		);
-		$links_to_preload = array_unique( array_merge( $links_to_preload, ...$fonts_to_preload ) );
+
+		foreach ( $links_to_preconnect as $link ) {
+			echo '<link rel="preconnect" href="' . esc_url( $link ) . "\">\n";
+		}
 
 		foreach ( $links_to_preload as $link ) {
 			$ext = pathinfo( preg_replace( '/(.+)\?.+$/', '$1', $link ), PATHINFO_EXTENSION );
@@ -322,6 +353,8 @@ class Resources {
 			echo $output;
 			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
+
+		$this->font_display_swap( $this->fonts_to_preload );
 	}
 
 	/**
