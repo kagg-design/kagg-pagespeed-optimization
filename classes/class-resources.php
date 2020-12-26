@@ -73,18 +73,18 @@ class Resources {
 	private $block_styles = [];
 
 	/**
-	 * Fonts to preload.
+	 * Generated inline css for fonts.
 	 *
 	 * @var array
 	 */
-	private $fonts_to_preload;
+	private $fonts_generated_css;
 
 	/**
-	 * All font links.
+	 * Preload links for fonts.
 	 *
 	 * @var array
 	 */
-	private $all_font_links;
+	private $fonts_preload_links;
 
 	/**
 	 * Resources constructor.
@@ -101,21 +101,13 @@ class Resources {
 	 * Init class hooks.
 	 */
 	private function init() {
-		$this->scripts_to_footer = $this->get_option( 'scripts_to_footer' );
-		$this->block_scripts     = $this->get_option( 'block_scripts' );
-		$this->delay_scripts     = $this->get_option( 'delay_scripts' );
-		$this->styles_to_footer  = $this->get_option( 'styles_to_footer' );
-		$this->block_styles      = $this->get_option( 'block_styles' );
-		$this->fonts_to_preload  = $this->get_option( 'fonts_to_preload', 'json' );
-
-		$this->all_font_links = array_map(
-			static function ( $font_links ) {
-				return (array) $font_links;
-			},
-			array_values( $this->fonts_to_preload )
-		);
-
-		$this->all_font_links = array_unique( array_filter( array_merge( [], ...$this->all_font_links ), 'trim' ) );
+		$this->scripts_to_footer   = $this->get_option( 'scripts_to_footer' );
+		$this->block_scripts       = $this->get_option( 'block_scripts' );
+		$this->delay_scripts       = $this->get_option( 'delay_scripts' );
+		$this->styles_to_footer    = $this->get_option( 'styles_to_footer' );
+		$this->block_styles        = $this->get_option( 'block_styles' );
+		$this->fonts_generated_css = $this->get_option( '_fonts_generated_css' );
+		$this->fonts_preload_links = $this->get_option( '_fonts_preload_links' );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
 		add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
@@ -285,7 +277,6 @@ class Resources {
 	 */
 	public function head() {
 		$content_types = [
-			'eot'   => [ 'font', 'application/vnd.ms-fontobject' ],
 			'otf'   => [ 'font', 'font/otf' ],
 			'ttf'   => [ 'font', 'font/ttf' ],
 			'woff'  => [ 'font', 'font/woff' ],
@@ -306,7 +297,7 @@ class Resources {
 
 		$links_to_preload = $this->get_option( 'links_to_preload' );
 
-		$links_to_preload = array_unique( array_merge( $links_to_preload, $this->all_font_links ) );
+		$links_to_preload = array_unique( array_merge( $links_to_preload ) );
 
 		$links_to_preconnect = array_unique(
 			array_map(
@@ -323,6 +314,11 @@ class Resources {
 
 		foreach ( $links_to_preconnect as $link ) {
 			echo '<link rel="preconnect" href="' . esc_url( $link ) . "\">\n";
+		}
+
+		foreach ( $this->fonts_preload_links as $link ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $link . "\n";
 		}
 
 		foreach ( $links_to_preload as $link ) {
@@ -354,37 +350,19 @@ class Resources {
 			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		$this->font_display_swap( $this->fonts_to_preload );
+		$this->font_display_swap();
 	}
 
 	/**
-	 * Add display: swap to fonts.
-	 *
-	 * @param array $fonts Fonts.
+	 * Output generated css for fonts.
 	 */
-	private function font_display_swap( $fonts ) {
+	private function font_display_swap() {
 		?>
-		<style id="kagg-pagespeed-optimization-font-swap" type="text/css">
+		<style id="kagg-pagespeed-optimization-fonts-generated-css" type="text/css">
 			<?php
-			foreach ( $fonts as $font_family => $font_links ) {
-				$font_links = (array) $font_links;
-				$urls       = [];
-
-				foreach ( $font_links as $font_link ) {
-					// @todo: Allow to specify format, not only woff2.
-					$urls[] = 'url(' . esc_html( $font_link ) . ') format("woff2")';
-				}
-
-				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-				?>
-				@font-face {
-					font-family: <?php echo "'" . $font_family . "'"; ?>;
-					src: <?php echo implode( ', ', $urls ); ?>;
-					font-display: swap;
-				}
-
-				<?php
-				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+			foreach ( $this->fonts_generated_css as $generated_css ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $generated_css . "\n";
 			}
 			?>
 		</style>

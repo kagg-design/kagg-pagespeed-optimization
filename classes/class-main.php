@@ -533,6 +533,8 @@ class Main {
 			}
 		}
 
+		$value = $this->generate_font_css( $value, $old_value );
+
 		return $value;
 	}
 
@@ -1103,7 +1105,7 @@ class Main {
 	 * @param array  $urls          URLs to print for resource hints.
 	 * @param string $relation_type The relation type the URLs are printed for.
 	 *
-	 * @return array Difference betwen the two arrays.
+	 * @return array Difference between the two arrays.
 	 */
 	public function disable_emojis_remove_dns_prefetch( $urls, $relation_type ) {
 		if ( 'dns-prefetch' === $relation_type ) {
@@ -1138,5 +1140,133 @@ class Main {
 		);
 
 		return $html;
+	}
+
+	/**
+	 * Generate inline css for fonts.
+	 *
+	 * @param mixed $value     New option value.
+	 * @param mixed $old_value Old option value.
+	 *
+	 * @return mixed
+	 */
+	private function generate_font_css( $value, $old_value ) {
+		$font_face_formats_to_types = [
+			'otf'      => 'font/otf',
+			'truetype' => 'font/ttf',
+			'woff'     => 'font/woff',
+			'woff2'    => 'font/woff2',
+		];
+
+		if ( $value['fonts_to_preload'] === $old_value['fonts_to_preload'] ) {
+			return $value;
+		}
+
+		$css_urls = array_unique( array_filter( explode( "\n", $value['fonts_to_preload'] ), 'trim' ) );
+
+		$value['fonts_to_preload'] = implode( "\n", $css_urls );
+
+		$generated_css = [];
+		$links         = [];
+
+		foreach ( $css_urls as $css_url ) {
+			$args     = [
+				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+			];
+			$response = wp_remote_get( $css_url, $args );
+
+			$css = wp_remote_retrieve_body( $response );
+
+			if ( '' === $css ) {
+				continue;
+			}
+
+			$result = preg_match_all( '#(?:/\*.*\*/\s*)?@font-face\s*{(?:[\s\S]*?)}#i', $css, $matches );
+
+			if ( 0 === (int) $result ) {
+				continue;
+			}
+
+			$generated_css[] = $matches[0];
+
+			foreach ( $matches[0] as $font_face ) {
+				$url_result = preg_match_all(
+					'/url\s*\(([^)]+)\)(?: format\s*\(([^)]+)\)\s*)?[;,]/i',
+					$font_face,
+					$m
+				);
+
+				for ( $i = 0; $i < $url_result; $i ++ ) {
+					$url    = $this->absolute_url( trim( $m[1][ $i ], "'" ), $css_url );
+					$format = trim( $m[2][ $i ], "'" );
+
+					// @todo: Add option to select font formats to preload.
+					if ( 'woff2' !== $format ) {
+						continue;
+					}
+
+					$type = isset( $font_face_formats_to_types[ $format ] ) ?
+						'type="' . $font_face_formats_to_types[ $format ] . '" ' :
+						'';
+
+					$links[] = '<link rel="preload" href="' . $url . '" as="font" ' . $type . 'crossorigin="anonymous">';
+				}
+			}
+		}
+
+		$value['_fonts_generated_css'] = implode( "\n", array_merge( [], ...$generated_css ) );
+		$value['_fonts_preload_links'] = implode( "\n", array_unique( $links ) );
+
+		return $value;
+	}
+
+	/**
+	 * Get absolute url.
+	 *
+	 * @param string $relative_url Url relative to main.
+	 * @param string $base_url     Base absolute url.
+	 *
+	 * @return string
+	 */
+	private function absolute_url( $relative_url, $base_url ) {
+		// Return if already absolute URL.
+		if ( wp_parse_url( $relative_url, PHP_URL_SCHEME ) !== null ) {
+			return $relative_url;
+		}
+
+		// Parse base URL and convert to local variables: $scheme, $host, $path.
+		$base_url_arr = wp_parse_url( $base_url );
+		$scheme       = $base_url_arr['scheme'];
+		$host         = $base_url_arr['host'];
+		$path         = $base_url_arr['path'];
+
+		// Url begins with //.
+		if ( 0 === strpos( $relative_url, '//' ) ) {
+			return $scheme . ':' . $relative_url;
+		}
+
+		// Queries and anchors.
+		if ( '#' === $relative_url[0] || '?' === $relative_url[0] ) {
+			return $base_url . $relative_url;
+		}
+
+		// Remove non-directory element from path.
+		$path = preg_replace( '#/[^/]*$#', '', $path );
+
+		// Destroy path if relative url points to root.
+		if ( '/' === $relative_url[0] ) {
+			$path = '';
+		}
+
+		// Preliminary absolute URL.
+		$absolute_url = "$host$path/$relative_url";
+
+		// Replace '//' or '/./' or '/foo/../' with '/'.
+		$pattern = [ '#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#' ];
+		do {
+			$absolute_url = preg_replace( $pattern, '/', $absolute_url, - 1, $n );
+		} while ( $n > 0 );
+
+		return $scheme . '://' . $absolute_url;
 	}
 }
