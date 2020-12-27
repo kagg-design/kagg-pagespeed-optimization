@@ -1152,6 +1152,9 @@ class Main {
 	 */
 	private function generate_font_css( $value, $old_value ) {
 		if ( $value['fonts_to_preload'] === $old_value['fonts_to_preload'] ) {
+			$value['_fonts_preload_links'] = $old_value['_fonts_preload_links'];
+			$value['_fonts_generated_css'] = $old_value['_fonts_generated_css'];
+
 			return $value;
 		}
 
