@@ -1151,6 +1151,10 @@ class Main {
 	 * @return mixed
 	 */
 	private function generate_font_css( $value, $old_value ) {
+		if ( $value['fonts_to_preload'] === $old_value['fonts_to_preload'] ) {
+			return $value;
+		}
+
 		$swap = 'font-display: swap;';
 
 		$font_face_formats_to_types = [
@@ -1159,10 +1163,6 @@ class Main {
 			'woff'     => 'font/woff',
 			'woff2'    => 'font/woff2',
 		];
-
-		if ( $value['fonts_to_preload'] === $old_value['fonts_to_preload'] ) {
-			return $value;
-		}
 
 		$css_urls = array_unique( array_filter( explode( "\n", $value['fonts_to_preload'] ), 'trim' ) );
 
@@ -1191,17 +1191,19 @@ class Main {
 
 			foreach ( $matches[0] as $font_face ) {
 				$url_result = preg_match_all(
-					'/url\s*\(([^)]+)\)(?: format\s*\(([^)]+)\)\s*)?[;,]/i',
+					'/url\s*\(([^)]+)\)(?: format\s*\(([^)]+)\)\s*)?\s*,?/i',
 					$font_face,
 					$m
 				);
 
 				for ( $i = 0; $i < $url_result; $i ++ ) {
-					$url    = $this->absolute_url( trim( $m[1][ $i ], "'" ), $css_url );
-					$format = trim( $m[2][ $i ], "'" );
+					$url          = trim( $m[1][ $i ], "'" );
+					$absolute_url = $this->absolute_url( $url, $css_url );
+					$format       = trim( $m[2][ $i ], "'" );
 
 					// @todo: Add option to select font formats to preload.
 					if ( ( 'woff' !== $format ) && ( 'woff2' !== $format ) ) {
+						$font_face = str_replace( $m[0][ $i ], '', $font_face );
 						continue;
 					}
 
@@ -1209,14 +1211,18 @@ class Main {
 						'type="' . $font_face_formats_to_types[ $format ] . '" ' :
 						'';
 
-					$links[] = '<link rel="preload" href="' . $url . '" as="font" ' . $type . 'crossorigin="anonymous">';
+					$links[] = '<link rel="preload" href="' . $absolute_url . '" as="font" ' . $type . 'crossorigin="anonymous">';
 
-					if ( false === strpos( $font_face, $swap ) ) {
-						$font_face = str_replace( '}', '  ' . $swap . "\n}", $font_face );
-					}
-
-					$generated_css[] = $font_face;
+					$font_face = str_replace( $url, $absolute_url, $font_face );
 				}
+
+				if ( false === strpos( $font_face, $swap ) ) {
+					$font_face = preg_replace( '/;\s*}/', '}', $font_face );
+					$font_face = str_replace( '}', ";\n" . $swap . "\n}", $font_face );
+				}
+
+				$font_face       = preg_replace( '/,\s*;/', ';', $font_face );
+				$generated_css[] = preg_replace( '/src\s*:\s*;/i', '', $font_face );
 			}
 		}
 
