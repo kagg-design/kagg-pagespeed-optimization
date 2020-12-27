@@ -130,8 +130,8 @@ class Loader {
 			if ( $this->loader_image_url ) {
 				?>
 				<img
-						alt="KAGG PageSpeed Loader"
 						src="<?php echo esc_url( $this->loader_image_url ); ?>"
+						alt=""
 						data-skip-lazy>
 				<?php
 			}
