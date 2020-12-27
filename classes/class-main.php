@@ -1151,6 +1151,8 @@ class Main {
 	 * @return mixed
 	 */
 	private function generate_font_css( $value, $old_value ) {
+		$swap = 'font-display: swap;';
+
 		$font_face_formats_to_types = [
 			'otf'      => 'font/otf',
 			'truetype' => 'font/ttf',
@@ -1187,8 +1189,6 @@ class Main {
 				continue;
 			}
 
-			$generated_css[] = $matches[0];
-
 			foreach ( $matches[0] as $font_face ) {
 				$url_result = preg_match_all(
 					'/url\s*\(([^)]+)\)(?: format\s*\(([^)]+)\)\s*)?[;,]/i',
@@ -1210,12 +1210,18 @@ class Main {
 						'';
 
 					$links[] = '<link rel="preload" href="' . $url . '" as="font" ' . $type . 'crossorigin="anonymous">';
+
+					if ( false === strpos( $font_face, $swap ) ) {
+						$font_face = str_replace( '}', '  ' . $swap . "\n}", $font_face );
+					}
+
+					$generated_css[] = $font_face;
 				}
 			}
 		}
 
-		$value['_fonts_generated_css'] = implode( "\n", array_merge( [], ...$generated_css ) );
 		$value['_fonts_preload_links'] = implode( "\n", array_unique( $links ) );
+		$value['_fonts_generated_css'] = implode( "\n", $generated_css );
 
 		return $value;
 	}
