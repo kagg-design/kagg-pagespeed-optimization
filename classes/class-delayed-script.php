@@ -24,21 +24,59 @@ class Delayed_Script {
 		ob_start();
 
 		?>
+
 		<script type="text/javascript" async>
-			window.addEventListener(
-				'load',
-				function() {
-					setTimeout(
+			( () => {
+				'use strict';
+
+				let loaded = false,
+					scrolled = false,
+					timerId;
+
+				function load() {
+					if ( loaded ) {
+						return;
+					}
+
+					loaded = true;
+					clearTimeout( timerId );
+
+					window.removeEventListener( 'touchstart', load );
+					document.removeEventListener( 'mouseenter', load );
+					document.removeEventListener( 'click', load );
+					window.removeEventListener( 'load', delayedLoad );
+
+					(
 						<?php
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						echo $js;
 						?>
-						,
-						<?php echo (int) $delay; ?>
-					);
+					)();
 				}
-			);
+
+				function scrollHandler() {
+					if ( ! scrolled ) {
+						// Ignore first scroll event, which can be on page load.
+						scrolled = true;
+						return;
+					}
+
+					window.removeEventListener( 'scroll', scrollHandler );
+					load();
+				}
+
+				function delayedLoad() {
+					window.addEventListener( 'scroll', scrollHandler );
+					setTimeout( load, <?php echo (int) $delay; ?> );
+				}
+
+				window.addEventListener( 'touchstart', load );
+				document.addEventListener( 'mouseenter', load );
+				document.addEventListener( 'click', load );
+				window.addEventListener( 'load', delayedLoad );
+			} )();
 		</script>
+
 		<?php
 
 		return ob_get_clean();
