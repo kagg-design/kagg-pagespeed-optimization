@@ -46,12 +46,10 @@ class Delayed_Script {
 					document.removeEventListener( 'click', load );
 					window.removeEventListener( 'load', delayedLoad );
 
-					(
-						<?php
-						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						echo $js;
-						?>
-					)();
+					<?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $js;
+					?>
 				}
 
 				function scrollHandler() {
@@ -93,7 +91,6 @@ class Delayed_Script {
 
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
-		() => {
 		const t = document.getElementsByTagName( 'script' )[0];
 		const s = document.createElement('script');
 		s.type  = 'text/javascript';
@@ -111,7 +108,6 @@ class Delayed_Script {
 		?>
 		s.async = true;
 		t.parentNode.insertBefore( s, t );
-		}
 		<?php
 
 		$js = ob_get_clean();

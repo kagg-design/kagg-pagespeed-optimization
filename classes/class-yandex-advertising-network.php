@@ -122,7 +122,7 @@ class Yandex_Advertising_Network {
 		ob_start();
 
 		?>
-		() => ( function( w, d, n, s, t ) {
+		( function( w, d, n, s, t ) {
 		w[n] = w[n] || [];
 		w[n].push( function() {
 		<?php

@@ -938,7 +938,7 @@ class Main {
 			ob_start();
 
 			?>
-			() => ( function( d, w, c ) {
+			( function( d, w, c ) {
 			( w[c] = w[c] || [] ).push( function() {
 			try {
 			w.yaCounter<?php echo esc_html( $ya_metrika_id ); ?> = new Ya.Metrika( {
