@@ -352,7 +352,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 			'block_scripts'            => [
@@ -361,7 +361,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 			'delay_scripts'            => [
@@ -370,7 +370,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 			'styles_to_footer'         => [
@@ -379,7 +379,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 			'block_styles'             => [
@@ -388,7 +388,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line', 'kagg-pagespeed-optimization' ),
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 			'links_to_preload'         => [
@@ -397,7 +397,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' => __( 'Enter URLs, one per line', 'kagg-pagespeed-optimization' ),
+				'supplemental' => __( 'Enter URLs, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 			'fonts_to_preload'         => [
@@ -406,9 +406,7 @@ class Main {
 				'type'         => 'textarea',
 				'placeholder'  => '',
 				'helper'       => '',
-				'supplemental' =>
-					__( 'Enter json array as font_family => array_of_font_links. Example:', 'kagg-pagespeed-optimization' ) .
-					' { "FontAwesome": [ "https://site.org/wp-content/themes/cool/fonts/fontawesome-webfont.woff2?v=4.3.0", "https://site.org/wp-content/plugins/LayerSlider/assets/static/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0" ] }',
+				'supplemental' => __( 'Enter css urls containing @font-face directives, one per line.', 'kagg-pagespeed-optimization' ),
 				'default'      => [],
 			],
 		];
