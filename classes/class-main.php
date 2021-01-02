@@ -888,26 +888,29 @@ class Main {
 
 		// Google Analytics script.
 		if ( $ga_id ) {
-			echo "<script type='text/javascript' async>
+			$disable_display_features_code = ( 'yes' === $disable_display_features ) ? "ga('set', 'displayFeaturesTask', null);" : '';
+			$anonymize_ip_code             = ( 'on' === $anonymize_ip ) ? "ga('set', 'anonymizeIp', true);" : '';
+			$bounce_rate_code              = $bounce_rate ? 'setTimeout("ga(' . "'send','event','adjusted bounce rate','" . $bounce_rate . " seconds')" . '",' . $bounce_rate * 1000 . ');' : '';
+
+			ob_start();
+
+			?>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','" . esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ga'] ) . "','ga');";
+			})(window,document,'script','<?php echo esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ga'] ); ?>','ga');
+			ga('create', '<?php echo esc_html( $ga_id ); ?>', 'auto');
+			<?php echo esc_html( $disable_display_features_code ); ?>
+			<?php echo esc_html( $anonymize_ip_code ); ?>
+			ga('send', 'pageview');
+			<?php echo esc_html( $bounce_rate_code ); ?>
+			<?php
 
-			echo "\nga('create', '" . esc_html( $ga_id ) . "', 'auto');";
+			$js     = ob_get_clean();
+			$script = Delayed_Script::create( $js );
 
-			$disable_display_features_code = ( 'yes' === $disable_display_features ) ? "ga('set', 'displayFeaturesTask', null);" : '';
-			echo esc_html( "\n" . $disable_display_features_code );
-
-			$anonymize_ip_code = ( 'on' === $anonymize_ip ) ? "ga('set', 'anonymizeIp', true);" : '';
-			echo esc_html( "\n" . $anonymize_ip_code );
-
-			echo "\nga('send', 'pageview');";
-
-			$bounce_rate_code = ( $bounce_rate ) ? 'setTimeout("ga(' . "'send','event','adjusted bounce rate','" . $bounce_rate . " seconds')" . '",' . $bounce_rate * 1000 . ');' : '';
-			echo esc_html( "\n" . $bounce_rate_code );
-
-			echo "\n" . '</script>' . "\n";
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo "\n" . $script . "\n";
 		}
 
 		if ( $gtag_id ) {
@@ -933,8 +936,8 @@ class Main {
 			<?php
 		}
 
+		// Yandex Metrika script.
 		if ( $ya_metrika_id ) {
-			// Yandex Metrika script.
 			ob_start();
 
 			?>
