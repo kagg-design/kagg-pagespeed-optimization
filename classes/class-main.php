@@ -157,8 +157,8 @@ class Main {
 	 * Add settings page to the menu.
 	 */
 	public function add_settings_page() {
-		$page_title = __( 'PageSpeed Optimization', 'kagg-pagespeed-optimization' );
-		$menu_title = __( 'PageSpeed Opt.', 'kagg-pagespeed-optimization' );
+		$page_title = __( 'KAGG PageSpeed Optimization', 'kagg-pagespeed-optimization' );
+		$menu_title = __( 'KAGG PageSpeed', 'kagg-pagespeed-optimization' );
 		$capability = 'manage_options';
 		$slug       = 'pagespeed-optimization';
 		$callback   = [ $this, 'pagespeed_optimization_settings_page' ];
@@ -177,7 +177,7 @@ class Main {
 			<h2 id="title">
 				<?php
 				// Admin panel title.
-				echo( esc_html( __( 'PageSpeed Optimization', 'kagg-pagespeed-optimization' ) ) );
+				echo( esc_html( __( 'KAGG PageSpeed Optimization', 'kagg-pagespeed-optimization' ) ) );
 				?>
 			</h2>
 

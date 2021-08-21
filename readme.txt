@@ -1,10 +1,10 @@
-=== PageSpeed Optimization ===
+=== KAGG PageSpeed Optimization ===
 Contributors: kaggdesign
 Donate link: https://kagg.eu/en/
 Tags: PageSpeed, PageSpeed Optimization
 Requires at least: 4.4
-Tested up to: 5.6
-Stable tag: 1.0.0
+Tested up to: 5.8
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,6 +50,10 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 1. The PageSpeed Optimization settings page.
 
 == Changelog ==
+
+= 1.3.0 =
+* Tested with WordPress 5.8
+* Make all optimization for not logged-in users by default
 
 = 1.2 =
 * Tested with WordPress 5.6

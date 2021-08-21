@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: PageSpeed Optimization
+ * Plugin Name: KAGG PageSpeed Optimization
  * Plugin URI:
  * Description: Optimize external scripts by storing them locally
  * Author: KAGG Design
- * Version: 1.2
+ * Version: 1.3.0
  * Author URI: https://kagg.eu/en/
  * Requires at least: 4.4
  * Tested up to: 5.6
@@ -29,7 +29,7 @@ if ( defined( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION' ) ) {
 /**
  * Plugin version
  */
-define( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION', '1.2' );
+define( 'KAGG_PAGESPEED_OPTIMIZATION_VERSION', '1.3.0' );
 
 /**
  * Path to the plugin dir.
