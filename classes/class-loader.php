@@ -47,7 +47,11 @@ class Loader {
 
 		$this->loader_image_url = trim( $this->main->get_option( 'loader_image_url' ) );
 
-		// Print loader style and script.
+		if ( ! $this->loader_image_url ) {
+			return;
+		}
+
+			// Print loader style and script.
 		add_action( 'wp_head', [ $this, 'loader' ], - PHP_INT_MAX + 1 );
 
 		// Show loader div.
@@ -126,16 +130,10 @@ class Loader {
 		// data-skip-lazy works with Optimole plugin.
 		?>
 		<div id="kagg-pagespeed-loader">
-			<?php
-			if ( $this->loader_image_url ) {
-				?>
-				<img
-						src="<?php echo esc_url( $this->loader_image_url ); ?>"
-						alt=""
-						data-skip-lazy>
-				<?php
-			}
-			?>
+			<img
+					src="<?php echo esc_url( $this->loader_image_url ); ?>"
+					alt=""
+					data-skip-lazy>
 		</div>
 		<?php
 	}
