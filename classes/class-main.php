@@ -65,6 +65,18 @@ class Main {
 	];
 
 	/**
+	 * Options corresponding to the services.
+	 *
+	 * @var string[]
+	 */
+	private $service_options = [
+		'ga'         => 'ga_id',
+		'gmap'       => 'gmap_key',
+		'ya_metrika' => 'ya_metrika_id',
+		'ya_an'      => '', // @todo: Implement option.
+	];
+
+	/**
 	 * PageSpeed_Optimization constructor.
 	 */
 	public function __construct() {
@@ -774,13 +786,14 @@ class Main {
 		$filesystem = new Filesystem();
 
 		foreach ( $this->remote_urls as $service => $remote_filename ) {
+			$option = $this->get_option( $this->service_options[ $service ] );
+			if ( ! $option ) {
+				continue;
+			}
+
 			$key = '';
 			if ( 'gmap' === $service ) {
-				$gmap_key = $this->get_option( 'gmap_key' );
-				if ( ! $gmap_key ) {
-					continue;
-				}
-				$key = '?key=' . $gmap_key;
+				$key = '?key=' . $option;
 			}
 
 			$remote_file = $this->remote_urls[ $service ] . $key;
