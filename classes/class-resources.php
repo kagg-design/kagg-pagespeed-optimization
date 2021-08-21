@@ -163,20 +163,17 @@ class Resources {
 	private function add_parent_scripts( $scripts ) {
 		global $wp_scripts;
 
-		$scripts = array_unique( $scripts );
-
 		$parents = [];
 
 		foreach ( $wp_scripts->registered as $handle => $script ) {
 			$deps = $script->deps;
-			if ( array_intersect( $scripts, $deps ) ) {
-				if ( ! in_array( $handle, $parents, true ) ) {
-					$parents = array_unique( array_merge( $parents, $this->add_parent_scripts( [ $handle ] ) ) );
-				}
+			if ( array_intersect( $scripts, $deps ) && ! in_array( $handle, $parents, true ) ) {
+				$handle_parents = $this->add_parent_scripts( [ $handle ] );
+				$parents        = $handle_parents ? array_unique( array_merge( $parents, $handle_parents ) ) : $parents;
 			}
 		}
 
-		return array_unique( array_merge( $scripts, $parents ) );
+		return $parents ? array_unique( array_merge( $scripts, $parents ) ) : $scripts;
 	}
 
 	/**
@@ -417,7 +414,7 @@ class Resources {
 
 		switch ( $type ) {
 			case 'array':
-				return array_filter( array_map( 'trim', explode( "\n", $option ) ) );
+				return array_unique( array_filter( array_map( 'trim', explode( "\n", $option ) ) ) );
 			case 'json':
 				return (array) json_decode( $option );
 			default:
