@@ -78,6 +78,14 @@ class Main {
 			return;
 		}
 
+		if ( ! function_exists( 'is_user_logged_in' ) ) {
+			require_once ABSPATH . 'wp-includes/pluggable.php';
+		}
+
+		if ( is_user_logged_in() && 'yes' !== $this->get_option( 'optimize_logged_in' ) ) {
+			return;
+		}
+
 		new Resources( $this );
 		new Loader( $this );
 		new Yandex_Advertising_Network( $this );
@@ -331,6 +339,15 @@ class Main {
 			],
 			'remove_from_wp_cron'      => [
 				'label'        => __( 'Remove script from WP-Cron', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'checkbox',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+				'default'      => 'no',
+			],
+			'optimize_logged_in'       => [
+				'label'        => __( 'Optimize when logged-in', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
 				'placeholder'  => '',
@@ -1010,7 +1027,7 @@ class Main {
 
 		?>
 		<script type="text/javascript">
-			var head = document.getElementsByTagName( 'head' )[0];
+			var head = document.getElementsByTagName( 'head' )[ 0 ];
 
 			// Save the original method
 			var insertBefore = head.insertBefore;
@@ -1018,7 +1035,7 @@ class Main {
 			// Replace it!
 			head.insertBefore = function( newElement, referenceElement ) {
 
-				if ( newElement.href && newElement.href.indexOf( '//fonts.googleapis.com/css?family=Roboto' ) > - 1 ) {
+				if ( newElement.href && newElement.href.indexOf( '//fonts.googleapis.com/css?family=Roboto' ) > -1 ) {
 
 					return;
 				}
