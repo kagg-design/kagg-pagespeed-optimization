@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0]
+* Tested with WordPress 5.8
+* Added "Optimize when logged-in" option
+* Fix minor issues with cache and performance
+
 ## [1.2]
 * Tested with WordPress 5.6
 * Cache an.yandex.ru/system/context.js
