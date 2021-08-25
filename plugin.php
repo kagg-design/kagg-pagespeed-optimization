@@ -7,7 +7,7 @@
  * Version: 1.3.0
  * Author URI: https://kagg.eu/en/
  * Requires at least: 4.4
- * Tested up to: 5.6
+ * Tested up to: 5.8
  *
  * Text Domain: kagg-pagespeed-optimization
  * Domain Path: /languages/
