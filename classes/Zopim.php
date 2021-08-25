@@ -31,7 +31,27 @@ class Zopim {
 		}
 
 		remove_action( 'wp_footer', [ 'Zopim_Widget', 'zopimme' ] );
-		add_action( 'wp_footer', [ $this, 'zopim_me' ] );
+		add_action( 'wp_footer', [ $this, 'delayed_zopim_scripts' ] );
+	}
+
+
+	/**
+	 * Print delayed zopim scripts.
+	 */
+	public function delayed_zopim_scripts(): void {
+		ob_start();
+		$this->zopim_me();
+		$js = ob_get_clean();
+
+		$js = str_replace(
+			[ '<script type="text/javascript">', '</script>' ],
+			[ '', '' ],
+			$js
+		);
+		$js = preg_replace( '/<!--(.+)-->/', '// $1', $js );
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo Delayed_Script::create( $js );
 	}
 
 	/**
@@ -39,12 +59,12 @@ class Zopim {
 	 *
 	 * We need some CSS to position the paragraph.
 	 */
-	public static function zopim_me(): void {
+	private function zopim_me(): void {
 		$subdomain = get_option( Zopim_Options::ZENDESK_OPTION_SUBDOMAIN );
 
 		if ( $subdomain ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo self::get_widget_code_using_subdomain( $subdomain );
+			echo $this->get_widget_code_using_subdomain( $subdomain );
 
 			return;
 		}
@@ -73,6 +93,7 @@ class Zopim {
 		<!--Start of Zopim Live Chat Script-->
 		<script type="text/javascript">
 			window.$zopim || ( function( d, s ) {
+				let $zopim;
 				const z = $zopim = function( c ) {
 						z._.push( c );
 					},
@@ -105,7 +126,7 @@ class Zopim {
 
 		if ( $firstname && $user_email ) {
 			?>
-			<script>
+			<script type="text/javascript">
 				$zopim( function() {
 					$zopim.livechat.set( {
 						name: '<?php echo esc_html( $firstname ); ?>',
@@ -116,12 +137,12 @@ class Zopim {
 			<?php
 		}
 
-		echo '<script>';
+		echo "\n<script type=\"text/javascript\">\n";
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo Zopim_Options::get_widget_options();
-		echo '</script>';
+		echo "\n</script>\n";
 
-		echo '<!--End of Zendesk Chat Script-->';
+		echo "\n<!--End of Zendesk Chat Script-->\n";
 	}
 
 	/**
@@ -131,7 +152,7 @@ class Zopim {
 	 *
 	 * @return string
 	 */
-	private static function get_widget_code_using_subdomain( string $subdomain ): string {
+	private function get_widget_code_using_subdomain( string $subdomain ): string {
 		$url      = 'https://ekr.zdassets.com/snippets/web_widget/' . $subdomain . '.zendesk.com?dynamic_snippet=true';
 		$response = wp_remote_get( $url, [] );
 
