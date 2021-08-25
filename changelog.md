@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Add display:swap for Google fonts
 
 ## [1.0.2]
-* Tested with Wordpress 5.4
+* Tested with WordPress 5.4
 
 ## [1.0.0]
 * (22 October 2018). Initial Release.
