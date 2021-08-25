@@ -92,8 +92,8 @@ class Delayed_Script {
 	 */
 	public static function strip_and_create( string $js, int $delay = 3000 ): string {
 		$js = str_replace(
-			[ '<script type="text/javascript">', '</script>' ],
-			[ '', '' ],
+			[ '<script type="text/javascript">', '<script>', '</script>' ],
+			[ '', '', '' ],
 			$js
 		);
 
