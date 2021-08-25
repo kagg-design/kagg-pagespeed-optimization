@@ -105,6 +105,7 @@ class Main {
 		new Layer_Slider();
 		new Medusa();
 		new Zopim();
+		new FBShareLikeButton();
 	}
 
 	/**
