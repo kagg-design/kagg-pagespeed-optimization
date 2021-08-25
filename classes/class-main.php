@@ -104,6 +104,7 @@ class Main {
 		new Passive_Events();
 		new Layer_Slider();
 		new Medusa();
+		new Zopim();
 	}
 
 	/**
