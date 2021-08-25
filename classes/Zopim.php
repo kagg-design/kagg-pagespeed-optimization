@@ -8,7 +8,6 @@
 namespace KAGG\PageSpeed\Optimization;
 
 use Zopim_Options;
-use Zopim_Widget;
 
 /**
  * Class Zopim.
@@ -43,15 +42,8 @@ class Zopim {
 		$this->zopim_me();
 		$js = ob_get_clean();
 
-		$js = str_replace(
-			[ '<script type="text/javascript">', '</script>' ],
-			[ '', '' ],
-			$js
-		);
-		$js = preg_replace( '/<!--(.+)-->/', '// $1', $js );
-
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo Delayed_Script::create( $js );
+		echo Delayed_Script::strip_and_create( $js );
 	}
 
 	/**

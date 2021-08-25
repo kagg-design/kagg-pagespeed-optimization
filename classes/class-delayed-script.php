@@ -18,9 +18,9 @@ class Delayed_Script {
 	 * @param string $js    js code to wrap in setTimeout().
 	 * @param int    $delay Delay in ms.
 	 *
-	 * @return false|string
+	 * @return string
 	 */
-	public static function create( $js, $delay = 3000 ) {
+	public static function create( string $js, int $delay = 3000 ): string {
 		ob_start();
 
 		?>
@@ -81,12 +81,32 @@ class Delayed_Script {
 	}
 
 	/**
+	 * Strip javascript removing <script type="text/javascript">...</script> tags
+	 * and converting html comments to js comments.
+	 * Create delayed script then.
+	 *
+	 * @param string $js Javascript.
+	 * @param int    $delay Delay in ms.
+	 *
+	 * @return string
+	 */
+	public static function strip_and_create( string $js, int $delay = 3000 ): string {
+		$js = str_replace(
+			[ '<script type="text/javascript">', '</script>' ],
+			[ '', '' ],
+			$js
+		);
+
+		return self::create( $js, $delay );
+	}
+
+	/**
 	 * Launch script specified by source url.
 	 *
 	 * @param array $args  Arguments.
 	 * @param int   $delay Delay in ms.
 	 */
-	public static function launch( $args, $delay = 3000 ) {
+	public static function launch( array $args, int $delay = 3000 ): void {
 		ob_start();
 
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
