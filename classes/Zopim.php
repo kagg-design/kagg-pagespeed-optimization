@@ -82,8 +82,7 @@ class Zopim {
 		<!--Start of Zopim Live Chat Script-->
 		<script type="text/javascript">
 			window.$zopim || ( function( d, s ) {
-				let $zopim;
-				const z = $zopim = function( c ) {
+				const z = window.$zopim = function( c ) {
 						z._.push( c );
 					},
 					$ = z.s = d.createElement( s ),
