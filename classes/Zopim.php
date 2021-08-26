@@ -40,10 +40,7 @@ class Zopim {
 	public function delayed_zopim_scripts(): void {
 		ob_start();
 		$this->zopim_me();
-		$js = ob_get_clean();
-
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo Delayed_Script::strip_and_create( $js );
+		Delayed_Script::launch_html( ob_get_clean() );
 	}
 
 	/**

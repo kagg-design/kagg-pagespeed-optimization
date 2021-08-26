@@ -81,26 +81,6 @@ class Delayed_Script {
 	}
 
 	/**
-	 * Strip javascript removing <script type="text/javascript">...</script> tags
-	 * and converting html comments to js comments.
-	 * Create delayed script then.
-	 *
-	 * @param string $js Javascript.
-	 * @param int    $delay Delay in ms.
-	 *
-	 * @return string
-	 */
-	public static function strip_and_create( string $js, int $delay = 3000 ): string {
-		$js = str_replace(
-			[ '<script type="text/javascript">', '<script>', '</script>' ],
-			[ '', '', '' ],
-			$js
-		);
-
-		return self::create( $js, $delay );
-	}
-
-	/**
 	 * Launch script specified by source url.
 	 *
 	 * @param array $args  Arguments.
@@ -134,5 +114,35 @@ class Delayed_Script {
 
 		echo self::create( $js, $delay );
 		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Launch html code containing javascript.
+	 *
+	 * Combine javascript in <script...>...</script> tags.
+	 * Convert it to delayed script code and replace in the initial html.
+	 * Output resulted html.
+	 *
+	 * @param string $html  HTMl code with scripts.
+	 * @param int    $delay Delay in ms.
+	 */
+	public static function launch_html( string $html, int $delay = 3000 ): void {
+		$found = preg_match_all( '#<script.*?>(.*?)</script>#s', $html, $matches );
+		if ( $found ) {
+			$placeholder = '<!-- KAGG script placeholder -->';
+
+			foreach ( $matches as $index => $match ) {
+				$html = str_replace( $matches[0][ $index ], 0 === $index ? $placeholder : '', $html );
+			}
+
+			$html = str_replace(
+				$placeholder,
+				self::create( implode( "\n", $matches[1] ), $delay ),
+				$html
+			);
+		}
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $html;
 	}
 }
