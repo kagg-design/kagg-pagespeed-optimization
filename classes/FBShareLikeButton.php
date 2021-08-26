@@ -16,7 +16,7 @@ class FBShareLikeButton {
 	 *
 	 * @var string
 	 */
-	private $fb_root_div = '<div id="fb-root"></div>';
+	private string $fb_root_div = '<div id="fb-root"></div>';
 
 	/**
 	 * Constructor.
