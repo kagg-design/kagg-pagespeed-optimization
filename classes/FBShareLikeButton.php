@@ -11,6 +11,12 @@ namespace KAGG\PageSpeed\Optimization;
  * Class FBShareLikeButton.
  */
 class FBShareLikeButton {
+	/**
+	 * FB root div.
+	 *
+	 * @var string
+	 */
+	private $fb_root_div = '<div id="fb-root"></div>';
 
 	/**
 	 * Constructor.
@@ -35,12 +41,20 @@ class FBShareLikeButton {
 	 * Print delayed script.
 	 */
 	public function delayed_script(): void {
+		global $vifslb_like_settings;
+
 		ob_start();
 		$this->vifslb_like_func_footer();
 		$js = ob_get_clean();
 
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo Delayed_Script::strip_and_create( $js );
+		if ( 'html5' === $vifslb_like_settings['btntype'] ) {
+			$js = str_replace( $this->fb_root_div, '', $js );
+
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $this->fb_root_div;
+			echo Delayed_Script::strip_and_create( $js );
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 	}
 
 	/**
@@ -62,6 +76,8 @@ class FBShareLikeButton {
 			return;
 		}
 
+		$app_id = '';
+
 		foreach ( $app_ids as $app_id ) {
 			if ( is_numeric( $app_id ) ) {
 				break;
@@ -73,14 +89,15 @@ class FBShareLikeButton {
 		}
 
 		if ( 'html5' === $vifslb_like_settings['btntype'] ) {
-			echo '<div id="fb-root"></div>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $this->fb_root_div;
 			?>
 			<script>( function( d, s, id ) {
 					var js, fjs = d.getElementsByTagName( s )[ 0 ];
 					if ( d.getElementById( id ) ) return;
 					js = d.createElement( s );
 					js.id = id;
-					js.src = "//connect.facebook.net/<?php echo $lang1; ?>/sdk.js#xfbml=1&version=v2.7&appId=<?php echo $app_id; ?>";
+					js.src = "//connect.facebook.net/<?php echo esc_html( $lang1 ); ?>/sdk.js#xfbml=1&version=v2.7&appId=<?php echo esc_html( $app_id ); ?>";
 					fjs.parentNode.insertBefore( js, fjs );
 				}( document, 'script', 'facebook-jssdk' ) );
 			</script>
