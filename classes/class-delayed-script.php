@@ -20,7 +20,7 @@ class Delayed_Script {
 	 *
 	 * @return string
 	 */
-	public static function create( string $js, int $delay = 3000 ): string {
+	public static function create( $js, $delay = 3000 ) {
 		ob_start();
 
 		?>
@@ -86,7 +86,7 @@ class Delayed_Script {
 	 * @param array $args  Arguments.
 	 * @param int   $delay Delay in ms.
 	 */
-	public static function launch( array $args, int $delay = 3000 ): void {
+	public static function launch( $args, $delay = 3000 ) {
 		ob_start();
 
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -126,7 +126,7 @@ class Delayed_Script {
 	 * @param string $html  HTMl code with scripts.
 	 * @param int    $delay Delay in ms.
 	 */
-	public static function launch_html( string $html, int $delay = 3000 ): void {
+	public static function launch_html( $html, $delay = 3000 ) {
 		$found = preg_match_all( '#<script.*?>(.*?)</script>#s', $html, $matches );
 		if ( $found ) {
 			$placeholder = '<!-- KAGG script placeholder -->';
