@@ -23,6 +23,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/tedious/JShrink.git"
     }
   ],
   "minimum-stability": "dev",
@@ -31,6 +35,13 @@
     "platform": {
       "php": "5.6"
     }
+  },
+  "require": {
+    "tedivm/jshrink": "^v1.4"
+  }
+  ,
+  "require-dev": {
+    "roave/security-advisories": "dev-latest"
   },
   "autoload": {
     "classmap": [

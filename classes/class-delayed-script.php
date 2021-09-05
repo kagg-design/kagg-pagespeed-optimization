@@ -7,6 +7,9 @@
 
 namespace KAGG\PageSpeed\Optimization;
 
+use Exception;
+use JShrink\Minifier;
+
 /**
  * Class Delayed_Script
  */
@@ -29,7 +32,12 @@ class Delayed_Script {
 	 */
 	public static function create( $js, $delay = - 1 ) {
 		ob_start();
+		?>
+		<!--suppress JSUnusedAssignment, JSUnusedLocalSymbols -->
+		<?php
+		ob_get_clean();
 
+		ob_start();
 		?>
 
 		<script type="text/javascript" async>
@@ -88,8 +96,17 @@ class Delayed_Script {
 		</script>
 
 		<?php
+		$js = ob_get_clean();
 
-		return ob_get_clean();
+		if ( ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG ) {
+			try {
+				$js = (string) Minifier::minify( $js );
+			} catch ( Exception $ex ) {
+				$js = '';
+			}
+		}
+
+		return $js;
 	}
 
 	/**
