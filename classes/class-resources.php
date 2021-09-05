@@ -412,6 +412,13 @@ class Resources {
 		foreach ( $this->delayed_scripts as $handle ) {
 			if ( wp_script_is( $handle, 'registered' ) ) {
 				$src = $wp_scripts->registered[ $handle ]->src;
+
+				if ( ! $src ) {
+					continue;
+				}
+
+				$wp_scripts->print_extra_script( $handle );
+
 				$src = str_replace( '#asyncload', '', $src );
 
 				wp_dequeue_script( $handle );
