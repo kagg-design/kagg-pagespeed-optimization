@@ -13,6 +13,13 @@ namespace KAGG\PageSpeed\Optimization;
 class Delayed_Script {
 
 	/**
+	 * List of delayed scripts.
+	 *
+	 * @var array
+	 */
+	private static $delayed_scripts = [];
+
+	/**
 	 * Create delayed script.
 	 *
 	 * @param string $js    js code to wrap in setTimeout().
@@ -46,6 +53,7 @@ class Delayed_Script {
 					document.removeEventListener( 'click', load );
 					window.removeEventListener( 'load', delayedLoad );
 
+					let s;
 					<?php
 					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $js;
@@ -91,33 +99,8 @@ class Delayed_Script {
 	 * @param int   $delay Delay in ms.
 	 */
 	public static function launch( $args, $delay = 3000 ) {
-		ob_start();
-
-		?>
-		const t = document.getElementsByTagName( 'script' )[0];
-		const s = document.createElement('script');
-		s.type  = 'text/javascript';
-		<?php
-		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		foreach ( $args as $key => $arg ) {
-			if ( 'data' === $key ) {
-				foreach ( $arg as $data_key => $data_arg ) {
-					echo "s.dataset.$data_key = '$data_arg';\n";
-				}
-				continue;
-			}
-
-			echo "s['$key'] = '$arg';\n";
-		}
-		?>
-		s.async = true;
-		t.parentNode.insertBefore( s, t );
-		<?php
-
-		$js = ob_get_clean();
-
-		echo self::create( $js, $delay );
-		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo self::create( self::get_js( $args ), $delay );
 	}
 
 	/**
@@ -148,5 +131,68 @@ class Delayed_Script {
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $html;
+	}
+
+	/**
+	 * Prepare to launch script specified by source url.
+	 *
+	 * @param array $args  Arguments.
+	 * @param int   $delay Delay in ms.
+	 */
+	public static function store( $args, $delay = 3000 ) {
+		self::$delayed_scripts[ (int) $delay ][] = $args;
+	}
+
+	/**
+	 * Launch stored scripts.
+	 */
+	public static function launch_stored_scripts() {
+		foreach ( self::$delayed_scripts as $delay => $delayed_scripts ) {
+			$scripts = [];
+
+			foreach ( $delayed_scripts as $delayed_script ) {
+				$scripts[] = self::get_js( $delayed_script, false );
+			}
+
+			if ( ! empty( $scripts ) ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo self::create( implode( "\n", $scripts ), $delay );
+			}
+		}
+	}
+
+	/**
+	 * Get js for delayed launch of the script.
+	 *
+	 * @param array $args  Script arguments.
+	 * @param bool  $async Launch as async.
+	 *
+	 * @return string
+	 */
+	private static function get_js( array $args, $async = true ) {
+		ob_start();
+
+		?>
+		s = document.createElement('script');
+		s.type  = 'text/javascript';
+		<?php
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		foreach ( $args as $key => $arg ) {
+			if ( 'data' === $key ) {
+				foreach ( $arg as $data_key => $data_arg ) {
+					echo "s.dataset.$data_key = '$data_arg';\n";
+				}
+				continue;
+			}
+
+			echo "s['$key'] = '$arg';\n";
+		}
+		?>
+		s.async = <?php echo $async ? 'true' : 'false'; ?>;
+		document.body.appendChild( s );
+		<?php
+
+		return ob_get_clean();
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

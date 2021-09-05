@@ -52,6 +52,13 @@ class Resources {
 	private $delay_scripts = [];
 
 	/**
+	 * Delayed scripts.
+	 *
+	 * @var string[]
+	 */
+	private $delayed_scripts = [];
+
+	/**
 	 * Styles to move from header to footer.
 	 *
 	 * @var string[]
@@ -128,6 +135,9 @@ class Resources {
 
 		// Delay some scripts.
 		add_action( 'wp_print_footer_scripts', [ $this, 'delay_scripts' ], - PHP_INT_MAX );
+
+		// Launch delayed scripts.
+		add_action( 'wp_print_footer_scripts', [ Delayed_Script::class, 'launch_stored_scripts' ], - PHP_INT_MAX + 1 );
 	}
 
 	/**
@@ -148,6 +158,15 @@ class Resources {
 			if ( wp_script_is( $script, 'enqueued' ) ) {
 				wp_dequeue_script( $script );
 				$this->moved_scripts[] = $script;
+			}
+		}
+
+		$scripts = $this->add_parent_scripts( $this->delay_scripts );
+
+		foreach ( $scripts as $script ) {
+			if ( wp_script_is( $script, 'enqueued' ) ) {
+				wp_dequeue_script( $script );
+				$this->delayed_scripts[] = $script;
 			}
 		}
 	}
@@ -390,13 +409,13 @@ class Resources {
 	public function delay_scripts() {
 		global $wp_scripts;
 
-		foreach ( $this->delay_scripts as $handle ) {
-			if ( wp_script_is( $handle, 'registered' ) && wp_script_is( $handle, 'enqueued' ) ) {
+		foreach ( $this->delayed_scripts as $handle ) {
+			if ( wp_script_is( $handle, 'registered' ) ) {
 				$src = $wp_scripts->registered[ $handle ]->src;
 				$src = str_replace( '#asyncload', '', $src );
 
 				wp_dequeue_script( $handle );
-				Delayed_Script::launch( [ 'src' => $src ] );
+				Delayed_Script::store( [ 'src' => $src ] );
 			}
 		}
 	}
