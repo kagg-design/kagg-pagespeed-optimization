@@ -160,15 +160,6 @@ class Resources {
 				$this->moved_scripts[] = $script;
 			}
 		}
-
-		$scripts = $this->add_parent_scripts( $this->delay_scripts );
-
-		foreach ( $scripts as $script ) {
-			if ( wp_script_is( $script, 'enqueued' ) ) {
-				wp_dequeue_script( $script );
-				$this->delayed_scripts[] = $script;
-			}
-		}
 	}
 
 	/**
@@ -409,6 +400,16 @@ class Resources {
 	public function delay_scripts() {
 		global $wp_scripts;
 
+		// We have to do it here as some scripts can be enqueued from the content or footer.
+		$scripts = $this->add_parent_scripts( $this->delay_scripts );
+
+		foreach ( $scripts as $script ) {
+			if ( wp_script_is( $script, 'enqueued' ) ) {
+				wp_dequeue_script( $script );
+				$this->delayed_scripts[] = $script;
+			}
+		}
+
 		foreach ( $this->delayed_scripts as $handle ) {
 			if ( wp_script_is( $handle, 'registered' ) ) {
 				$src = $wp_scripts->registered[ $handle ]->src;
@@ -417,6 +418,8 @@ class Resources {
 					continue;
 				}
 
+				$wp_scripts->print_inline_script( $handle, 'before' );
+				$wp_scripts->print_inline_script( $handle, 'after' );
 				$wp_scripts->print_extra_script( $handle );
 
 				$src = str_replace( '#asyncload', '', $src );
