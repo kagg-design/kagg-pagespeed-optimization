@@ -160,6 +160,15 @@ class Resources {
 				$this->moved_scripts[] = $script;
 			}
 		}
+
+		$scripts = $this->add_parent_scripts( $this->delay_scripts );
+
+		foreach ( $scripts as $script ) {
+			if ( wp_script_is( $script, 'enqueued' ) ) {
+				wp_dequeue_script( $script );
+				$this->delayed_scripts[] = $script;
+			}
+		}
 	}
 
 	/**
@@ -400,7 +409,7 @@ class Resources {
 	public function delay_scripts() {
 		global $wp_scripts;
 
-		// We have to do it here as some scripts can be enqueued from the content or footer.
+		// We have to do it here again as some scripts can be enqueued from the content or footer.
 		$scripts = $this->add_parent_scripts( $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
