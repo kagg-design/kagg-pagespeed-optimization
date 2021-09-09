@@ -290,6 +290,8 @@ class Resources {
 
 	/**
 	 * Print preload links.
+	 *
+	 * @noinspection DisconnectedForeachInstructionInspection
 	 */
 	public function head() {
 		$content_types = [
@@ -332,15 +334,27 @@ class Resources {
 			echo '<link rel="preconnect" href="' . esc_url( $link ) . "\">\n";
 		}
 
-		foreach ( $this->fonts_preload_links as $link ) {
+		foreach ( $this->fonts_preload_links as $index => $link ) {
+			if ( 0 === $index ) {
+				echo "\n";
+			}
+
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $link . "\n";
 		}
 
-		foreach ( $links_to_preload as $link ) {
+		if ( $links_to_preload ) {
+			echo "\n";
+		}
+
+		foreach ( $links_to_preload as $index => $link ) {
+			if ( 0 === $index ) {
+				echo "\n";
+			}
+
 			$ext = pathinfo( preg_replace( '/(.+)\?.+$/', '$1', $link ), PATHINFO_EXTENSION );
 
-			if ( ! isset( $content_types[ $ext ] ) ) {
+			if ( ! ( isset( $content_types[ $ext ] ) && is_array( $content_types[ $ext ] ) ) ) {
 				continue;
 			}
 
@@ -373,16 +387,16 @@ class Resources {
 	 * Output generated css for fonts.
 	 */
 	private function font_display_swap() {
-		?>
-		<style id="kagg-pagespeed-optimization-fonts-generated-css" type="text/css">
-			<?php
-			foreach ( $this->fonts_generated_css as $generated_css ) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $generated_css . "\n";
-			}
-			?>
-		</style>
-		<?php
+		if ( ! $this->fonts_generated_css ) {
+			return;
+		}
+
+		echo "\n<style id=\"kagg-pagespeed-optimization-fonts-generated-css\">\n";
+		foreach ( $this->fonts_generated_css as $generated_css ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo "\t" . $generated_css . "\n";
+		}
+		echo "</style>\n";
 	}
 
 	/**
