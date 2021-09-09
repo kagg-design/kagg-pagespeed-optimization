@@ -106,6 +106,7 @@ class Main {
 		new Medusa();
 		new Zopim();
 		new FBShareLikeButton();
+		new StatCounter();
 	}
 
 	/**
