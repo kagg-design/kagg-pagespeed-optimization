@@ -8,3 +8,11 @@
     display: inline-block;
     vertical-align: middle;
 }
+
+.settings_page_pagespeed-optimization textarea {
+    width: 25em;
+}
+
+#links_to_preload, #fonts_to_preload {
+    width: 100%;
+}
