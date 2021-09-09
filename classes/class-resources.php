@@ -433,23 +433,27 @@ class Resources {
 			}
 		}
 
+		$this->delayed_scripts = array_unique( $this->delayed_scripts );
+
 		foreach ( $this->delayed_scripts as $handle ) {
-			if ( wp_script_is( $handle, 'registered' ) ) {
-				$src = $wp_scripts->registered[ $handle ]->src;
-
-				if ( ! $src ) {
-					continue;
-				}
-
-				$wp_scripts->print_inline_script( $handle, 'before' );
-				$wp_scripts->print_inline_script( $handle, 'after' );
-				$wp_scripts->print_extra_script( $handle );
-
-				$src = str_replace( '#asyncload', '', $src );
-
-				wp_dequeue_script( $handle );
-				Delayed_Script::store( [ 'src' => $src ] );
+			if ( ! wp_script_is( $handle, 'registered' ) ) {
+				continue;
 			}
+
+			$src = $wp_scripts->registered[ $handle ]->src;
+
+			if ( ! $src ) {
+				continue;
+			}
+
+			$wp_scripts->print_inline_script( $handle, 'before' );
+			$wp_scripts->print_inline_script( $handle, 'after' );
+			$wp_scripts->print_extra_script( $handle );
+
+			$src = str_replace( '#asyncload', '', $src );
+
+			wp_dequeue_script( $handle );
+			Delayed_Script::store( [ 'src' => $src ] );
 		}
 	}
 
