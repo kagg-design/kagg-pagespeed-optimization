@@ -113,8 +113,8 @@ class Resources {
 		$this->delay_scripts       = $this->get_option( 'delay_scripts' );
 		$this->styles_to_footer    = $this->get_option( 'styles_to_footer' );
 		$this->block_styles        = $this->get_option( 'block_styles' );
-		$this->fonts_generated_css = $this->get_option( '_fonts_generated_css' );
-		$this->fonts_preload_links = $this->get_option( '_fonts_preload_links' );
+		$this->fonts_generated_css = $this->get_option( '_fonts_generated_css', 'array' );
+		$this->fonts_preload_links = $this->get_option( '_fonts_preload_links', 'array' );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
 		add_action( 'wp_print_scripts', [ $this, 'remove_scripts_from_header' ], PHP_INT_MAX );
@@ -393,6 +393,10 @@ class Resources {
 
 		echo "\n<style id=\"kagg-pagespeed-optimization-fonts-generated-css\">\n";
 		foreach ( $this->fonts_generated_css as $generated_css ) {
+			if ( 0 !== strpos( $generated_css, '@' ) && 0 !== strpos( $generated_css, '}' ) ) {
+				$generated_css = "\t" . $generated_css;
+			}
+
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo "\t" . $generated_css . "\n";
 		}
@@ -465,14 +469,16 @@ class Resources {
 	 *
 	 * @return array
 	 */
-	private function get_option( $name, $type = 'array' ) {
+	private function get_option( $name, $type = 'unique_array' ) {
 		$option = $this->main->get_option( $name );
 
 		switch ( $type ) {
 			case 'array':
-				return array_unique( array_filter( array_map( 'trim', explode( "\n", $option ) ) ) );
+				return array_filter( array_map( 'trim', explode( "\n", $option ) ) );
 			case 'json':
 				return (array) json_decode( $option );
+			case 'unique_array':
+				return array_unique( array_filter( array_map( 'trim', explode( "\n", $option ) ) ) );
 			default:
 		}
 

@@ -1209,9 +1209,7 @@ class Main {
 		$links         = [];
 
 		foreach ( $css_urls as $css_url ) {
-			$args     = [
-				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
-			];
+			$args     = [ 'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36' ];
 			$response = wp_remote_get( $css_url, $args );
 
 			$css = wp_remote_retrieve_body( $response );
@@ -1220,7 +1218,7 @@ class Main {
 				continue;
 			}
 
-			$result = preg_match_all( '#(?:/\*.*\*/\s*)?@font-face\s*{(?:[\s\S]*?)}#i', $css, $matches );
+			$result = preg_match_all( '#(?:/\*.*\*/\s*)?@font-face\s*{[\s\S]*?}#i', $css, $matches );
 
 			if ( 0 === (int) $result ) {
 				continue;
