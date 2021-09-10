@@ -1232,9 +1232,8 @@ class Main {
 				);
 
 				for ( $i = 0; $i < $url_result; $i ++ ) {
-					$url          = trim( $m[1][ $i ], "'" );
-					$absolute_url = $this->absolute_url( $url, $css_url );
-					$format       = trim( $m[2][ $i ], "'" );
+					$url    = trim( $m[1][ $i ], "'\"" );
+					$format = trim( $m[2][ $i ], "'\"" );
 
 					// @todo: Add option to select font formats to preload.
 					if ( ( 'woff' !== $format ) && ( 'woff2' !== $format ) ) {
@@ -1246,7 +1245,8 @@ class Main {
 						'type="' . $font_face_formats_to_types[ $format ] . '" ' :
 						'';
 
-					$links[] = '<link rel="preload" href="' . $absolute_url . '" as="font" ' . $type . 'crossorigin="anonymous">';
+					$absolute_url = $this->absolute_url( $url, $css_url );
+					$links[]      = '<link rel="preload" href="' . $absolute_url . '" as="font" ' . $type . 'crossorigin="anonymous">';
 
 					$font_face = str_replace( $url, $absolute_url, $font_face );
 				}
