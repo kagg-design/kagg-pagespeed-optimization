@@ -446,15 +446,17 @@ class Resources {
 
 			$src = $wp_scripts->registered[ $handle ]->src;
 
+			$src = str_replace( '#asyncload', '', $src );
+
 			if ( ! $src ) {
 				continue;
 			}
 
+			// @todo: Print before, after and extra script properly inside of delayed script.
+			// Currently, this cause a problem if after script, for instance, depends on main script.
 			$wp_scripts->print_inline_script( $handle, 'before' );
 			$wp_scripts->print_inline_script( $handle, 'after' );
 			$wp_scripts->print_extra_script( $handle );
-
-			$src = str_replace( '#asyncload', '', $src );
 
 			wp_dequeue_script( $handle );
 			Delayed_Script::store( [ 'src' => $src ] );
