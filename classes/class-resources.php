@@ -439,6 +439,11 @@ class Resources {
 
 		$this->delayed_scripts = array_unique( $this->delayed_scripts );
 
+		$saved_to_do = $wp_scripts->to_do;
+		$wp_scripts->all_deps( $this->delayed_scripts, false, 1 );
+		$this->delayed_scripts = array_intersect( $wp_scripts->to_do, $this->delayed_scripts );
+		$wp_scripts->to_do     = $saved_to_do;
+
 		foreach ( $this->delayed_scripts as $handle ) {
 			if ( ! wp_script_is( $handle, 'registered' ) ) {
 				continue;
