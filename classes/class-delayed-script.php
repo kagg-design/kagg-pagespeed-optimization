@@ -132,11 +132,12 @@ class Delayed_Script {
 	 */
 	public static function launch_html( $html, $delay = - 1 ) {
 		$found = preg_match_all( '#<script.*?>(.*?)</script>#s', $html, $matches );
+
 		if ( $found ) {
 			$placeholder = '<!-- KAGG script placeholder -->';
 
-			foreach ( $matches as $index => $match ) {
-				$html = str_replace( $matches[0][ $index ], 0 === $index ? $placeholder : '', $html );
+			foreach ( $matches[0] as $index => $match ) {
+				$html = str_replace( $match, 0 === $index ? $placeholder : '', $html );
 			}
 
 			$html = str_replace(
