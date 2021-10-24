@@ -58,6 +58,7 @@ class Delayed_Script {
 
 					window.removeEventListener( 'touchstart', load );
 					document.removeEventListener( 'mouseenter', load );
+					document.removeEventListener( 'mouseover', load );
 					document.removeEventListener( 'click', load );
 					window.removeEventListener( 'load', delayedLoad );
 
@@ -90,6 +91,7 @@ class Delayed_Script {
 
 				window.addEventListener( 'touchstart', load );
 				document.addEventListener( 'mouseenter', load );
+				document.addEventListener( 'mouseover', load );
 				document.addEventListener( 'click', load );
 				window.addEventListener( 'load', delayedLoad );
 			} )();
