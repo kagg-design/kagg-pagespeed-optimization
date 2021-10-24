@@ -51,6 +51,10 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 
 == Changelog ==
 
+= 1.4.0 =
+* Added sorting of delayed scripts in the proper order of dependencies.
+* Updated Yandex Metrika code.
+
 = 1.3.0 =
 * Tested with WordPress 5.8
 * Make all optimization for not logged-in users by default

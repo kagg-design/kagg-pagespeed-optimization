@@ -33,6 +33,7 @@
     }
   },
   "require": {
+    "ext-json": "*",
     "tedivm/jshrink": "^v1.4"
   },
   "require-dev": {

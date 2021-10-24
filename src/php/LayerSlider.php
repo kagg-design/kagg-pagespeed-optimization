@@ -37,14 +37,13 @@ class LayerSlider {
 	/**
 	 * Filters the output created by a shortcode callback.
 	 *
-	 * @since 4.7.0
-	 *
 	 * @param string       $output Shortcode output.
 	 * @param string       $tag    Shortcode name.
 	 * @param array|string $attr   Shortcode attributes array or empty string.
 	 * @param array        $m      Regular expression match array.
 	 *
 	 * @return string
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function do_shortcode_tag( $output, $tag, $attr, $m ) {
 		if ( 'layerslider' !== $tag ) {

@@ -61,14 +61,11 @@ class YandexAdvertisingNetwork {
 	 * @return string
 	 */
 	public function remove_rtb_blocks( $content ) {
-		$new_content =
-			preg_replace_callback(
-				'#<script [\s\S]+?(?:</script>)+?#i',
-				[ $this, 'remove_rtb_blocks_callback' ],
-				$content
-			);
-
-		return $new_content;
+		return preg_replace_callback(
+			'#<script [\s\S]+?(?:</script>)+?#i',
+			[ $this, 'remove_rtb_blocks_callback' ],
+			$content
+		);
 	}
 
 	/**

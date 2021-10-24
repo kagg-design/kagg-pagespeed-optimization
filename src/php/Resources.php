@@ -142,6 +142,8 @@ class Resources {
 
 	/**
 	 * Remove scripts from header.
+	 *
+	 * @noinspection ArgumentEqualsDefaultValueInspection
 	 */
 	public function remove_scripts_from_header() {
 		$scripts = $this->add_parent_scripts( $this->block_scripts );
@@ -247,10 +249,8 @@ class Resources {
 
 		foreach ( $wp_styles->registered as $handle => $style ) {
 			$deps = $style->deps;
-			if ( array_intersect( $styles, $deps ) ) {
-				if ( ! in_array( $handle, $parents, true ) ) {
-					$parents = array_unique( array_merge( $parents, $this->add_parent_styles( [ $handle ] ) ) );
-				}
+			if ( array_intersect( $styles, $deps ) && ! in_array( $handle, $parents, true ) ) {
+				$parents = array_unique( array_merge( $parents, $this->add_parent_styles( [ $handle ] ) ) );
 			}
 		}
 
@@ -276,7 +276,7 @@ class Resources {
 	 * @param string $tag    Script tag.
 	 * @param string $handle Script handle.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function script_loader_tag_filter( $tag, $handle ) {
 		$defer = [];
@@ -412,6 +412,7 @@ class Resources {
 	 * @param string $media  The stylesheet's media attribute.
 	 *
 	 * @return string
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function style_loader_tag_filter( $tag, $handle, $href, $media ) {
 		if ( 0 === strpos( $href, 'https://fonts.googleapis.com' ) ) {
@@ -423,6 +424,8 @@ class Resources {
 
 	/**
 	 * Delay some scripts.
+	 *
+	 * @noinspection ArgumentEqualsDefaultValueInspection
 	 */
 	public function delay_scripts() {
 		global $wp_scripts;
@@ -483,7 +486,7 @@ class Resources {
 			case 'array':
 				return array_filter( array_map( 'trim', explode( "\n", $option ) ) );
 			case 'json':
-				return (array) json_decode( $option );
+				return (array) json_decode( $option, true );
 			case 'unique_array':
 				return array_unique( array_filter( array_map( 'trim', explode( "\n", $option ) ) ) );
 			default:

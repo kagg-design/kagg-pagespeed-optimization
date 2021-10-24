@@ -520,7 +520,7 @@ class Main {
 			$this->settings[ $key ] = isset( $form_fields[ $key ] ) ? $this->get_field_default( $form_fields[ $key ] ) : '';
 		}
 
-		if ( ! is_null( $empty_value ) && '' === $this->settings[ $key ] ) {
+		if ( '' === $this->settings[ $key ] && ! is_null( $empty_value ) ) {
 			$this->settings[ $key ] = $empty_value;
 		}
 
@@ -546,6 +546,7 @@ class Main {
 	 * @param string $option    Option name.
 	 *
 	 * @return mixed
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function pre_update_option_filter( $value, $old_value, $option ) {
 		if ( $value === $old_value ) {
@@ -554,7 +555,7 @@ class Main {
 
 		$form_fields = $this->get_form_fields();
 		foreach ( $form_fields as $key => $form_field ) {
-			$value[ $key ] = isset( $value[ $key ] ) ? $value[ $key ] : $form_fields[ $key ];
+			$value[ $key ] = isset( $value[ $key ] ) ? $value[ $key ] : $form_field;
 			switch ( $form_field['type'] ) {
 				case 'checkbox':
 					$value[ $key ] = '1' === $value[ $key ] || 'yes' === $value[ $key ] ? 'yes' : 'no';
@@ -563,9 +564,7 @@ class Main {
 			}
 		}
 
-		$value = $this->generate_font_css( $value, $old_value );
-
-		return $value;
+		return $this->generate_font_css( $value, $old_value );
 	}
 
 	/**
@@ -694,10 +693,8 @@ class Main {
 					$options_markup = '';
 					foreach ( $arguments['options'] as $key => $label ) {
 						$selected = '';
-						if ( is_array( $value ) ) {
-							if ( in_array( $key, $value, true ) ) {
-								$selected = selected( $key, $key, false );
-							}
+						if ( is_array( $value ) && in_array( $key, $value, true ) ) {
+							$selected = selected( $key, $key, false );
 						}
 						$options_markup .= sprintf(
 							'<option value="%s" %s>%s</option>',
@@ -755,7 +752,8 @@ class Main {
 	 * @param array  $links Plugin links.
 	 * @param string $file  Filename.
 	 *
-	 * @return array|mixed Plugin links
+	 * @return array Plugin links
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function add_settings_link( $links, $file ) {
 		$action_links = [
@@ -860,8 +858,6 @@ class Main {
 		if ( function_exists( 'wp_cache_clean_cache' ) ) {
 			global $file_prefix;
 			wp_cache_clean_cache( $file_prefix, true );
-
-			return;
 		}
 	}
 
@@ -1019,16 +1015,14 @@ class Main {
 
 		?>
 		<script type="text/javascript">
-			var head = document.getElementsByTagName( 'head' )[ 0 ];
+			const head = document.getElementsByTagName( 'head' )[ 0 ];
 
 			// Save the original method
-			var insertBefore = head.insertBefore;
+			const insertBefore = head.insertBefore;
 
 			// Replace it!
 			head.insertBefore = function( newElement, referenceElement ) {
-
 				if ( newElement.href && newElement.href.indexOf( '//fonts.googleapis.com/css?family=Roboto' ) > -1 ) {
-
 					return;
 				}
 
@@ -1143,13 +1137,11 @@ class Main {
 			$this->local_filenames
 		);
 
-		$html = str_replace(
+		return str_replace(
 			$this->remote_urls,
 			$local_filenames,
 			$html
 		);
-
-		return $html;
 	}
 
 	/**

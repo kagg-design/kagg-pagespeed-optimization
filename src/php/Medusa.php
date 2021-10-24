@@ -42,6 +42,8 @@ class Medusa {
 
 	/**
 	 * Print theme inline styles in footer.
+	 *
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	public function print_footer_scripts() {
 		theme_option_styles();

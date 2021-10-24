@@ -20,7 +20,7 @@ class Filesystem {
 	 *
 	 * @var WP_Filesystem_Direct
 	 */
-	private $wp_filesystem = null;
+	private $wp_filesystem;
 
 	/**
 	 * PageSpeed_Filesystem constructor.
@@ -64,7 +64,7 @@ class Filesystem {
 	 *
 	 * @param string $filename Name of the file to read.
 	 *
-	 * @return bool|mixed
+	 * @return string|false
 	 */
 	public function read( $filename ) {
 		if ( ! $this->wp_filesystem ) {

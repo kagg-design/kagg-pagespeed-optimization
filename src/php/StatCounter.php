@@ -21,6 +21,8 @@ class StatCounter {
 
 	/**
 	 * Init hooks.
+	 *
+	 * @noinspection PhpUndefinedConstantInspection
 	 */
 	public function init_hooks() {
 		if ( ! defined( 'key_sc_project' ) ) {
@@ -39,6 +41,8 @@ class StatCounter {
 
 	/**
 	 * Launch StatCounter script.
+	 *
+	 * @noinspection PhpUndefinedConstantInspection
 	 */
 	public function add_statcounter() {
 		$sc_project   = get_option( key_sc_project );

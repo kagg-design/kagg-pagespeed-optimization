@@ -5,6 +5,9 @@
  * @package kagg_pagespeed_optimization
  */
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace KAGG\PageSpeed\Optimization;
 
 use Zopim_Options;
@@ -47,6 +50,9 @@ class Zopim {
 	 * Run zopim widget
 	 *
 	 * We need some CSS to position the paragraph.
+	 *
+	 * @noinspection PhpUndefinedConstantInspection
+	 * @noinspection PhpUndefinedClassInspection
 	 */
 	private function zopim_me() {
 		$subdomain = get_option( Zopim_Options::ZENDESK_OPTION_SUBDOMAIN );

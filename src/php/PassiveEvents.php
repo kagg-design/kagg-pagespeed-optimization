@@ -28,6 +28,8 @@ class PassiveEvents {
 
 	/**
 	 * Enqueue passive event script.
+	 *
+	 * @noinspection ArgumentEqualsDefaultValueInspection
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script(
