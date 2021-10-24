@@ -32,7 +32,7 @@ class Passive_Events {
 	public function enqueue_scripts() {
 		wp_enqueue_script(
 			'pagespeed-optimization-passive-events',
-			KAGG_PAGESPEED_OPTIMIZATION_URL . '/js/passive-events.js',
+			KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/js/passive-events.js',
 			[],
 			KAGG_PAGESPEED_OPTIMIZATION_VERSION,
 			false

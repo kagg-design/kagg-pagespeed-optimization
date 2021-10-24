@@ -177,7 +177,7 @@ class Main {
 		$capability = 'manage_options';
 		$slug       = 'pagespeed-optimization';
 		$callback   = [ $this, 'pagespeed_optimization_settings_page' ];
-		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/images/icon-16x16.png';
+		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/images/icon-16x16.png';
 		$icon       = '<img class="pso-menu-image" src="' . $icon . '">';
 		$menu_title = $icon . '<span class="pso-menu-title">' . $menu_title . '</span>';
 		add_options_page( $page_title, $menu_title, $capability, $slug, $callback );
@@ -1071,7 +1071,7 @@ class Main {
 	public function admin_enqueue_scripts() {
 		wp_enqueue_style(
 			'pagespeed-optimization-admin',
-			KAGG_PAGESPEED_OPTIMIZATION_URL . '/css/pagespeed-optimization-admin.css',
+			KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/css/admin.css',
 			[],
 			KAGG_PAGESPEED_OPTIMIZATION_VERSION
 		);
