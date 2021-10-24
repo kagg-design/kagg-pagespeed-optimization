@@ -1,19 +1,7 @@
-.DS_Store
-Thumbs.db
-wp-cli.local.yml
-node_modules/
-dist/**
-build/**
-tests/wordpress
-tests/wordpress-tests-lib
-tests/**/*.cache
-vendor/
-*.sql
-*.tar.gz
-*.zip
-*.lock
 .idea/
-!composer.lock
-!/src/yarn.lock
+vendor/
 
-cache/**
+*.lock
+.DS_Store
+.phpcs.cache
+Thumbs.db
