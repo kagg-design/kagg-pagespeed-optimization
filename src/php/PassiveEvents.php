@@ -1,6 +1,6 @@
 <?php
 /**
- * Passive_Events class file.
+ * PassiveEvents class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -8,9 +8,9 @@
 namespace KAGG\PageSpeed\Optimization;
 
 /**
- * Class Passive_Events
+ * Class PassiveEvents
  */
-class Passive_Events {
+class PassiveEvents {
 
 	/**
 	 * Passive_Events constructor.

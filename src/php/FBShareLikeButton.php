@@ -37,7 +37,7 @@ class FBShareLikeButton {
 	public function delayed_script(): void {
 		ob_start();
 		$this->vifslb_like_func_footer();
-		Delayed_Script::launch_html( ob_get_clean() );
+		DelayedScript::launch_html( ob_get_clean() );
 	}
 
 	/**

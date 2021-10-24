@@ -1,6 +1,6 @@
 <?php
 /**
- * Yandex_Advertising_Network class file.
+ * YandexAdvertisingNetwork class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -8,9 +8,9 @@
 namespace KAGG\PageSpeed\Optimization;
 
 /**
- * Class Yandex_Advertising_Network
+ * Class YandexAdvertisingNetwork
  */
-class Yandex_Advertising_Network {
+class YandexAdvertisingNetwork {
 
 	/**
 	 * Main class instance.
@@ -149,7 +149,7 @@ class Yandex_Advertising_Network {
 		$js = ob_get_clean();
 
 		$js     = $this->main->replace_urls( $js );
-		$script = Delayed_Script::create( $js );
+		$script = DelayedScript::create( $js );
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo "\n" . $script . "\n";

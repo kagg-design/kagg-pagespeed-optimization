@@ -1,6 +1,6 @@
 <?php
 /**
- * Layer_Slider class file.
+ * LayerSlider class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -8,9 +8,9 @@
 namespace KAGG\PageSpeed\Optimization;
 
 /**
- * Class Layer_Slider
+ * Class LayerSlider
  */
-class Layer_Slider {
+class LayerSlider {
 
 	/**
 	 * Layer Slider script.

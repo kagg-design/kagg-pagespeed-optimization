@@ -137,7 +137,7 @@ class Resources {
 		add_action( 'wp_print_footer_scripts', [ $this, 'delay_scripts' ], - PHP_INT_MAX );
 
 		// Launch delayed scripts.
-		add_action( 'wp_print_footer_scripts', [ Delayed_Script::class, 'launch_stored_scripts' ], - PHP_INT_MAX + 1 );
+		add_action( 'wp_print_footer_scripts', [ DelayedScript::class, 'launch_stored_scripts' ], - PHP_INT_MAX + 1 );
 	}
 
 	/**
@@ -464,7 +464,7 @@ class Resources {
 			$wp_scripts->print_extra_script( $handle );
 
 			wp_dequeue_script( $handle );
-			Delayed_Script::store( [ 'src' => $src ] );
+			DelayedScript::store( [ 'src' => $src ] );
 		}
 	}
 

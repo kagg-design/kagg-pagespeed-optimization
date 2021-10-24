@@ -40,7 +40,7 @@ class Zopim {
 	public function delayed_zopim_scripts(): void {
 		ob_start();
 		$this->zopim_me();
-		Delayed_Script::launch_html( ob_get_clean() );
+		DelayedScript::launch_html( ob_get_clean() );
 	}
 
 	/**

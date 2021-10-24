@@ -113,6 +113,6 @@ class StatCounter {
 		<?php
 
 		// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		Delayed_Script::launch_html( ob_get_clean() );
+		DelayedScript::launch_html( ob_get_clean() );
 	}
 }

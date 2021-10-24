@@ -43,9 +43,9 @@
     "wp-coding-standards/wpcs": "^2.3"
   },
   "autoload": {
-    "classmap": [
-      "classes"
-    ]
+    "psr-4": {
+      "KAGG\\PageSpeed\\Optimization\\": "src/php"
+    }
   },
   "scripts": {
     "phpcs": "phpcs --colors --standard=phpcs.xml"

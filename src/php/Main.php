@@ -100,9 +100,9 @@ class Main {
 
 		new Resources( $this );
 		new Loader( $this );
-		new Yandex_Advertising_Network( $this );
-		new Passive_Events();
-		new Layer_Slider();
+		new YandexAdvertisingNetwork( $this );
+		new PassiveEvents();
+		new LayerSlider();
 		new Medusa();
 		new Zopim();
 		new FBShareLikeButton();
@@ -906,7 +906,7 @@ class Main {
 		$anonymize_ip             = $this->get_option( 'anonymize_ip' );
 
 		if ( $gas_id ) {
-			Delayed_Script::launch(
+			DelayedScript::launch(
 				[
 					'src'  => 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
 					'data' => [
@@ -938,7 +938,7 @@ class Main {
 			<?php
 
 			$js     = ob_get_clean();
-			$script = Delayed_Script::create( $js );
+			$script = DelayedScript::create( $js );
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo "\n" . $script . "\n";
@@ -948,7 +948,7 @@ class Main {
 			?>
 			<!-- Global site tag (gtag.js) - Google Analytics -->
 			<?php
-			Delayed_Script::launch(
+			DelayedScript::launch(
 				[ 'src' => 'https://www.googletagmanager.com/gtag/js?id=' . $gtag_id ]
 			);
 			?>
@@ -984,7 +984,7 @@ class Main {
 			<?php
 
 			$js     = ob_get_clean();
-			$script = Delayed_Script::create( $js );
+			$script = DelayedScript::create( $js );
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo "\n" . $script . "\n";

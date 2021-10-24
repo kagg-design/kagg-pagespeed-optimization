@@ -1,6 +1,6 @@
 <?php
 /**
- * Delayed_Script class file.
+ * DelayedScript class file.
  *
  * @package kagg_pagespeed_optimization
  */
@@ -11,9 +11,9 @@ use Exception;
 use JShrink\Minifier;
 
 /**
- * Class Delayed_Script
+ * Class DelayedScript
  */
-class Delayed_Script {
+class DelayedScript {
 
 	/**
 	 * List of delayed scripts.
