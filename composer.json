@@ -1,7 +1,7 @@
 {
   "name": "kagg-design/kagg-pagespeed-optimization",
   "description": "KAGG PageSpeed Optimization",
-  "license": "GPL-2.0",
+  "license": "GPL-2.0-or-later",
   "keywords": [
     "pagespeed",
     "pagespeed insights",
@@ -22,10 +22,6 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/PHPCompatibility/PHPCompatibilityWP.git"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/tedious/JShrink.git"
     }
   ],
@@ -38,14 +34,20 @@
   },
   "require": {
     "tedivm/jshrink": "^v1.4"
-  }
-  ,
+  },
   "require-dev": {
-    "roave/security-advisories": "dev-latest"
+    "roave/security-advisories": "dev-latest",
+    "squizlabs/php_codesniffer": "^3.6",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "wp-coding-standards/wpcs": "^2.3"
   },
   "autoload": {
     "classmap": [
       "classes"
     ]
+  },
+  "scripts": {
+    "phpcs": "phpcs --colors --standard=phpcs.xml"
   }
 }
