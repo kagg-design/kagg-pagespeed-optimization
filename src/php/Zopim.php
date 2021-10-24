@@ -24,7 +24,7 @@ class Zopim {
 	/**
 	 * Init hooks.
 	 */
-	public function init_hooks(): void {
+	public function init_hooks() {
 		if ( ! class_exists( 'Zopim', false ) ) {
 			return;
 		}
@@ -37,7 +37,7 @@ class Zopim {
 	/**
 	 * Print delayed zopim scripts.
 	 */
-	public function delayed_zopim_scripts(): void {
+	public function delayed_zopim_scripts() {
 		ob_start();
 		$this->zopim_me();
 		DelayedScript::launch_html( ob_get_clean() );
@@ -48,7 +48,7 @@ class Zopim {
 	 *
 	 * We need some CSS to position the paragraph.
 	 */
-	private function zopim_me(): void {
+	private function zopim_me() {
 		$subdomain = get_option( Zopim_Options::ZENDESK_OPTION_SUBDOMAIN );
 
 		if ( $subdomain ) {
@@ -140,7 +140,7 @@ class Zopim {
 	 *
 	 * @return string
 	 */
-	private function get_widget_code_using_subdomain( string $subdomain ): string {
+	private function get_widget_code_using_subdomain( $subdomain ) {
 		$url      = 'https://ekr.zdassets.com/snippets/web_widget/' . $subdomain . '.zendesk.com?dynamic_snippet=true';
 		$response = wp_remote_get( $url, [] );
 

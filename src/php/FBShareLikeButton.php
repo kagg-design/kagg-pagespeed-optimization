@@ -22,7 +22,7 @@ class FBShareLikeButton {
 	/**
 	 * Init hooks.
 	 */
-	public function init_hooks(): void {
+	public function init_hooks() {
 		if ( ! isset( $GLOBALS['vifslb_like_settings'] ) ) {
 			return;
 		}
@@ -34,7 +34,7 @@ class FBShareLikeButton {
 	/**
 	 * Print delayed script.
 	 */
-	public function delayed_script(): void {
+	public function delayed_script() {
 		ob_start();
 		$this->vifslb_like_func_footer();
 		DelayedScript::launch_html( ob_get_clean() );
@@ -43,7 +43,7 @@ class FBShareLikeButton {
 	/**
 	 * Run vifslb_like_func_footer
 	 */
-	private function vifslb_like_func_footer(): void {
+	private function vifslb_like_func_footer() {
 		global $vifslb_like_settings;
 
 		if ( '' === $vifslb_like_settings['language'] ) {
