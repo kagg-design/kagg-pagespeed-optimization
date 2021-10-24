@@ -972,34 +972,15 @@ class Main {
 			ob_start();
 
 			?>
-			( function( d, w, c ) {
-			( w[c] = w[c] || [] ).push( function() {
-			try {
-			w.yaCounter<?php echo esc_html( $ya_metrika_id ); ?> = new Ya.Metrika( {
-			id:<?php echo esc_html( $ya_metrika_id ); ?>,
-			enableAll: true,
-			webvisor: true
-			} );
-			} catch ( e ) {
-			}
-			} );
+			(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+			m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+			(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-			var n   = d.getElementsByTagName( 'script' )[0],
-			s   = d.createElement( 'script' ),
-			f   = function() {
-			n.parentNode.insertBefore( s, n );
-			};
-			s.type  = 'text/javascript';
-			s.async = true;
-			// s.src = "https://mc.yandex.ru/metrika/watch.js";
-			s.src   = "<?php echo esc_url( KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $this->local_filenames['ya_metrika'] ); ?>";
-
-			if ( w.opera == '[object Opera]' ) {
-			d.addEventListener( 'DOMContentLoaded', f, false );
-			} else {
-			f();
-			}
-			} )( document, window, 'yandex_metrika_callbacks' )
+			ym(<?php echo esc_html( $ya_metrika_id ); ?>, "init", {
+			clickmap:true,
+			trackLinks:true,
+			accurateTrackBounce:true
+			});
 			<?php
 
 			$js     = ob_get_clean();
@@ -1009,12 +990,7 @@ class Main {
 			echo "\n" . $script . "\n";
 
 			?>
-			<noscript>
-				<div><img
-							src="//mc.yandex.ru/watch/<?php echo esc_html( $ya_metrika_id ); ?>"
-							style="position:absolute; left:-9999px;" alt=""/>
-				</div>
-			</noscript>
+			<noscript><div><img src="https://mc.yandex.ru/watch/<?php echo esc_html( $ya_metrika_id ); ?>" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 			<?php
 		}
 	}
