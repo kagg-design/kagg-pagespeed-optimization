@@ -40,7 +40,7 @@ class Delayed_Script {
 		ob_start();
 		?>
 
-		<script type="text/javascript" async>
+		<script>
 			( () => {
 				'use strict';
 
