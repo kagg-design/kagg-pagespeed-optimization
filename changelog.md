@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0]
+* Added "Include all dependencies to delayed scripts" feature.
+* Added script delay until user interaction.
+* Added minification of delayed scripts.
+* Added Zopim support.
+* Added FB share and like button.
+* Added StatCounter support.
+* Fixed delayed scripts loading in Firefox.
+* Updated Yandex Metrika code.
+* Make delayed scripts passing W3C validation.
+
 ## [1.3.0]
 * Tested with WordPress 5.8
 * Added "Optimize when logged-in" option
