@@ -315,7 +315,7 @@ class Resources {
 
 		$links_to_preload = $this->get_option( 'links_to_preload' );
 
-		$links_to_preload = array_unique( array_merge( $links_to_preload ) );
+		$links_to_preload = array_unique( $links_to_preload );
 
 		$links_to_preconnect = array_unique(
 			array_map(
@@ -341,10 +341,6 @@ class Resources {
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $link . "\n";
-		}
-
-		if ( $links_to_preload ) {
-			echo "\n";
 		}
 
 		foreach ( $links_to_preload as $index => $link ) {
