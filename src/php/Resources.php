@@ -124,9 +124,6 @@ class Resources {
 		add_action( 'wp_print_styles', [ $this, 'remove_styles_from_header' ], PHP_INT_MAX );
 		add_action( 'get_footer', [ $this, 'add_styles_to_footer' ] );
 
-		// Make some scripts defer.
-		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag_filter' ], 10, 2 );
-
 		// Add display=swap to Google fonts.
 		add_filter( 'style_loader_tag', [ $this, 'style_loader_tag_filter' ], 10, 4 );
 
@@ -268,24 +265,6 @@ class Resources {
 				wp_enqueue_style( $style );
 			}
 		}
-	}
-
-	/**
-	 * Filter script tag and add defer.
-	 *
-	 * @param string $tag    Script tag.
-	 * @param string $handle Script handle.
-	 *
-	 * @return string
-	 */
-	public function script_loader_tag_filter( $tag, $handle ) {
-		$defer = [];
-
-		if ( in_array( $handle, $defer, true ) ) {
-			$tag = str_replace( '></script>', ' defer></script>', $tag );
-		}
-
-		return $tag;
 	}
 
 	/**
