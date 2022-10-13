@@ -28,11 +28,9 @@ The WordPress Plugin PageSpeed Optimization includes the following files:
 
 The PageSpeed Optimization can be installed directly into your plugins folder "as-is".
 
-Plugin requires php proc_open function to be enabled on server.
-
 ## WordPress.org Preparation
 
-The original launch of this version of the PageSpeed Optimization included the folder structure needed for using your plugin on the WordPress.org. That folder structure has been moved to its own repo here: https://github.com/kagg/
+The original launch of this version of the PageSpeed Optimization included the folder structure needed for using your plugin on the WordPress.org. That folder structure has been moved to its own repo here: https://github.com/kagg-design/kagg-pagespeed-optimization.
 
 ## Recommended Tools
 
