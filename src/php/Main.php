@@ -107,6 +107,7 @@ class Main {
 		new Zopim();
 		new FBShareLikeButton();
 		new StatCounter();
+		new Clutch();
 	}
 
 	/**
