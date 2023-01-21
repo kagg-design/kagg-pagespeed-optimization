@@ -94,6 +94,13 @@ class Resources {
 	private $fonts_preload_links;
 
 	/**
+	 * All parent scripts.
+	 *
+	 * @var array
+	 */
+	private $all_parents;
+
+	/**
 	 * Resources constructor.
 	 *
 	 * @param Main $main Main class instance.
@@ -139,14 +146,14 @@ class Resources {
 
 	/**
 	 * Remove scripts from header.
-	 *
-	 * @noinspection ArgumentEqualsDefaultValueInspection
 	 */
 	public function remove_scripts_from_header() {
+		$this->all_parents = $this->find_all_parents();
+
 		$scripts = $this->add_parent_scripts( $this->block_scripts );
 
 		foreach ( $scripts as $script ) {
-			if ( wp_script_is( $script, 'enqueued' ) ) {
+			if ( wp_script_is( $script ) ) {
 				wp_deregister_script( $script );
 			}
 		}
@@ -154,7 +161,7 @@ class Resources {
 		$scripts = $this->add_parent_scripts( $this->scripts_to_footer );
 
 		foreach ( $scripts as $script ) {
-			if ( wp_script_is( $script, 'enqueued' ) ) {
+			if ( wp_script_is( $script ) ) {
 				wp_dequeue_script( $script );
 				$this->moved_scripts[] = $script;
 			}
@@ -163,7 +170,7 @@ class Resources {
 		$scripts = $this->add_parent_scripts( $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
-			if ( wp_script_is( $script, 'enqueued' ) ) {
+			if ( wp_script_is( $script ) ) {
 				wp_dequeue_script( $script );
 				$this->delayed_scripts[] = $script;
 			}
@@ -179,19 +186,38 @@ class Resources {
 	 * @return string[]
 	 */
 	private function add_parent_scripts( $scripts ) {
+		$parents = [];
+
+		foreach ( $scripts as $script ) {
+			if ( ! array_key_exists( $script, $this->all_parents ) ) {
+				continue;
+			}
+
+			$parents[] = $this->add_parent_scripts( $this->all_parents[ $script ] );
+		}
+
+		$parents = array_merge( [], ...$parents );
+
+		return array_unique( array_merge( $scripts, $parents ) );
+	}
+
+	/**
+	 * Find all parent scripts.
+	 *
+	 * @return array
+	 */
+	private function find_all_parents() {
 		global $wp_scripts;
 
 		$parents = [];
 
-		foreach ( $wp_scripts->registered as $handle => $script ) {
-			$deps = $script->deps;
-			if ( array_intersect( $scripts, $deps ) && ! in_array( $handle, $parents, true ) ) {
-				$handle_parents = $this->add_parent_scripts( [ $handle ] );
-				$parents        = $handle_parents ? array_unique( array_merge( $parents, $handle_parents ) ) : $parents;
+		foreach ( $wp_scripts->registered as $handle => $wp_script ) {
+			foreach ( $wp_script->deps as $dep ) {
+				$parents[ $dep ][] = $handle;
 			}
 		}
 
-		return $parents ? array_unique( array_merge( $scripts, $parents ) ) : $scripts;
+		return $parents;
 	}
 
 	/**
@@ -269,8 +295,6 @@ class Resources {
 
 	/**
 	 * Print preload links.
-	 *
-	 * @noinspection DisconnectedForeachInstructionInspection
 	 */
 	public function head() {
 		$content_types = [
@@ -399,17 +423,17 @@ class Resources {
 
 	/**
 	 * Delay some scripts.
-	 *
-	 * @noinspection ArgumentEqualsDefaultValueInspection
 	 */
 	public function delay_scripts() {
 		global $wp_scripts;
+
+		$this->all_parents = $this->find_all_parents();
 
 		// We have to do it here again as some scripts can be enqueued from the content or footer.
 		$scripts = $this->add_parent_scripts( $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
-			if ( wp_script_is( $script, 'enqueued' ) ) {
+			if ( wp_script_is( $script ) ) {
 				wp_dequeue_script( $script );
 				$this->delayed_scripts[] = $script;
 			}
@@ -438,7 +462,7 @@ class Resources {
 			// @todo: Print before, after and extra script properly inside of delayed script.
 			// Currently, this cause a problem if after script, for instance, depends on main script.
 			$wp_scripts->print_inline_script( $handle, 'before' );
-			$wp_scripts->print_inline_script( $handle, 'after' );
+			$wp_scripts->print_inline_script( $handle );
 			$wp_scripts->print_extra_script( $handle );
 
 			wp_dequeue_script( $handle );
