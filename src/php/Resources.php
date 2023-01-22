@@ -205,7 +205,9 @@ class Resources {
 	public function remove_styles_from_header() {
 		global $wp_styles;
 
-		$styles = $this->add_parent_styles( $this->block_styles );
+		$this->styles_tree = $this->create_tree( $wp_styles );
+
+		$styles = $this->find_parent_dependencies( $this->styles_tree, $this->block_styles );
 
 		foreach ( $styles as $style ) {
 			if ( in_array( $style, $wp_styles->queue, true ) ) {
@@ -213,7 +215,7 @@ class Resources {
 			}
 		}
 
-		$styles = $this->add_parent_styles( $this->styles_to_footer );
+		$styles = $this->find_parent_dependencies( $this->styles_tree, $this->styles_to_footer );
 
 		foreach ( $styles as $style ) {
 			if ( in_array( $style, $wp_styles->queue, true ) ) {
@@ -221,31 +223,6 @@ class Resources {
 				$this->moved_styles[] = $style;
 			}
 		}
-	}
-
-	/**
-	 * Find all parent styles, which need $styles as dependencies.
-	 * Return all styles with parents.
-	 *
-	 * @param string[] $styles Styles.
-	 *
-	 * @return string[]
-	 */
-	private function add_parent_styles( $styles ) {
-		global $wp_styles;
-
-		$styles = array_unique( $styles );
-
-		$parents = [];
-
-		foreach ( $wp_styles->registered as $handle => $style ) {
-			$deps = $style->deps;
-			if ( array_intersect( $styles, $deps ) && ! in_array( $handle, $parents, true ) ) {
-				$parents = array_unique( array_merge( $parents, $this->add_parent_styles( [ $handle ] ) ) );
-			}
-		}
-
-		return array_unique( array_merge( $styles, $parents ) );
 	}
 
 	/**
