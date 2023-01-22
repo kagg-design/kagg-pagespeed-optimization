@@ -7,6 +7,8 @@
 
 namespace KAGG\PageSpeed\Optimization;
 
+use WP_Dependencies;
+
 /**
  * Class Resources
  *
@@ -94,11 +96,18 @@ class Resources {
 	private $fonts_preload_links;
 
 	/**
-	 * All parent scripts.
+	 * Scripts flat tree.
 	 *
 	 * @var array
 	 */
-	private $all_parents;
+	private $scripts_tree = [];
+
+	/**
+	 * Styles flat tree.
+	 *
+	 * @var array
+	 */
+	private $styles_tree = [];
 
 	/**
 	 * Resources constructor.
@@ -148,9 +157,11 @@ class Resources {
 	 * Remove scripts from header.
 	 */
 	public function remove_scripts_from_header() {
-		$this->all_parents = $this->find_all_parents();
+		global $wp_scripts;
 
-		$scripts = $this->add_parent_scripts( $this->block_scripts );
+		$this->scripts_tree = $this->create_tree( $wp_scripts );
+
+		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->block_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -158,7 +169,7 @@ class Resources {
 			}
 		}
 
-		$scripts = $this->add_parent_scripts( $this->scripts_to_footer );
+		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->scripts_to_footer );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -167,7 +178,7 @@ class Resources {
 			}
 		}
 
-		$scripts = $this->add_parent_scripts( $this->delay_scripts );
+		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -175,49 +186,6 @@ class Resources {
 				$this->delayed_scripts[] = $script;
 			}
 		}
-	}
-
-	/**
-	 * Find all parent scripts, which need $scripts as dependencies.
-	 * Return all scripts with parents.
-	 *
-	 * @param string[] $scripts Scripts.
-	 *
-	 * @return string[]
-	 */
-	private function add_parent_scripts( $scripts ) {
-		$parents = [];
-
-		foreach ( $scripts as $script ) {
-			if ( ! array_key_exists( $script, $this->all_parents ) ) {
-				continue;
-			}
-
-			$parents[] = $this->add_parent_scripts( $this->all_parents[ $script ] );
-		}
-
-		$parents = array_merge( [], ...$parents );
-
-		return array_unique( array_merge( $scripts, $parents ) );
-	}
-
-	/**
-	 * Find all parent scripts.
-	 *
-	 * @return array
-	 */
-	private function find_all_parents() {
-		global $wp_scripts;
-
-		$parents = [];
-
-		foreach ( $wp_scripts->registered as $handle => $wp_script ) {
-			foreach ( $wp_script->deps as $dep ) {
-				$parents[ $dep ][] = $handle;
-			}
-		}
-
-		return $parents;
 	}
 
 	/**
@@ -427,10 +395,10 @@ class Resources {
 	public function delay_scripts() {
 		global $wp_scripts;
 
-		$this->all_parents = $this->find_all_parents();
+		$this->scripts_tree = $this->create_tree( $wp_scripts );
 
 		// We have to do it here again as some scripts can be enqueued from the content or footer.
-		$scripts = $this->add_parent_scripts( $this->delay_scripts );
+		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -492,5 +460,85 @@ class Resources {
 		}
 
 		return [];
+	}
+
+	/**
+	 * Create flat tree of the dependencies.
+	 *
+	 * @param WP_Dependencies $dependencies Dependencies.
+	 * @return array
+	 */
+	private function create_tree( $dependencies ) {
+		$tree = [];
+
+		foreach ( $dependencies->registered as $handle => $dependency ) {
+			foreach ( $dependency->deps as $dep ) {
+				$tree[ $dep ][] = $handle;
+			}
+		}
+
+		return $tree;
+	}
+
+	/**
+	 * Standard level order traversal using queue.
+	 *
+	 * @param array       $tree Flat tree.
+	 * @param string|null $root Root index.
+	 *
+	 * @return array
+	 */
+	private function traverse_tree( $tree, $root = null ) {
+		if ( ! isset( $tree[ $root ] ) ) {
+			return [];
+		}
+
+		$traversal   = []; // Traversal result.
+		$queue       = []; // Create a queue.
+		$queue[]     = $root; // Push root.
+		$queue_count = count( $queue );
+
+		while ( 0 !== $queue_count ) {
+			// If this node has children.
+			while ( $queue_count > 0 ) {
+				// Dequeue an item from queue and save it to the traversal result.
+				$index       = $queue[0];
+				$traversal[] = $index;
+
+				array_shift( $queue );
+
+				if ( isset( $tree[ $index ] ) ) {
+					// Push all children of the dequeued item.
+					foreach ( $tree[ $index ] as $child ) {
+						$queue[] = $child;
+					}
+				}
+
+				$queue_count --;
+			}
+
+			$queue_count = count( $queue );
+		}
+
+		return $traversal;
+	}
+
+	/**
+	 * Find all parent scripts/styles, which need $dependencies as dependencies.
+	 * Return $scripts with parents.
+	 *
+	 * @param array    $tree         Flat tree.
+	 * @param string[] $dependencies Scripts/styles.
+	 *
+	 * @return string[]
+	 */
+	private function find_parent_dependencies( $tree, $dependencies ) {
+		$parent_dependencies = [];
+
+		foreach ( $dependencies as $script ) {
+			$parent_dependencies[] = $this->traverse_tree( $tree, $script );
+		}
+
+		return array_unique( array_merge( $dependencies, ...$parent_dependencies ) );
 	}
 }
