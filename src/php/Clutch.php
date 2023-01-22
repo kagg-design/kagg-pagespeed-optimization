@@ -25,15 +25,11 @@ class Clutch {
 	 * Init hooks.
 	 */
 	private function init_hooks() {
-		add_action( 'widget_text', [ $this, 'delayed_clutch_html' ], 10, 3 );
+		add_action( 'widget_text', [ $this, 'remove_clutch_html' ], 10, 3 );
 	}
 
 	/**
-	 * Print clutch html.
-	 */
-
-	/**
-	 * Delayed clutch HTML.
+	 * Remove clutch HTML from widget.
 	 *
 	 * @param string    $text     The widget content.
 	 * @param array     $instance Array of settings for the current widget.
@@ -42,7 +38,7 @@ class Clutch {
 	 * @return string
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function delayed_clutch_html( $text, $instance, $widget ) {
+	public function remove_clutch_html( $text, $instance, $widget ) {
 		$src = 'https://widget.clutch.co/static/js/widget.js';
 
 		if ( false === strpos( $text, $src ) ) {
@@ -50,12 +46,12 @@ class Clutch {
 		}
 
 		ob_start();
-		DelayedScript::launch(
-			[ 'src' => $src ],
-			1000
-		);
+		DelayedScript::launch( [ 'src' => $src ] );
 
 		$delayed_clutch = ob_get_clean();
+		$search         = 's.async=true;';
+		$onload         = 's.onload=function(){window.CLUTCHCO.Init()};';
+		$delayed_clutch = str_replace( $search, $search . $onload, $delayed_clutch );
 
 		return preg_replace( '#<script.*?>(.*?)</script>#s', $delayed_clutch, $text );
 	}

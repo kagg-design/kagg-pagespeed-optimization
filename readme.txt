@@ -53,6 +53,7 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 
 = 1.5.0 =
 * Optimize reordering of scripts and styles via tree traversal.
+* Add Clutch widget support.
 
 = 1.4.0 =
 * Added "Include all dependencies to delayed scripts" feature.
