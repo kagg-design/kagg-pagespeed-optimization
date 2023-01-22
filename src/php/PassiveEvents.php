@@ -31,7 +31,7 @@ class PassiveEvents {
 	/**
 	 * Enqueue passive event script.
 	 *
-	 * @noinspection ArgumentEqualsDefaultValueInspection
+	 * @noinspection PhpRedundantOptionalArgumentInspection
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script(
@@ -51,6 +51,7 @@ class PassiveEvents {
 	 * @param string $src    The script's source URL.
 	 *
 	 * @return string
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public function make_script_async( $tag, $handle, $src ) {
 		if ( self::HANDLE === $handle ) {

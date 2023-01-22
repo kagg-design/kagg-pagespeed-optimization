@@ -36,7 +36,6 @@ class Zopim {
 		add_action( 'wp_footer', [ $this, 'delayed_zopim_scripts' ] );
 	}
 
-
 	/**
 	 * Print delayed zopim scripts.
 	 */
@@ -51,7 +50,6 @@ class Zopim {
 	 *
 	 * We need some CSS to position the paragraph.
 	 *
-	 * @noinspection PhpUndefinedConstantInspection
 	 * @noinspection PhpUndefinedClassInspection
 	 */
 	private function zopim_me() {
@@ -148,7 +146,7 @@ class Zopim {
 	 */
 	private function get_widget_code_using_subdomain( $subdomain ) {
 		$url      = 'https://ekr.zdassets.com/snippets/web_widget/' . $subdomain . '.zendesk.com?dynamic_snippet=true';
-		$response = wp_remote_get( $url, [] );
+		$response = wp_remote_get( $url );
 
 		if ( is_wp_error( $response ) ) {
 			$error = [ 'wp_error' => $response->get_error_message() ];

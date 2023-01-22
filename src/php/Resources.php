@@ -96,20 +96,6 @@ class Resources {
 	private $fonts_preload_links;
 
 	/**
-	 * Scripts flat tree.
-	 *
-	 * @var array
-	 */
-	private $scripts_tree = [];
-
-	/**
-	 * Styles flat tree.
-	 *
-	 * @var array
-	 */
-	private $styles_tree = [];
-
-	/**
 	 * Resources constructor.
 	 *
 	 * @param Main $main Main class instance.
@@ -159,9 +145,9 @@ class Resources {
 	public function remove_scripts_from_header() {
 		global $wp_scripts;
 
-		$this->scripts_tree = $this->create_tree( $wp_scripts );
+		$scripts_tree = $this->create_tree( $wp_scripts );
 
-		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->block_scripts );
+		$scripts = $this->find_parent_dependencies( $scripts_tree, $this->block_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -169,7 +155,7 @@ class Resources {
 			}
 		}
 
-		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->scripts_to_footer );
+		$scripts = $this->find_parent_dependencies( $scripts_tree, $this->scripts_to_footer );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -178,7 +164,7 @@ class Resources {
 			}
 		}
 
-		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->delay_scripts );
+		$scripts = $this->find_parent_dependencies( $scripts_tree, $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
@@ -205,9 +191,9 @@ class Resources {
 	public function remove_styles_from_header() {
 		global $wp_styles;
 
-		$this->styles_tree = $this->create_tree( $wp_styles );
+		$styles_tree = $this->create_tree( $wp_styles );
 
-		$styles = $this->find_parent_dependencies( $this->styles_tree, $this->block_styles );
+		$styles = $this->find_parent_dependencies( $styles_tree, $this->block_styles );
 
 		foreach ( $styles as $style ) {
 			if ( in_array( $style, $wp_styles->queue, true ) ) {
@@ -215,7 +201,7 @@ class Resources {
 			}
 		}
 
-		$styles = $this->find_parent_dependencies( $this->styles_tree, $this->styles_to_footer );
+		$styles = $this->find_parent_dependencies( $styles_tree, $this->styles_to_footer );
 
 		foreach ( $styles as $style ) {
 			if ( in_array( $style, $wp_styles->queue, true ) ) {
@@ -372,10 +358,10 @@ class Resources {
 	public function delay_scripts() {
 		global $wp_scripts;
 
-		$this->scripts_tree = $this->create_tree( $wp_scripts );
+		$scripts_tree = $this->create_tree( $wp_scripts );
 
 		// We have to do it here again as some scripts can be enqueued from the content or footer.
-		$scripts = $this->find_parent_dependencies( $this->scripts_tree, $this->delay_scripts );
+		$scripts = $this->find_parent_dependencies( $scripts_tree, $this->delay_scripts );
 
 		foreach ( $scripts as $script ) {
 			if ( wp_script_is( $script ) ) {
