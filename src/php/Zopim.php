@@ -66,11 +66,11 @@ class Zopim {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$page = isset( $_GET['page'] ) ?
-			filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING ) :
+			filter_input( INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) :
 			'';
 
 		$server_name = isset( $_SERVER['SERVER_NAME'] ) ?
-			filter_var( wp_unslash( $_SERVER['SERVER_NAME'] ), FILTER_SANITIZE_STRING ) :
+			filter_var( wp_unslash( $_SERVER['SERVER_NAME'] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) :
 			'';
 
 		if (
