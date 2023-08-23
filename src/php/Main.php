@@ -77,10 +77,9 @@ class Main {
 	];
 
 	/**
-	 * PageSpeed_Optimization constructor.
+	 * Init class.
 	 */
-	public function __construct() {
-		// Init fields.
+	public function init() {
 		$this->init_form_fields();
 		$this->init_settings();
 
