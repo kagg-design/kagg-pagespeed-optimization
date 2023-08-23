@@ -1,17 +1,23 @@
-# WordPress Plugin PageSpeed Optimization
+# PageSpeed Optimization
 
-PageSpeed Optimization plugin optimizes external scripts by storing them locally: Google Analytics, Google map, Yandex metrika. 
+PageSpeed Optimization plugin performs optimization of external scripts and styles by moving them to the footer, blocking, or delaying. Loading of delayed scripts or styles begins after the first user interaction - scroll, clock, or mouse enter. Links and fonts can be preloaded to minimize loading time.
 
-After activation of the plugin, scripts for above-mentioned services will be cached on local server. They are updated twice daily.
+During moving, blocking, or delaying, the plugin performs exact calculations of all scripts and styles dependencies across the whole dependency tree. So, any script or style whose position has to be modified will be moved with all dependencies in the proper order. This functionality is unique and does not exist in most top-level caching plugins.
 
-Whenever you run an analysis of your website on Google Pagespeed Insights, Pingdom or GTMetrix, it’ll tell you to leverage browser cache when you’re using Google Analytics. Because Google has set the cache expiry time to 2 hours. This plugin will get you a higher score on Pagespeed and Pingdom and make your website load faster, because the user’s browser doesn’t have to make a roundtrip to download the file from Google’s external server.  
+Some scripts can be stored locally: Google AdSense, Google Analytics, Google Maps, Google Tag Manager, and Yandex Metrika. Scripts for the above-mentioned services will be cached on the local server and updated twice daily.
+
+Google Pagespeed Insights (PSI) requires leveraging browser cache when using analytics scripts because they only have a 2-hour cache expiry time. When scripts are stored locally, their cache expiry time is increased, raising the PSI score.
+
+PageSpeed Optimization plugin will get you a higher score on Google Pagespeed Insights and make your website load faster. The most impact can usually be achieved by delaying scripts.
 
 ## Features
 
-* The PageSpeed Optimization is based on the [Plugin API](http://codex.wordpress.org/Plugin_API), [Coding Standards](http://codex.wordpress.org/WordPress_Coding_Standards), and [Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
-* All classes, functions, and variables are documented so that you know what you need to be changed.
-* The PageSpeed Optimization uses a strict file organization scheme that correspond both to the WordPress Plugin Repository structure, and that make it easy to organize the files that compose the plugin.
-* The project includes a `.pot` file as a starting point for internationalization.
+- Any script or style can be moved from the header to the footer.
+- Any script or style can be blocked entirely, preventing its loading.
+- Any script or style can be delayed until the first user interaction: scroll, click, or mouse enter.
+- Dependencies of moved, blocked, or delayed scripts and styles are correctly calculated across the dependency tree. Therefore, all dependent scripts and styles will be moved in a proper order. This unique feature does not exist in most top-level caching plugins.
+- Analytics scripts can be stored locally to improve browser cache time.
+- Links and fonts can be preloaded to improve overall page loading time.
 
 ## Installation
 
@@ -40,8 +46,6 @@ The WordPress Plugin PageSpeed Optimization is licensed under the GPL v2 or late
 > You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 A copy of the license is included in the root of the plugin’s directory. The file is named `LICENSE`.
-
-### Includes
 
 ## Credits
 
