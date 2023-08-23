@@ -2,7 +2,7 @@
 Contributors: kaggdesign
 Donate link: https://kagg.eu/en/
 Tags: PageSpeed, Google Pagespeed Insights, PageSpeed Optimization
-Requires at least: 4.4
+Requires at least: 5.0
 Tested up to: 6.3
 Requires PHP: 7.0
 Stable tag: 1.5.0
