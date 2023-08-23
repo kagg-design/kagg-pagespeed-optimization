@@ -3,47 +3,38 @@ Contributors: kaggdesign
 Donate link: https://kagg.eu/en/
 Tags: PageSpeed, PageSpeed Optimization
 Requires at least: 4.4
-Tested up to: 5.8
-Stable tag: 1.4.0
+Tested up to: 6.3
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-PageSpeed Optimization plugin optimizes external scripts by storing them locally: Google analytics, Google map, Yandex metrika.
+PageSpeed Optimization plugin performs optimization of external scripts and styles by moving them to the footer, blocking, or delaying. Links and fonts can be preloaded to minimize loading time. Analytics scripts can be stored locally to leverage browser caching.
 
-This is the fork of CAOS (Complete Analytics Optimization Suite) by Daan van den Bergh https://ru.wordpress.org/plugins/host-analyticsjs-local/.
+The above-mentioned measures provide a significant increase in Google Pagespeed Insights score.
 
 == Description ==
 
-After activation of the plugin, scripts for above mentioned services will be cached on a local server. They are updated hourly.
+PageSpeed Optimization plugin performs optimization of external scripts and styles by moving them to the footer, blocking, or delaying. Loading of delayed scripts or styles begins after the first user interaction - scroll, clock, or mouse enter. Links and fonts can be preloaded to minimize loading time.
 
-Whenever you run an analysis of your website on Google Pagespeed Insights, Pingdom or GTMetrix, it’ll tell you to leverage browser cache when you’re using Google Analytics. Because Google has set the cache expiry time to 2 hours. This plugin will get you a higher score on Pagespeed and Pingdom and make your website load faster, because the user’s browser doesn’t have to make a roundtrip to download the file from Google’s external server.
+During moving, blocking, or delaying, the plugin performs exact calculations of all scripts and styles dependencies across the whole dependency tree. So, any script or style whose position has to be modified will be moved with all dependencies in the proper order. This functionality is unique and does not exist in most top-level caching plugins.
+
+Analytics scripts can be stored locally: Google AdSense, Google Analytics, Google Maps, Google Tag Manager, and Yandex Metrika. Scripts for the above-mentioned services will be cached on the local server and updated twice daily.
+
+Google Pagespeed Insights (PSI) requires leveraging browser cache when using analytics scripts because they only have a 2-hour cache expiry time. When scripts are stored locally, their cache expiry time is increased, raising the PSI score.
+
+PageSpeed Optimization plugin will get you a higher score on Google Pagespeed Insights and make your website load faster. The most impact can usually be achieved by delaying scripts.
 
 == Installation ==
 
-= Minimum Requirements =
-
-* PHP version 5.6 or greater (PHP 8.0 or greater is recommended)
-* MySQL version 5.0 or greater (MySQL 5.6 or greater is recommended)
-
-= Automatic installation =
-
-Automatic installation is the easiest option as WordPress handles the file transfers itself and you don’t need to leave your web browser. To do an automatic install of PageSpeed Optimization plugin, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
-
-In the search field type “PageSpeed Optimization” and click Search Plugins. Once you’ve found our plugin you can view details about it such as the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
-
-= Manual installation =
-
-The manual installation method involves downloading our plugin and uploading it to your webserver via your favourite FTP application. The WordPress codex contains [instructions on how to do this here](https://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
-
-= Updating =
-
-Automatic updates should work like a charm; as always though, ensure you backup your site just in case.
+1. Install Pagespeed Optimization either via the WordPress.org plugin repository (best) or by uploading the files to your server. ([Upload instructions](https://www.wpbeginner.com/beginners-guide/step-by-step-guide-to-install-a-wordpress-plugin-for-beginners/))
+2. Activate the Pagespeed Optimization plugin on the 'Plugins' admin page
+3. Use the plugin settings page to move, delay, or block scripts and styles
 
 == Frequently Asked Questions ==
 
 = Where can I get support or talk to other users? =
 
-If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin Forum](https://wordpress.org/support/plugin/tomita-parser).
+If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin Forum](https://wordpress.org/support/plugin/kagg-pagespeed-optimization).
 
 == Screenshots ==
 
