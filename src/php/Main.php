@@ -196,7 +196,7 @@ class Main {
 				?>
 			</h2>
 
-			<form action="options.php" method="POST">
+			<form action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" method="POST">
 				<?php
 				settings_fields( 'pagespeed_optimization_group' ); // Hidden protection fields.
 				do_settings_sections( 'pagespeed-optimization' ); // Sections with options.
@@ -225,29 +225,27 @@ class Main {
 	 * @param array $arguments Section arguments.
 	 */
 	public function pagespeed_optimization_first_section( $arguments ) {
-		switch ( $arguments['id'] ) {
-			case 'first_section':
-				?>
-				<p>
-					<?php
-					echo esc_html__(
-						'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
-						'kagg-pagespeed-optimization'
-					);
-					?>
-				</p>
-				<p>
-					<?php
-					echo esc_html__(
-						'You can use other options for fine tuning.',
-						'kagg-pagespeed-optimization'
-					);
-					?>
-				</p>
-				<?php
-				break;
-			default:
+		if ( 'first_section' !== $arguments['id'] ) {
+			return;
 		}
+		?>
+		<p>
+			<?php
+			echo esc_html__(
+				'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
+				'kagg-pagespeed-optimization'
+			);
+			?>
+		</p>
+		<p>
+			<?php
+			echo esc_html__(
+				'You can use other options for fine tuning.',
+				'kagg-pagespeed-optimization'
+			);
+			?>
+		</p>
+		<?php
 	}
 
 	/**
@@ -469,7 +467,7 @@ class Main {
 	 *
 	 * @return array of options
 	 */
-	public function get_form_fields() {
+	public function get_form_fields(): array {
 		if ( empty( $this->form_fields ) ) {
 			$this->init_form_fields();
 		}
@@ -484,7 +482,7 @@ class Main {
 	 *
 	 * @return array
 	 */
-	protected function set_defaults( $field ) {
+	protected function set_defaults( $field ): array {
 		if ( ! isset( $field['default'] ) ) {
 			$field['default'] = '';
 		}
@@ -497,7 +495,7 @@ class Main {
 	 *
 	 * @return string
 	 */
-	public function get_option_key() {
+	public function get_option_key(): string {
 		return $this->plugin_id . $this->id . '_settings';
 	}
 
@@ -532,7 +530,7 @@ class Main {
 	 *
 	 * @param array $field Field.
 	 *
-	 * @return string
+	 * @return mixed
 	 */
 	public function get_field_default( $field ) {
 		return empty( $field['default'] ) ? '' : $field['default'];
@@ -555,12 +553,10 @@ class Main {
 
 		$form_fields = $this->get_form_fields();
 		foreach ( $form_fields as $key => $form_field ) {
-			$value[ $key ] = isset( $value[ $key ] ) ? $value[ $key ] : $form_field;
-			switch ( $form_field['type'] ) {
-				case 'checkbox':
-					$value[ $key ] = '1' === $value[ $key ] || 'yes' === $value[ $key ] ? 'yes' : 'no';
-					break;
-				default:
+			$value[ $key ] = $value[ $key ] ?? $form_field;
+
+			if ( 'checkbox' === $form_field['type'] ) {
+				$value[ $key ] = '1' === $value[ $key ] || 'yes' === $value[ $key ] ? 'yes' : 'no';
 			}
 		}
 
@@ -591,6 +587,9 @@ class Main {
 	 * Output settings field.
 	 *
 	 * @param array $arguments Field arguments.
+	 *
+	 * @noinspection HtmlWrongAttributeValue
+	 * @noinspection HtmlUnknownAttribute
 	 */
 	public function field_callback( $arguments ) {
 		$value = $this->get_option( $arguments['field_id'] );
@@ -628,7 +627,7 @@ class Main {
 					$options_markup = '';
 					$iterator       = 0;
 					foreach ( $arguments['options'] as $key => $label ) {
-						$iterator ++;
+						++$iterator;
 						$options_markup .= sprintf(
 							'<label for="%2$s_%7$s"><input id="%2$s_%7$s" name="%1$s[%2$s]" type="%3$s" value="%4$s" %5$s /> %6$s</label><br/>',
 							esc_html( $this->get_option_key() ),
@@ -755,7 +754,7 @@ class Main {
 	 * @return array Plugin links
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function add_settings_link( $links, $file ) {
+	public function add_settings_link( $links, $file ): array {
 		$action_links = [
 			'settings' =>
 				'<a href="' . admin_url( 'options-general.php?page=pagespeed-optimization' ) .
@@ -852,6 +851,8 @@ class Main {
 
 	/**
 	 * Clean cache.
+	 *
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	private function clean_cache() {
 		// Clean cache of WP Super Cache plugin.
@@ -1095,7 +1096,7 @@ class Main {
 	 *
 	 * @return array Difference between the two arrays
 	 */
-	public function disable_emojis_tinymce( $plugins ) {
+	public function disable_emojis_tinymce( $plugins ): array {
 		if ( is_array( $plugins ) ) {
 			return array_diff( $plugins, [ 'wpemoji' ] );
 		}
@@ -1106,17 +1107,17 @@ class Main {
 	/**
 	 * Remove emoji CDN hostname from DNS prefetching hints.
 	 *
-	 * @param array  $urls          URLs to print for resource hints.
-	 * @param string $relation_type The relation type the URLs are printed for.
+	 * @param array|mixed $urls          URLs to print for resource hints.
+	 * @param string      $relation_type The relation type the URLs are printed for.
 	 *
-	 * @return array Difference between the two arrays.
+	 * @return array|mixed Difference between the two arrays.
 	 */
 	public function disable_emojis_remove_dns_prefetch( $urls, $relation_type ) {
 		if ( 'dns-prefetch' === $relation_type ) {
 			// This filter is documented in wp-includes/formatting.php.
 			$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/' );
 
-			$urls = array_diff( $urls, [ $emoji_svg_url ] );
+			$urls = array_diff( (array) $urls, [ $emoji_svg_url ] );
 		}
 
 		return $urls;
@@ -1125,11 +1126,11 @@ class Main {
 	/**
 	 * Filter code html and replace remote url by local.
 	 *
-	 * @param string $html Html code.
+	 * @param string|mixed $html Html code.
 	 *
 	 * @return string
 	 */
-	public function replace_urls( $html ) {
+	public function replace_urls( $html ): string {
 		$local_filenames = array_map(
 			static function ( $item ) {
 				return KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $item;
@@ -1140,7 +1141,7 @@ class Main {
 		return str_replace(
 			$this->remote_urls,
 			$local_filenames,
-			$html
+			(string) $html
 		);
 	}
 
@@ -1199,7 +1200,7 @@ class Main {
 					$m
 				);
 
-				for ( $i = 0; $i < $url_result; $i ++ ) {
+				for ( $i = 0; $i < $url_result; $i++ ) {
 					$url    = trim( $m[1][ $i ], "'\"" );
 					$format = trim( $m[2][ $i ], "'\"" );
 
@@ -1243,7 +1244,7 @@ class Main {
 	 *
 	 * @return string
 	 */
-	private function absolute_url( $relative_url, $base_url ) {
+	private function absolute_url( $relative_url, $base_url ): string {
 		// Return if already absolute URL.
 		if ( wp_parse_url( $relative_url, PHP_URL_SCHEME ) !== null ) {
 			return $relative_url;
