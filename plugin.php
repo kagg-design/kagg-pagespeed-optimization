@@ -11,7 +11,7 @@
  * Plugin URI:           https://wordpress.org/plugins/kagg-pagespeed-optimization/
  * Description:          Optimize scripts and styles to get higher scores of Google Pagespeed Insights
  * Author:               KAGG Design
- * Version:              1.5.0
+ * Version:              1.6.0
  * Author URI:           https://kagg.eu/en/
  * Requires at least:    5.0
  * Tested up to:         6.3
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin version
  */
-const KAGG_PAGESPEED_OPTIMIZATION_VERSION = '1.5.0';
+const KAGG_PAGESPEED_OPTIMIZATION_VERSION = '1.6.0';
 
 /**
  * Path to the plugin dir.
