@@ -37,15 +37,15 @@ class LayerSlider {
 	/**
 	 * Filters the output created by a shortcode callback.
 	 *
-	 * @param string       $output Shortcode output.
+	 * @param string|mixed $output Shortcode output.
 	 * @param string       $tag    Shortcode name.
 	 * @param array|string $attr   Shortcode attributes array or empty string.
 	 * @param array        $m      Regular expression match array.
 	 *
-	 * @return string
+	 * @return string|mixed
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function do_shortcode_tag( $output, $tag, $attr, $m ) {
+	public function do_shortcode_tag( $output, string $tag, $attr, array $m ) {
 		if ( 'layerslider' !== $tag ) {
 			return $output;
 		}
@@ -53,7 +53,7 @@ class LayerSlider {
 		preg_match( '#<script.+_initLayerSlider.+</script>#', $output, $matches );
 		$this->layer_slider_script = $matches[0];
 
-		return str_replace( $this->layer_slider_script, '', $output );
+		return str_replace( $this->layer_slider_script, '', (string) $output );
 	}
 
 	/**

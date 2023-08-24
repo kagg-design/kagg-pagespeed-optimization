@@ -77,10 +77,9 @@ class Main {
 	];
 
 	/**
-	 * PageSpeed_Optimization constructor.
+	 * Init class.
 	 */
-	public function __construct() {
-		// Init fields.
+	public function init() {
 		$this->init_form_fields();
 		$this->init_settings();
 
@@ -178,8 +177,8 @@ class Main {
 		$capability = 'manage_options';
 		$slug       = 'pagespeed-optimization';
 		$callback   = [ $this, 'pagespeed_optimization_settings_page' ];
-		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/images/icon-16x16.png';
-		$icon       = '<img class="pso-menu-image" src="' . $icon . '">';
+		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/images/icon.svg';
+		$icon       = '<img class="pso-menu-image" src="' . $icon . '" style="width: 18px; height: 18px;">';
 		$menu_title = $icon . '<span class="pso-menu-title">' . $menu_title . '</span>';
 		add_options_page( $page_title, $menu_title, $capability, $slug, $callback );
 	}
@@ -197,7 +196,7 @@ class Main {
 				?>
 			</h2>
 
-			<form action="options.php" method="POST">
+			<form action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" method="POST">
 				<?php
 				settings_fields( 'pagespeed_optimization_group' ); // Hidden protection fields.
 				do_settings_sections( 'pagespeed-optimization' ); // Sections with options.
@@ -225,30 +224,28 @@ class Main {
 	 *
 	 * @param array $arguments Section arguments.
 	 */
-	public function pagespeed_optimization_first_section( $arguments ) {
-		switch ( $arguments['id'] ) {
-			case 'first_section':
-				?>
-				<p>
-					<?php
-					echo esc_html__(
-						'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
-						'kagg-pagespeed-optimization'
-					);
-					?>
-				</p>
-				<p>
-					<?php
-					echo esc_html__(
-						'You can use other options for fine tuning.',
-						'kagg-pagespeed-optimization'
-					);
-					?>
-				</p>
-				<?php
-				break;
-			default:
+	public function pagespeed_optimization_first_section( array $arguments ) {
+		if ( 'first_section' !== $arguments['id'] ) {
+			return;
 		}
+		?>
+		<p>
+			<?php
+			echo esc_html__(
+				'Move, block, or delay scripts and styles.',
+				'kagg-pagespeed-optimization'
+			);
+			?>
+		</p>
+		<p>
+			<?php
+			echo esc_html__(
+				'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
+				'kagg-pagespeed-optimization'
+			);
+			?>
+		</p>
+		<?php
 	}
 
 	/**
@@ -256,6 +253,86 @@ class Main {
 	 */
 	public function init_form_fields() {
 		$this->form_fields = [
+			'scripts_to_footer'        => [
+				'label'        => __( 'Scripts to move from header to footer', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'block_scripts'            => [
+				'label'        => __( 'Scripts to block', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'delay_scripts'            => [
+				'label'        => __( 'Scripts to delay', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'styles_to_footer'         => [
+				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'block_styles'             => [
+				'label'        => __( 'Styles to block', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'links_to_preload'         => [
+				'label'        => __( 'Links to preload', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter URLs, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'fonts_to_preload'         => [
+				'label'        => __( 'Fonts to preload', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter css urls containing @font-face directives, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'loader_image_url'         => [
+				'label'        => __( 'Loader image URL', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'text',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+			],
+			'optimize_logged_in'       => [
+				'label'        => __( 'Optimize when logged-in', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'checkbox',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+				'default'      => 'no',
+			],
 			'gas_id'                   => [
 				'label'        => __( 'Google AdSense ID', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
@@ -353,94 +430,14 @@ class Main {
 				'supplemental' => '',
 				'default'      => 'yes',
 			],
-			'remove_from_wp_cron'      => [
-				'label'        => __( 'Remove script from WP-Cron', 'kagg-pagespeed-optimization' ),
+			'cache_scripts_locally'    => [
+				'label'        => __( 'Cache analytics scripts locally', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-				'default'      => 'no',
-			],
-			'optimize_logged_in'       => [
-				'label'        => __( 'Optimize when logged-in', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'checkbox',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => '',
-				'default'      => 'no',
-			],
-			'loader_image_url'         => [
-				'label'        => __( 'Loader image URL', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'text',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => '',
-			],
-			'scripts_to_footer'        => [
-				'label'        => __( 'Scripts to move from header to footer', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
-			],
-			'block_scripts'            => [
-				'label'        => __( 'Scripts to block', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
-			],
-			'delay_scripts'            => [
-				'label'        => __( 'Scripts to delay', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
-			],
-			'styles_to_footer'         => [
-				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
-			],
-			'block_styles'             => [
-				'label'        => __( 'Styles to block', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
-			],
-			'links_to_preload'         => [
-				'label'        => __( 'Links to preload', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter URLs, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
-			],
-			'fonts_to_preload'         => [
-				'label'        => __( 'Fonts to preload', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter css urls containing @font-face directives, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => 'yes',
 			],
 		];
 	}
@@ -470,7 +467,7 @@ class Main {
 	 *
 	 * @return array of options
 	 */
-	public function get_form_fields() {
+	public function get_form_fields(): array {
 		if ( empty( $this->form_fields ) ) {
 			$this->init_form_fields();
 		}
@@ -485,7 +482,7 @@ class Main {
 	 *
 	 * @return array
 	 */
-	protected function set_defaults( $field ) {
+	protected function set_defaults( array $field ): array {
 		if ( ! isset( $field['default'] ) ) {
 			$field['default'] = '';
 		}
@@ -498,7 +495,7 @@ class Main {
 	 *
 	 * @return string
 	 */
-	public function get_option_key() {
+	public function get_option_key(): string {
 		return $this->plugin_id . $this->id . '_settings';
 	}
 
@@ -510,7 +507,7 @@ class Main {
 	 *
 	 * @return mixed The value specified for the option or a default value for the option.
 	 */
-	public function get_option( $key, $empty_value = null ) {
+	public function get_option( string $key, $empty_value = null ) {
 		if ( empty( $this->settings ) ) {
 			$this->init_settings();
 		}
@@ -533,9 +530,9 @@ class Main {
 	 *
 	 * @param array $field Field.
 	 *
-	 * @return string
+	 * @return mixed
 	 */
-	public function get_field_default( $field ) {
+	public function get_field_default( array $field ) {
 		return empty( $field['default'] ) ? '' : $field['default'];
 	}
 
@@ -549,19 +546,17 @@ class Main {
 	 * @return mixed
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function pre_update_option_filter( $value, $old_value, $option ) {
+	public function pre_update_option_filter( $value, $old_value, string $option ) {
 		if ( $value === $old_value ) {
 			return $value;
 		}
 
 		$form_fields = $this->get_form_fields();
 		foreach ( $form_fields as $key => $form_field ) {
-			$value[ $key ] = isset( $value[ $key ] ) ? $value[ $key ] : $form_field;
-			switch ( $form_field['type'] ) {
-				case 'checkbox':
-					$value[ $key ] = '1' === $value[ $key ] || 'yes' === $value[ $key ] ? 'yes' : 'no';
-					break;
-				default:
+			$value[ $key ] = $value[ $key ] ?? $form_field;
+
+			if ( 'checkbox' === $form_field['type'] ) {
+				$value[ $key ] = '1' === $value[ $key ] || 'yes' === $value[ $key ] ? 'yes' : 'no';
 			}
 		}
 
@@ -592,8 +587,11 @@ class Main {
 	 * Output settings field.
 	 *
 	 * @param array $arguments Field arguments.
+	 *
+	 * @noinspection HtmlWrongAttributeValue
+	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_callback( $arguments ) {
+	public function field_callback( array $arguments ) {
 		$value = $this->get_option( $arguments['field_id'] );
 
 		// Check which type of field we want.
@@ -629,7 +627,7 @@ class Main {
 					$options_markup = '';
 					$iterator       = 0;
 					foreach ( $arguments['options'] as $key => $label ) {
-						$iterator ++;
+						++$iterator;
 						$options_markup .= sprintf(
 							'<label for="%2$s_%7$s"><input id="%2$s_%7$s" name="%1$s[%2$s]" type="%3$s" value="%4$s" %5$s /> %6$s</label><br/>',
 							esc_html( $this->get_option_key() ),
@@ -750,13 +748,13 @@ class Main {
 	/**
 	 * Add link to plugin setting page on plugins page.
 	 *
-	 * @param array  $links Plugin links.
-	 * @param string $file  Filename.
+	 * @param array|mixed $links Plugin links.
+	 * @param string      $file  Filename.
 	 *
 	 * @return array Plugin links
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function add_settings_link( $links, $file ) {
+	public function add_settings_link( $links, string $file ): array {
 		$action_links = [
 			'settings' =>
 				'<a href="' . admin_url( 'options-general.php?page=pagespeed-optimization' ) .
@@ -766,7 +764,7 @@ class Main {
 				esc_html__( 'Settings', 'kagg-pagespeed-optimization' ) . '</a>',
 		];
 
-		return array_merge( $action_links, $links );
+		return array_merge( $action_links, (array) $links );
 	}
 
 	/**
@@ -774,7 +772,7 @@ class Main {
 	 */
 	public function check_cron() {
 		// @todo Add selection of interval to options.
-		if ( 'yes' === $this->get_option( 'remove_from_wp_cron' ) ) {
+		if ( 'yes' === $this->get_option( 'cache_scripts_locally' ) ) {
 			$this->deactivate_update_pagespeed_optimization_cache();
 		} else {
 			$this->activate_update_pagespeed_optimization_cache();
@@ -811,7 +809,7 @@ class Main {
 	 * @param string     $remote_file Remote file url.
 	 * @param string     $local_file  Local file name.
 	 */
-	private function update_local_file( $filesystem, $remote_file, $local_file ) {
+	private function update_local_file( Filesystem $filesystem, string $remote_file, string $local_file ) {
 		$args = [
 			'method'      => 'GET',
 			'redirection' => 1,
@@ -853,6 +851,8 @@ class Main {
 
 	/**
 	 * Clean cache.
+	 *
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	private function clean_cache() {
 		// Clean cache of WP Super Cache plugin.
@@ -1092,11 +1092,11 @@ class Main {
 	/**
 	 * Filter function used to remove the tinymce emoji plugin.
 	 *
-	 * @param array $plugins Plugins.
+	 * @param array|mixed $plugins Plugins.
 	 *
 	 * @return array Difference between the two arrays
 	 */
-	public function disable_emojis_tinymce( $plugins ) {
+	public function disable_emojis_tinymce( $plugins ): array {
 		if ( is_array( $plugins ) ) {
 			return array_diff( $plugins, [ 'wpemoji' ] );
 		}
@@ -1107,17 +1107,17 @@ class Main {
 	/**
 	 * Remove emoji CDN hostname from DNS prefetching hints.
 	 *
-	 * @param array  $urls          URLs to print for resource hints.
-	 * @param string $relation_type The relation type the URLs are printed for.
+	 * @param array|mixed $urls          URLs to print for resource hints.
+	 * @param string      $relation_type The relation type the URLs are printed for.
 	 *
-	 * @return array Difference between the two arrays.
+	 * @return array|mixed Difference between the two arrays.
 	 */
-	public function disable_emojis_remove_dns_prefetch( $urls, $relation_type ) {
+	public function disable_emojis_remove_dns_prefetch( $urls, string $relation_type ) {
 		if ( 'dns-prefetch' === $relation_type ) {
 			// This filter is documented in wp-includes/formatting.php.
 			$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/' );
 
-			$urls = array_diff( $urls, [ $emoji_svg_url ] );
+			$urls = array_diff( (array) $urls, [ $emoji_svg_url ] );
 		}
 
 		return $urls;
@@ -1126,11 +1126,11 @@ class Main {
 	/**
 	 * Filter code html and replace remote url by local.
 	 *
-	 * @param string $html Html code.
+	 * @param string|mixed $html Html code.
 	 *
 	 * @return string
 	 */
-	public function replace_urls( $html ) {
+	public function replace_urls( $html ): string {
 		$local_filenames = array_map(
 			static function ( $item ) {
 				return KAGG_PAGESPEED_OPTIMIZATION_URL . '/' . $item;
@@ -1141,7 +1141,7 @@ class Main {
 		return str_replace(
 			$this->remote_urls,
 			$local_filenames,
-			$html
+			(string) $html
 		);
 	}
 
@@ -1200,7 +1200,7 @@ class Main {
 					$m
 				);
 
-				for ( $i = 0; $i < $url_result; $i ++ ) {
+				for ( $i = 0; $i < $url_result; $i++ ) {
 					$url    = trim( $m[1][ $i ], "'\"" );
 					$format = trim( $m[2][ $i ], "'\"" );
 
@@ -1244,7 +1244,7 @@ class Main {
 	 *
 	 * @return string
 	 */
-	private function absolute_url( $relative_url, $base_url ) {
+	private function absolute_url( string $relative_url, string $base_url ): string {
 		// Return if already absolute URL.
 		if ( wp_parse_url( $relative_url, PHP_URL_SCHEME ) !== null ) {
 			return $relative_url;

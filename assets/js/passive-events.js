@@ -1,20 +1,20 @@
 ( function() {
-	var supportsPassive = eventListenerOptionsSupported();
+	const supportsPassive = eventListenerOptionsSupported();
 
 	if ( supportsPassive ) {
-		var addEvent = EventTarget.prototype.addEventListener;
+		const addEvent = EventTarget.prototype.addEventListener;
 		overwriteAddEvent( addEvent );
 	}
 
 	function overwriteAddEvent( superMethod ) {
-		var defaultOptions = {
+		const defaultOptions = {
 			passive: true,
 			capture: false
 		};
 
 		EventTarget.prototype.addEventListener = function( type, listener, options ) {
-			var usesListenerOptions = typeof options === 'object';
-			var useCapture          = usesListenerOptions ? options.capture : options;
+			const usesListenerOptions = typeof options === 'object';
+			const useCapture = usesListenerOptions ? options.capture : options;
 
 			options = usesListenerOptions ? options : {};
 
@@ -29,9 +29,10 @@
 	}
 
 	function eventListenerOptionsSupported() {
-		var supported = false;
+		let supported = false;
+
 		try {
-			var opts = Object.defineProperty( {}, 'passive', {
+			const opts = Object.defineProperty( {}, 'passive', {
 				get: function() {
 					supported = true;
 				}

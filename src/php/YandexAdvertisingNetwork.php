@@ -38,7 +38,7 @@ class YandexAdvertisingNetwork {
 	 *
 	 * @param Main $main Main class instance.
 	 */
-	public function __construct( $main ) {
+	public function __construct( Main $main ) {
 		$this->main = $main;
 
 		$this->init();
@@ -56,15 +56,15 @@ class YandexAdvertisingNetwork {
 	/**
 	 * Filter content and remove RTB scripts.
 	 *
-	 * @param string $content Content of the current post.
+	 * @param string|mixed $content Content of the current post.
 	 *
 	 * @return string
 	 */
-	public function remove_rtb_blocks( $content ) {
+	public function remove_rtb_blocks( $content ): string {
 		return preg_replace_callback(
 			'#<script [\s\S]+?(?:</script>)+?#i',
 			[ $this, 'remove_rtb_blocks_callback' ],
-			$content
+			(string) $content
 		);
 	}
 
@@ -75,7 +75,7 @@ class YandexAdvertisingNetwork {
 	 *
 	 * @return string
 	 */
-	public function remove_rtb_blocks_callback( $matches ) {
+	public function remove_rtb_blocks_callback( array $matches ): string {
 		$script = $matches[0];
 
 		if (

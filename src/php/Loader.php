@@ -31,7 +31,7 @@ class Loader {
 	 *
 	 * @param Main $main Main class instance.
 	 */
-	public function __construct( $main ) {
+	public function __construct( Main $main ) {
 		$this->main = $main;
 
 		$this->init();

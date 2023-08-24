@@ -100,7 +100,7 @@ class Resources {
 	 *
 	 * @param Main $main Main class instance.
 	 */
-	public function __construct( $main ) {
+	public function __construct( Main $main ) {
 		$this->main = $main;
 
 		$this->init();
@@ -336,24 +336,26 @@ class Resources {
 	/**
 	 * Filter style tag and add display=swap to Google fonts.
 	 *
-	 * @param string $tag    The link tag for the enqueued style.
-	 * @param string $handle The style's registered handle.
-	 * @param string $href   The stylesheet's source URL.
-	 * @param string $media  The stylesheet's media attribute.
+	 * @param string|mixed $tag    The link tag for the enqueued style.
+	 * @param string       $handle The style's registered handle.
+	 * @param string       $href   The stylesheet's source URL.
+	 * @param string       $media  The stylesheet's media attribute.
 	 *
-	 * @return string
+	 * @return string|mixed
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function style_loader_tag_filter( $tag, $handle, $href, $media ) {
-		if ( 0 === strpos( $href, 'https://fonts.googleapis.com' ) ) {
-			return str_replace( $href, $href . '&display=swap', $tag );
+	public function style_loader_tag_filter( $tag, string $handle, string $href, string $media ) {
+		if ( 0 !== strpos( $href, 'https://fonts.googleapis.com' ) ) {
+			return $tag;
 		}
 
-		return $tag;
+		return str_replace( $href, $href . '&display=swap', $tag );
 	}
 
 	/**
 	 * Delay some scripts.
+	 *
+	 * @noinspection PhpDeprecationInspection
 	 */
 	public function delay_scripts() {
 		global $wp_scripts;
@@ -409,7 +411,7 @@ class Resources {
 	 *
 	 * @return array
 	 */
-	private function get_option( $name, $type = 'unique_array' ) {
+	private function get_option( string $name, string $type = 'unique_array' ): array {
 		$option = $this->main->get_option( $name );
 
 		switch ( $type ) {
@@ -429,9 +431,10 @@ class Resources {
 	 * Create flat tree of the dependencies.
 	 *
 	 * @param WP_Dependencies $dependencies Dependencies.
+	 *
 	 * @return array
 	 */
-	private function create_tree( $dependencies ) {
+	private function create_tree( WP_Dependencies $dependencies ): array {
 		$tree = [];
 
 		foreach ( $dependencies->registered as $handle => $dependency ) {
@@ -450,8 +453,9 @@ class Resources {
 	 * @param string|null $root Root index.
 	 *
 	 * @return array
+	 * @noinspection PhpMissingParamTypeInspection
 	 */
-	private function traverse_tree( $tree, $root = null ) {
+	private function traverse_tree( array $tree, $root = null ): array {
 		if ( ! isset( $tree[ $root ] ) ) {
 			return [];
 		}
@@ -477,7 +481,7 @@ class Resources {
 					}
 				}
 
-				$queue_count --;
+				--$queue_count;
 			}
 
 			$queue_count = count( $queue );
@@ -495,7 +499,7 @@ class Resources {
 	 *
 	 * @return string[]
 	 */
-	private function find_parent_dependencies( $tree, $dependencies ) {
+	private function find_parent_dependencies( array $tree, array $dependencies ): array {
 		$parent_dependencies = [];
 
 		foreach ( $dependencies as $script ) {

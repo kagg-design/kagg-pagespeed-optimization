@@ -1,19 +1,21 @@
 # A set of files and directories you probably don't want in your WordPress.org distribution
 
 # Files
+/.DS_Store
 /.distignore
 /.editorconfig
 /.gitignore
-/.DS_Store
+/.phpcs.cache
+/README.md
 /Thumbs.db
+/auth.json
 /composer.json
 /composer.lock
 /phpcs.xml
-/changelog.md
-/readme.md
 
 # Directories
 /.git
 /.github
 /.idea
+/.wordpress-org
 /cache
