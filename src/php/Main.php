@@ -177,8 +177,8 @@ class Main {
 		$capability = 'manage_options';
 		$slug       = 'pagespeed-optimization';
 		$callback   = [ $this, 'pagespeed_optimization_settings_page' ];
-		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/images/icon-16x16.png';
-		$icon       = '<img class="pso-menu-image" src="' . $icon . '">';
+		$icon       = KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/images/icon.svg';
+		$icon       = '<img class="pso-menu-image" src="' . $icon . '" style="width: 18px; height: 18px;">';
 		$menu_title = $icon . '<span class="pso-menu-title">' . $menu_title . '</span>';
 		add_options_page( $page_title, $menu_title, $capability, $slug, $callback );
 	}
