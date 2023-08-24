@@ -232,7 +232,7 @@ class Main {
 		<p>
 			<?php
 			echo esc_html__(
-				'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
+				'Move, block, or delay scripts and styles.',
 				'kagg-pagespeed-optimization'
 			);
 			?>
@@ -240,7 +240,7 @@ class Main {
 		<p>
 			<?php
 			echo esc_html__(
-				'You can use other options for fine tuning.',
+				'Fill out IDs and key below to cache scripts locally and follow "Leverage browser caching" suggestion by Google PageSpeed Insights.',
 				'kagg-pagespeed-optimization'
 			);
 			?>
@@ -253,6 +253,86 @@ class Main {
 	 */
 	public function init_form_fields() {
 		$this->form_fields = [
+			'scripts_to_footer'        => [
+				'label'        => __( 'Scripts to move from header to footer', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'block_scripts'            => [
+				'label'        => __( 'Scripts to block', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'delay_scripts'            => [
+				'label'        => __( 'Scripts to delay', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'styles_to_footer'         => [
+				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'block_styles'             => [
+				'label'        => __( 'Styles to block', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'links_to_preload'         => [
+				'label'        => __( 'Links to preload', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter URLs, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'fonts_to_preload'         => [
+				'label'        => __( 'Fonts to preload', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'textarea',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => __( 'Enter css urls containing @font-face directives, one per line.', 'kagg-pagespeed-optimization' ),
+				'default'      => '',
+			],
+			'loader_image_url'         => [
+				'label'        => __( 'Loader image URL', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'text',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+			],
+			'optimize_logged_in'       => [
+				'label'        => __( 'Optimize when logged-in', 'kagg-pagespeed-optimization' ),
+				'section'      => 'first_section',
+				'type'         => 'checkbox',
+				'placeholder'  => '',
+				'helper'       => '',
+				'supplemental' => '',
+				'default'      => 'no',
+			],
 			'gas_id'                   => [
 				'label'        => __( 'Google AdSense ID', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
@@ -350,94 +430,14 @@ class Main {
 				'supplemental' => '',
 				'default'      => 'yes',
 			],
-			'remove_from_wp_cron'      => [
-				'label'        => __( 'Remove script from WP-Cron', 'kagg-pagespeed-optimization' ),
+			'cache_scripts_locally'    => [
+				'label'        => __( 'Cache analytics scripts locally', 'kagg-pagespeed-optimization' ),
 				'section'      => 'first_section',
 				'type'         => 'checkbox',
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => '',
-				'default'      => 'no',
-			],
-			'optimize_logged_in'       => [
-				'label'        => __( 'Optimize when logged-in', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'checkbox',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => '',
-				'default'      => 'no',
-			],
-			'loader_image_url'         => [
-				'label'        => __( 'Loader image URL', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'text',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => '',
-			],
-			'scripts_to_footer'        => [
-				'label'        => __( 'Scripts to move from header to footer', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
-			],
-			'block_scripts'            => [
-				'label'        => __( 'Scripts to block', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
-			],
-			'delay_scripts'            => [
-				'label'        => __( 'Scripts to delay', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
-			],
-			'styles_to_footer'         => [
-				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
-			],
-			'block_styles'             => [
-				'label'        => __( 'Styles to block', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
-			],
-			'links_to_preload'         => [
-				'label'        => __( 'Links to preload', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter URLs, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
-			],
-			'fonts_to_preload'         => [
-				'label'        => __( 'Fonts to preload', 'kagg-pagespeed-optimization' ),
-				'section'      => 'first_section',
-				'type'         => 'textarea',
-				'placeholder'  => '',
-				'helper'       => '',
-				'supplemental' => __( 'Enter css urls containing @font-face directives, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => '',
+				'default'      => 'yes',
 			],
 		];
 	}
@@ -772,7 +772,7 @@ class Main {
 	 */
 	public function check_cron() {
 		// @todo Add selection of interval to options.
-		if ( 'yes' === $this->get_option( 'remove_from_wp_cron' ) ) {
+		if ( 'yes' === $this->get_option( 'cache_scripts_locally' ) ) {
 			$this->deactivate_update_pagespeed_optimization_cache();
 		} else {
 			$this->activate_update_pagespeed_optimization_cache();
