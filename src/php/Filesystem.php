@@ -44,7 +44,7 @@ class Filesystem {
 		}
 
 		if ( ! WP_Filesystem() ) {
-			throw new RuntimeException( __( 'Unable to get filesystem access', 'kagg-pagespeed-optimization' ) );
+			throw new RuntimeException( esc_html__( 'Unable to get filesystem access', 'kagg-pagespeed-optimization' ) );
 		}
 
 		$this->wp_filesystem = $wp_filesystem;
@@ -55,7 +55,7 @@ class Filesystem {
 	 *
 	 * @return string
 	 */
-	public function set_direct_fs_method() {
+	public function set_direct_fs_method(): string {
 		return 'direct';
 	}
 
@@ -66,7 +66,7 @@ class Filesystem {
 	 *
 	 * @return string|false
 	 */
-	public function read( $filename ) {
+	public function read( string $filename ) {
 		if ( ! $this->wp_filesystem ) {
 			return false;
 		}
@@ -78,11 +78,11 @@ class Filesystem {
 	 * Write file.
 	 *
 	 * @param string $filename Name of the file to write.
-	 * @param string $content File content.
+	 * @param string $content  File content.
 	 *
 	 * @return bool
 	 */
-	public function write( $filename, $content ) {
+	public function write( string $filename, string $content ): bool {
 		if ( ! $this->wp_filesystem ) {
 			return false;
 		}

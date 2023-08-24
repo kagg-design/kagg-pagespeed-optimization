@@ -30,8 +30,6 @@ class PassiveEvents {
 
 	/**
 	 * Enqueue passive event script.
-	 *
-	 * @noinspection PhpRedundantOptionalArgumentInspection
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script(
@@ -46,18 +44,18 @@ class PassiveEvents {
 	/**
 	 * Filter script tag and add async.
 	 *
-	 * @param string $tag    The script tag for the enqueued script.
-	 * @param string $handle The script's registered handle.
-	 * @param string $src    The script's source URL.
+	 * @param string|mixed $tag    The script tag for the enqueued script.
+	 * @param string       $handle The script's registered handle.
+	 * @param string       $src    The script's source URL.
 	 *
-	 * @return string
+	 * @return string|mixed
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function make_script_async( $tag, $handle, $src ) {
-		if ( self::HANDLE === $handle ) {
-			$tag = str_replace( '></script>', ' async></script>', $tag );
+	public function make_script_async( $tag, string $handle, string $src ) {
+		if ( self::HANDLE !== $handle ) {
+			return $tag;
 		}
 
-		return $tag;
+		return str_replace( '></script>', ' async></script>', $tag );
 	}
 }

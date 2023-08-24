@@ -38,7 +38,7 @@ class Clutch {
 	 * @return string
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function remove_clutch_html( $text, $instance, $widget ) {
+	public function remove_clutch_html( string $text, array $instance, WP_Widget $widget ): string {
 		$src = 'https://widget.clutch.co/static/js/widget.js';
 
 		if ( false === strpos( $text, $src ) ) {

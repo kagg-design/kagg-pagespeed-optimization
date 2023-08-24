@@ -51,6 +51,7 @@ class Zopim {
 	 * We need some CSS to position the paragraph.
 	 *
 	 * @noinspection PhpUndefinedClassInspection
+	 * @noinspection PhpUndefinedConstantInspection
 	 */
 	private function zopim_me() {
 		$subdomain = get_option( Zopim_Options::ZENDESK_OPTION_SUBDOMAIN );
@@ -144,7 +145,7 @@ class Zopim {
 	 *
 	 * @return string
 	 */
-	private function get_widget_code_using_subdomain( $subdomain ) {
+	private function get_widget_code_using_subdomain( string $subdomain ): string {
 		$url      = 'https://ekr.zdassets.com/snippets/web_widget/' . $subdomain . '.zendesk.com?dynamic_snippet=true';
 		$response = wp_remote_get( $url );
 

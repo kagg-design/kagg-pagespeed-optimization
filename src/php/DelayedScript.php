@@ -34,8 +34,10 @@ class DelayedScript {
 	 * @param int    $delay Delay in ms. Negative means no delay, just wait for user interaction.
 	 *
 	 * @return string
+	 * @noinspection PhpCastIsUnnecessaryInspection
+	 * @noinspection UnnecessaryCastingInspection
 	 */
-	public static function create( $js, $delay = - 1 ) {
+	public static function create( string $js, int $delay = - 1 ): string {
 		ob_start();
 		?>
 		<!--suppress JSUnusedAssignment, JSUnusedLocalSymbols -->
@@ -122,7 +124,7 @@ class DelayedScript {
 	 * @param array $args  Arguments.
 	 * @param int   $delay Delay in ms.
 	 */
-	public static function launch( $args, $delay = - 1 ) {
+	public static function launch( array $args, int $delay = - 1 ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo self::create( self::get_js( $args ), $delay );
 	}
@@ -137,7 +139,7 @@ class DelayedScript {
 	 * @param string $html  HTMl code with scripts.
 	 * @param int    $delay Delay in ms.
 	 */
-	public static function launch_html( $html, $delay = - 1 ) {
+	public static function launch_html( string $html, int $delay = - 1 ) {
 		$found = preg_match_all( '#<script.*?>(.*?)</script>#s', $html, $matches );
 
 		if ( $found ) {
@@ -164,8 +166,8 @@ class DelayedScript {
 	 * @param array $args  Arguments.
 	 * @param int   $delay Delay in ms.
 	 */
-	public static function store( $args, $delay = - 1 ) {
-		self::$delayed_scripts[ (int) $delay ][] = $args;
+	public static function store( array $args, int $delay = - 1 ) {
+		self::$delayed_scripts[ $delay ][] = $args;
 	}
 
 	/**
@@ -194,7 +196,7 @@ class DelayedScript {
 	 *
 	 * @return string
 	 */
-	private static function get_js( array $args, $async = true ) {
+	private static function get_js( array $args, bool $async = true ): string {
 		ob_start();
 
 		?>

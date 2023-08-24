@@ -224,7 +224,7 @@ class Main {
 	 *
 	 * @param array $arguments Section arguments.
 	 */
-	public function pagespeed_optimization_first_section( $arguments ) {
+	public function pagespeed_optimization_first_section( array $arguments ) {
 		if ( 'first_section' !== $arguments['id'] ) {
 			return;
 		}
@@ -482,7 +482,7 @@ class Main {
 	 *
 	 * @return array
 	 */
-	protected function set_defaults( $field ): array {
+	protected function set_defaults( array $field ): array {
 		if ( ! isset( $field['default'] ) ) {
 			$field['default'] = '';
 		}
@@ -507,7 +507,7 @@ class Main {
 	 *
 	 * @return mixed The value specified for the option or a default value for the option.
 	 */
-	public function get_option( $key, $empty_value = null ) {
+	public function get_option( string $key, $empty_value = null ) {
 		if ( empty( $this->settings ) ) {
 			$this->init_settings();
 		}
@@ -532,7 +532,7 @@ class Main {
 	 *
 	 * @return mixed
 	 */
-	public function get_field_default( $field ) {
+	public function get_field_default( array $field ) {
 		return empty( $field['default'] ) ? '' : $field['default'];
 	}
 
@@ -546,7 +546,7 @@ class Main {
 	 * @return mixed
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function pre_update_option_filter( $value, $old_value, $option ) {
+	public function pre_update_option_filter( $value, $old_value, string $option ) {
 		if ( $value === $old_value ) {
 			return $value;
 		}
@@ -591,7 +591,7 @@ class Main {
 	 * @noinspection HtmlWrongAttributeValue
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_callback( $arguments ) {
+	public function field_callback( array $arguments ) {
 		$value = $this->get_option( $arguments['field_id'] );
 
 		// Check which type of field we want.
@@ -748,13 +748,13 @@ class Main {
 	/**
 	 * Add link to plugin setting page on plugins page.
 	 *
-	 * @param array  $links Plugin links.
-	 * @param string $file  Filename.
+	 * @param array|mixed $links Plugin links.
+	 * @param string      $file  Filename.
 	 *
 	 * @return array Plugin links
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function add_settings_link( $links, $file ): array {
+	public function add_settings_link( $links, string $file ): array {
 		$action_links = [
 			'settings' =>
 				'<a href="' . admin_url( 'options-general.php?page=pagespeed-optimization' ) .
@@ -764,7 +764,7 @@ class Main {
 				esc_html__( 'Settings', 'kagg-pagespeed-optimization' ) . '</a>',
 		];
 
-		return array_merge( $action_links, $links );
+		return array_merge( $action_links, (array) $links );
 	}
 
 	/**
@@ -809,7 +809,7 @@ class Main {
 	 * @param string     $remote_file Remote file url.
 	 * @param string     $local_file  Local file name.
 	 */
-	private function update_local_file( $filesystem, $remote_file, $local_file ) {
+	private function update_local_file( Filesystem $filesystem, string $remote_file, string $local_file ) {
 		$args = [
 			'method'      => 'GET',
 			'redirection' => 1,
@@ -1092,7 +1092,7 @@ class Main {
 	/**
 	 * Filter function used to remove the tinymce emoji plugin.
 	 *
-	 * @param array $plugins Plugins.
+	 * @param array|mixed $plugins Plugins.
 	 *
 	 * @return array Difference between the two arrays
 	 */
@@ -1112,7 +1112,7 @@ class Main {
 	 *
 	 * @return array|mixed Difference between the two arrays.
 	 */
-	public function disable_emojis_remove_dns_prefetch( $urls, $relation_type ) {
+	public function disable_emojis_remove_dns_prefetch( $urls, string $relation_type ) {
 		if ( 'dns-prefetch' === $relation_type ) {
 			// This filter is documented in wp-includes/formatting.php.
 			$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/' );
@@ -1244,7 +1244,7 @@ class Main {
 	 *
 	 * @return string
 	 */
-	private function absolute_url( $relative_url, $base_url ): string {
+	private function absolute_url( string $relative_url, string $base_url ): string {
 		// Return if already absolute URL.
 		if ( wp_parse_url( $relative_url, PHP_URL_SCHEME ) !== null ) {
 			return $relative_url;
