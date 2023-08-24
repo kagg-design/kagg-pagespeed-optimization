@@ -43,7 +43,8 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 
 == Changelog ==
 
-= 2.0.0 =
+= 1.6.0 =
+* Dropped support for PHP 5.6. Minimum required PHP version is now 7.0.
 * Tested with WordPress 6.3.
 
 = 1.5.0 =
