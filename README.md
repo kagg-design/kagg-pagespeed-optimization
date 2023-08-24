@@ -10,6 +10,8 @@ Google Pagespeed Insights (PSI) requires leveraging browser cache when using ana
 
 PageSpeed Optimization plugin will get you a higher score on Google Pagespeed Insights and make your website load faster. The most impact can usually be achieved by delaying scripts.
 
+![](./.wordpress-org/banner-772x250.png)
+
 ## Features
 
 - Any script or style can be moved from the header to the footer.
