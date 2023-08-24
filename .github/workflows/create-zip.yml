@@ -22,8 +22,6 @@ jobs:
         run: |
           composer config github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
           composer install --no-dev --optimize-autoloader --classmap-authoritative
-          yarn
-          yarn prod
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
