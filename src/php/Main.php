@@ -383,7 +383,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 			'block_scripts'            => [
 				'label'        => __( 'Scripts to block', 'kagg-pagespeed-optimization' ),
@@ -392,7 +392,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 			'delay_scripts'            => [
 				'label'        => __( 'Scripts to delay', 'kagg-pagespeed-optimization' ),
@@ -401,7 +401,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 			'styles_to_footer'         => [
 				'label'        => __( 'Styles to move from header to footer', 'kagg-pagespeed-optimization' ),
@@ -410,7 +410,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 			'block_styles'             => [
 				'label'        => __( 'Styles to block', 'kagg-pagespeed-optimization' ),
@@ -419,7 +419,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter handles, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 			'links_to_preload'         => [
 				'label'        => __( 'Links to preload', 'kagg-pagespeed-optimization' ),
@@ -428,7 +428,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter URLs, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 			'fonts_to_preload'         => [
 				'label'        => __( 'Fonts to preload', 'kagg-pagespeed-optimization' ),
@@ -437,7 +437,7 @@ class Main {
 				'placeholder'  => '',
 				'helper'       => '',
 				'supplemental' => __( 'Enter css urls containing @font-face directives, one per line.', 'kagg-pagespeed-optimization' ),
-				'default'      => [],
+				'default'      => '',
 			],
 		];
 	}
