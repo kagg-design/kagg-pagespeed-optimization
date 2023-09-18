@@ -354,8 +354,6 @@ class Resources {
 
 	/**
 	 * Delay some scripts.
-	 *
-	 * @noinspection PhpDeprecationInspection
 	 */
 	public function delay_scripts() {
 		global $wp_scripts;
@@ -394,13 +392,45 @@ class Resources {
 
 			// @todo: Print before, after and extra script properly inside of delayed script.
 			// Currently, this cause a problem if after script, for instance, depends on main script.
-			$wp_scripts->print_inline_script( $handle, 'before' );
-			$wp_scripts->print_inline_script( $handle );
+			$this->print_inline_scripts( $handle );
+
 			$wp_scripts->print_extra_script( $handle );
 
 			wp_dequeue_script( $handle );
 			DelayedScript::store( [ 'src' => $src ] );
 		}
+	}
+
+	/**
+	 * Print inline script.
+	 *
+	 * @param string $handle Script handle.
+	 *
+	 * @return void
+	 * @noinspection PhpDeprecationInspection
+	 */
+	private function print_inline_scripts( string $handle ) {
+		global $wp_scripts, $wp_version;
+
+		if ( version_compare( $wp_version, '6.3', '<' ) ) {
+			$wp_scripts->print_inline_script( $handle, 'before' );
+			$wp_scripts->print_inline_script( $handle );
+
+			return;
+		}
+
+		$before_tag = $wp_scripts->get_inline_script_tag( $handle, 'before' );
+		$after_tag  = $wp_scripts->get_inline_script_tag( $handle );
+
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		if ( $before_tag ) {
+			echo $before_tag;
+		}
+
+		if ( $after_tag ) {
+			echo $after_tag;
+		}
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
