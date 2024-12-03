@@ -182,6 +182,7 @@ JS;
 	 * @noinspection JSUnusedLocalSymbols
 	 */
 	private static function get_js( array $args, bool $async = true ): string {
+		unset( $args['async'] );
 		$async_string = $async ? 'true' : 'false';
 
 		$js = <<<JS
@@ -196,7 +197,7 @@ JS;
 		foreach ( $args as $key => $arg ) {
 			if ( 'data' === $key ) {
 				foreach ( $arg as $data_key => $data_arg ) {
-					$js .= "\t\t\ts.dataset.$data_key = '$data_arg';\n";
+					$js .= "\t\t\ts.setAttribute( 'data-' + '$data_key', '$data_arg' );\n";
 				}
 				continue;
 			}

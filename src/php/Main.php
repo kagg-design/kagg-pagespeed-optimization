@@ -107,6 +107,7 @@ class Main {
 		new FBShareLikeButton();
 		new StatCounter();
 		new Clutch();
+		new MonsterInsights();
 	}
 
 	/**
