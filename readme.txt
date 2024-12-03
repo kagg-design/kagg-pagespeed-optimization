@@ -3,9 +3,9 @@ Contributors: kaggdesign
 Donate link: https://kagg.eu/en/
 Tags: PageSpeed, Google Pagespeed Insights, PageSpeed Optimization
 Requires at least: 5.0
-Tested up to: 6.3
-Requires PHP: 7.0
-Stable tag: 1.6.0
+Tested up to: 6.7
+Requires PHP: 7.2
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,11 @@ If you get stuck, you can ask for help in the [PageSpeed Optimization Plugin For
 1. The PageSpeed Optimization settings page.
 
 == Changelog ==
+
+= 1.7.0 =
+* Improved delayed scripts behavior.
+* Dropped support for PHP 7.0. Minimum required PHP version is now 7.2.
+* Tested with WordPress 6.7.
 
 = 1.6.0 =
 * Dropped support for PHP 5.6. Minimum required PHP version is now 7.0.
