@@ -29,7 +29,7 @@ class LayerSlider {
 	/**
 	 * Init class.
 	 */
-	private function init() {
+	private function init(): void {
 		add_filter( 'do_shortcode_tag', [ $this, 'do_shortcode_tag' ], 10, 4 );
 		add_action( 'wp_print_footer_scripts', [ $this, 'print_script_in_footer' ] );
 	}
@@ -59,7 +59,7 @@ class LayerSlider {
 	/**
 	 * Print Layer Slider script in footer.
 	 */
-	public function print_script_in_footer() {
+	public function print_script_in_footer(): void {
 		if ( '' === $this->layer_slider_script ) {
 			return;
 		}

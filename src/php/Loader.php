@@ -40,7 +40,7 @@ class Loader {
 	/**
 	 * Init.
 	 */
-	public function init() {
+	public function init(): void {
 		// Show site icon before any inline styles. Otherwise, it does not work.
 		remove_action( 'wp_head', 'wp_site_icon' );
 		add_action( 'wp_head', 'wp_site_icon', - PHP_INT_MAX );
@@ -61,7 +61,7 @@ class Loader {
 	/**
 	 * Show loader.
 	 */
-	public function loader() {
+	public function loader(): void {
 		?>
 		<style>
 			#kagg-pagespeed-loader.hidden-loader {
@@ -126,7 +126,7 @@ class Loader {
 	/**
 	 * Show loader div.
 	 */
-	public function loader_div() {
+	public function loader_div(): void {
 		// data-skip-lazy works with Optimole plugin.
 		?>
 		<div id="kagg-pagespeed-loader">

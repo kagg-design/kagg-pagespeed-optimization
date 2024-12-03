@@ -24,7 +24,7 @@ class Clutch {
 	/**
 	 * Init hooks.
 	 */
-	private function init_hooks() {
+	private function init_hooks(): void {
 		add_action( 'widget_text', [ $this, 'remove_clutch_html' ], 10, 3 );
 	}
 

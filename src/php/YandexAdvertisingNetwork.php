@@ -47,7 +47,7 @@ class YandexAdvertisingNetwork {
 	/**
 	 * Init.
 	 */
-	public function init() {
+	public function init(): void {
 		add_filter( 'the_content', [ $this, 'remove_rtb_blocks' ], PHP_INT_MAX );
 		add_filter( 'do_shortcode_tag', [ $this, 'remove_rtb_blocks' ], PHP_INT_MAX );
 		add_action( 'wp_print_footer_scripts', [ $this, 'print_rtb_script' ] );
@@ -111,7 +111,7 @@ class YandexAdvertisingNetwork {
 	/**
 	 * Print RTB script using info extracted from the content.
 	 */
-	public function print_rtb_script() {
+	public function print_rtb_script(): void {
 		if ( ! $this->rtb_blocks ) {
 			return;
 		}

@@ -34,7 +34,7 @@ class Filesystem {
 	 *
 	 * @throws RuntimeException RuntimeException.
 	 */
-	private function init() {
+	private function init(): void {
 		global $wp_filesystem;
 
 		add_filter( 'filesystem_method', [ $this, 'set_direct_fs_method' ], PHP_INT_MAX );

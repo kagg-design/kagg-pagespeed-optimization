@@ -22,7 +22,7 @@ class Medusa {
 	/**
 	 * Init class.
 	 */
-	private function init() {
+	private function init(): void {
 		$theme = wp_get_theme();
 
 		if ( 'medusa' !== $theme->get_stylesheet() && 'medusa' !== $theme->get_template() ) {
@@ -36,7 +36,7 @@ class Medusa {
 	/**
 	 * Remove theme inline styles from header.
 	 */
-	public function head() {
+	public function head(): void {
 		remove_action( 'wp_head', 'theme_option_styles', 100 );
 	}
 
@@ -45,7 +45,7 @@ class Medusa {
 	 *
 	 * @noinspection PhpUndefinedFunctionInspection
 	 */
-	public function print_footer_scripts() {
+	public function print_footer_scripts(): void {
 		theme_option_styles();
 	}
 }

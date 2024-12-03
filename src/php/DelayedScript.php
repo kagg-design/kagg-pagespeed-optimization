@@ -179,6 +179,7 @@ JS;
 	 * @param bool  $async Launch as async.
 	 *
 	 * @return string
+	 * @noinspection JSUnusedLocalSymbols
 	 */
 	private static function get_js( array $args, bool $async = true ): string {
 		$js = <<<JS

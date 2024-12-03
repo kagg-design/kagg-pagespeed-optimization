@@ -79,7 +79,7 @@ class Main {
 	/**
 	 * Init class.
 	 */
-	public function init() {
+	public function init(): void {
 		$this->init_form_fields();
 		$this->init_settings();
 
@@ -112,7 +112,7 @@ class Main {
 	/**
 	 * Init hooks.
 	 */
-	private function init_hooks() {
+	private function init_hooks(): void {
 		add_filter(
 			'plugin_action_links_' . plugin_basename( KAGG_PAGESPEED_OPTIMIZATION_FILE ),
 			[ $this, 'add_settings_link' ],
@@ -171,7 +171,7 @@ class Main {
 	/**
 	 * Add settings page to the menu.
 	 */
-	public function add_settings_page() {
+	public function add_settings_page(): void {
 		$page_title = __( 'KAGG PageSpeed Optimization', 'kagg-pagespeed-optimization' );
 		$menu_title = __( 'KAGG PageSpeed', 'kagg-pagespeed-optimization' );
 		$capability = 'manage_options';
@@ -186,7 +186,7 @@ class Main {
 	/**
 	 * Options page.
 	 */
-	public function pagespeed_optimization_settings_page() {
+	public function pagespeed_optimization_settings_page(): void {
 		?>
 		<div class="wrap">
 			<h2 id="title">
@@ -210,7 +210,7 @@ class Main {
 	/**
 	 * Setup settings sections.
 	 */
-	public function setup_sections() {
+	public function setup_sections(): void {
 		add_settings_section(
 			'first_section',
 			__( 'Options', 'kagg-pagespeed-optimization' ),
@@ -224,7 +224,7 @@ class Main {
 	 *
 	 * @param array $arguments Section arguments.
 	 */
-	public function pagespeed_optimization_first_section( array $arguments ) {
+	public function pagespeed_optimization_first_section( array $arguments ): void {
 		if ( 'first_section' !== $arguments['id'] ) {
 			return;
 		}
@@ -251,7 +251,7 @@ class Main {
 	/**
 	 * Init options form fields.
 	 */
-	public function init_form_fields() {
+	public function init_form_fields(): void {
 		$this->form_fields = [
 			'scripts_to_footer'        => [
 				'label'        => __( 'Scripts to move from header to footer', 'kagg-pagespeed-optimization' ),
@@ -449,7 +449,7 @@ class Main {
 	 * and make sure the $settings array is either the default
 	 * or the settings stored in the database.
 	 */
-	public function init_settings() {
+	public function init_settings(): void {
 		$this->settings = get_option( $this->get_option_key(), null );
 
 		// If there are no settings defined, use defaults.
@@ -566,7 +566,7 @@ class Main {
 	/**
 	 * Setup options fields.
 	 */
-	public function setup_fields() {
+	public function setup_fields(): void {
 		register_setting( 'pagespeed_optimization_group', $this->get_option_key() );
 
 		foreach ( $this->form_fields as $key => $field ) {
@@ -591,7 +591,7 @@ class Main {
 	 * @noinspection HtmlWrongAttributeValue
 	 * @noinspection HtmlUnknownAttribute
 	 */
-	public function field_callback( array $arguments ) {
+	public function field_callback( array $arguments ): void {
 		$value = $this->get_option( $arguments['field_id'] );
 
 		// Check which type of field we want.
@@ -737,7 +737,7 @@ class Main {
 	/**
 	 * Load plugin text domain.
 	 */
-	public function load_textdomain() {
+	public function load_textdomain(): void {
 		load_plugin_textdomain(
 			'kagg-pagespeed-optimization',
 			false,
@@ -770,7 +770,7 @@ class Main {
 	/**
 	 * Check cron status.
 	 */
-	public function check_cron() {
+	public function check_cron(): void {
 		// @todo Add selection of interval to options.
 		if ( 'yes' === $this->get_option( 'cache_scripts_locally' ) ) {
 			$this->deactivate_update_pagespeed_optimization_cache();
@@ -782,7 +782,7 @@ class Main {
 	/**
 	 * Update scripts cache.
 	 */
-	public function update_pagespeed_optimization_cache_action() {
+	public function update_pagespeed_optimization_cache_action(): void {
 		$filesystem = new Filesystem();
 
 		foreach ( $this->remote_urls as $service => $remote_filename ) {
@@ -809,7 +809,7 @@ class Main {
 	 * @param string     $remote_file Remote file url.
 	 * @param string     $local_file  Local file name.
 	 */
-	private function update_local_file( Filesystem $filesystem, string $remote_file, string $local_file ) {
+	private function update_local_file( Filesystem $filesystem, string $remote_file, string $local_file ): void {
 		$args = [
 			'method'      => 'GET',
 			'redirection' => 1,
@@ -854,7 +854,7 @@ class Main {
 	 *
 	 * @noinspection PhpUndefinedFunctionInspection
 	 */
-	private function clean_cache() {
+	private function clean_cache(): void {
 		// Clean cache of WP Super Cache plugin.
 		if ( function_exists( 'wp_cache_clean_cache' ) ) {
 			global $file_prefix;
@@ -865,7 +865,7 @@ class Main {
 	/**
 	 * Add event to WP-Cron and check local files.
 	 */
-	public function activate_update_pagespeed_optimization_cache() {
+	public function activate_update_pagespeed_optimization_cache(): void {
 		if ( ! wp_next_scheduled( 'update_pagespeed_optimization_cache' ) ) {
 			wp_schedule_event( time(), 'hourly', 'update_pagespeed_optimization_cache' );
 			do_action( 'update_pagespeed_optimization_cache' );
@@ -875,7 +875,7 @@ class Main {
 	/**
 	 * Remove event from WP-Cron.
 	 */
-	public function deactivate_update_pagespeed_optimization_cache() {
+	public function deactivate_update_pagespeed_optimization_cache(): void {
 		if ( wp_next_scheduled( 'update_pagespeed_optimization_cache' ) ) {
 			wp_clear_scheduled_hook( 'update_pagespeed_optimization_cache' );
 		}
@@ -884,7 +884,7 @@ class Main {
 	/**
 	 * Add cached scripts to site.
 	 */
-	public function print_scripts_action() {
+	public function print_scripts_action(): void {
 		static $done = false;
 
 		if ( $done ) {
@@ -995,7 +995,7 @@ class Main {
 	/**
 	 * Prevent Google Maps from loading Roboto font.
 	 */
-	public function print_prevent_gmap_roboto() {
+	public function print_prevent_gmap_roboto(): void {
 		static $done = false;
 
 		if ( $done ) {
@@ -1036,7 +1036,7 @@ class Main {
 	/**
 	 * Enqueue cached scripts.
 	 */
-	public function enqueue_scripts_action() {
+	public function enqueue_scripts_action(): void {
 		$gmap_key = $this->get_option( 'gmap_key' );
 		if ( ! $gmap_key ) {
 			return;
@@ -1063,7 +1063,7 @@ class Main {
 	/**
 	 * Enqueue plugin scripts.
 	 */
-	public function admin_enqueue_scripts() {
+	public function admin_enqueue_scripts(): void {
 		wp_enqueue_style(
 			'pagespeed-optimization-admin',
 			KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/css/admin.css',
@@ -1075,7 +1075,7 @@ class Main {
 	/**
 	 * Block emoji
 	 */
-	public function block_emoji() {
+	public function block_emoji(): void {
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 		remove_action( 'embed_head', 'print_emoji_detection_script' );

@@ -24,7 +24,7 @@ class StatCounter {
 	 *
 	 * @noinspection PhpUndefinedConstantInspection
 	 */
-	public function init_hooks() {
+	public function init_hooks(): void {
 		if ( ! defined( 'key_sc_project' ) ) {
 			return;
 		}
@@ -44,7 +44,7 @@ class StatCounter {
 	 *
 	 * @noinspection PhpUndefinedConstantInspection
 	 */
-	public function add_statcounter() {
+	public function add_statcounter(): void {
 		$sc_project   = get_option( key_sc_project );
 		$sc_security  = get_option( key_sc_security );
 		$sc_invisible = get_option( 'sc_invisible' );

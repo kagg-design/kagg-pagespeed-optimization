@@ -109,7 +109,7 @@ class Resources {
 	/**
 	 * Init class hooks.
 	 */
-	private function init() {
+	private function init(): void {
 		$this->scripts_to_footer   = $this->get_option( 'scripts_to_footer' );
 		$this->block_scripts       = $this->get_option( 'block_scripts' );
 		$this->delay_scripts       = $this->get_option( 'delay_scripts' );
@@ -142,7 +142,7 @@ class Resources {
 	/**
 	 * Remove scripts from header.
 	 */
-	public function remove_scripts_from_header() {
+	public function remove_scripts_from_header(): void {
 		global $wp_scripts;
 
 		$scripts_tree = $this->create_tree( $wp_scripts );
@@ -177,7 +177,7 @@ class Resources {
 	/**
 	 * Add scripts to footer.
 	 */
-	public function add_scripts_to_footer() {
+	public function add_scripts_to_footer(): void {
 		foreach ( $this->moved_scripts as $script ) {
 			if ( wp_script_is( $script, 'registered' ) ) {
 				wp_enqueue_script( $script );
@@ -188,7 +188,7 @@ class Resources {
 	/**
 	 * Remove styles from header.
 	 */
-	public function remove_styles_from_header() {
+	public function remove_styles_from_header(): void {
 		global $wp_styles;
 
 		$styles_tree = $this->create_tree( $wp_styles );
@@ -214,7 +214,7 @@ class Resources {
 	/**
 	 * Add styles to footer.
 	 */
-	public function add_styles_to_footer() {
+	public function add_styles_to_footer(): void {
 		global $wp_styles;
 
 		foreach ( $this->moved_styles as $style ) {
@@ -227,7 +227,7 @@ class Resources {
 	/**
 	 * Print preload links.
 	 */
-	public function head() {
+	public function head(): void {
 		$content_types = [
 			'otf'   => [ 'font', 'font/otf' ],
 			'ttf'   => [ 'font', 'font/ttf' ],
@@ -288,7 +288,7 @@ class Resources {
 				continue;
 			}
 
-			list( $as, $type ) = $content_types[ $ext ];
+			[ $as, $type ] = $content_types[ $ext ];
 
 			$crossorigin = '';
 			if ( 'font' === $as ) {
@@ -316,7 +316,7 @@ class Resources {
 	/**
 	 * Output generated css for fonts.
 	 */
-	private function font_display_swap() {
+	private function font_display_swap(): void {
 		if ( ! $this->fonts_generated_css ) {
 			return;
 		}
@@ -355,7 +355,7 @@ class Resources {
 	/**
 	 * Delay some scripts.
 	 */
-	public function delay_scripts() {
+	public function delay_scripts(): void {
 		global $wp_scripts;
 
 		$scripts_tree = $this->create_tree( $wp_scripts );
@@ -409,7 +409,7 @@ class Resources {
 	 * @return void
 	 * @noinspection PhpDeprecationInspection
 	 */
-	private function print_inline_scripts( string $handle ) {
+	private function print_inline_scripts( string $handle ): void {
 		global $wp_scripts, $wp_version;
 
 		if ( version_compare( $wp_version, '6.3', '<' ) ) {

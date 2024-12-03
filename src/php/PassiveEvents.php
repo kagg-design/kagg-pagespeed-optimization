@@ -11,7 +11,7 @@ namespace KAGG\PageSpeed\Optimization;
  * Class PassiveEvents
  */
 class PassiveEvents {
-	const HANDLE = 'pagespeed-optimization-passive-events';
+	private const HANDLE = 'pagespeed-optimization-passive-events';
 
 	/**
 	 * Passive_Events constructor.
@@ -23,7 +23,7 @@ class PassiveEvents {
 	/**
 	 * Init class.
 	 */
-	public function init() {
+	public function init(): void {
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_filter( 'script_loader_tag', [ $this, 'make_script_async' ], 10, 3 );
 	}
@@ -31,7 +31,7 @@ class PassiveEvents {
 	/**
 	 * Enqueue passive event script.
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts(): void {
 		wp_enqueue_script(
 			self::HANDLE,
 			KAGG_PAGESPEED_OPTIMIZATION_URL . '/assets/js/passive-events.js',

@@ -27,7 +27,7 @@ class Zopim {
 	/**
 	 * Init hooks.
 	 */
-	public function init_hooks() {
+	public function init_hooks(): void {
 		if ( ! class_exists( 'Zopim', false ) ) {
 			return;
 		}
@@ -39,7 +39,7 @@ class Zopim {
 	/**
 	 * Print delayed zopim scripts.
 	 */
-	public function delayed_zopim_scripts() {
+	public function delayed_zopim_scripts(): void {
 		ob_start();
 		$this->zopim_me();
 		DelayedScript::launch_html( ob_get_clean() );
@@ -53,7 +53,7 @@ class Zopim {
 	 * @noinspection PhpUndefinedClassInspection
 	 * @noinspection PhpUndefinedConstantInspection
 	 */
-	private function zopim_me() {
+	private function zopim_me(): void {
 		$subdomain = get_option( Zopim_Options::ZENDESK_OPTION_SUBDOMAIN );
 
 		if ( $subdomain ) {
