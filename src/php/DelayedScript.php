@@ -34,78 +34,62 @@ class DelayedScript {
 	 * @param int    $delay Delay in ms. Negative means no delay, just wait for user interaction.
 	 *
 	 * @return string
-	 * @noinspection PhpCastIsUnnecessaryInspection
-	 * @noinspection UnnecessaryCastingInspection
+	 * @noinspection JSUnusedAssignment
 	 */
-	public static function create( string $js, int $delay = - 1 ): string {
-		ob_start();
-		?>
-		<!--suppress JSUnusedAssignment, JSUnusedLocalSymbols -->
-		<?php
-		ob_get_clean();
+	public static function create( string $js, int $delay = -1 ): string {
+		$js = <<<JS
+	( () => {
+		'use strict';
 
-		ob_start();
-		?>
+		let loaded = false,
+			scrolled = false,
+			timerId;
 
-		<script>
-			( () => {
-				'use strict';
+		function load() {
+			if ( loaded ) {
+				return;
+			}
 
-				let loaded = false,
-					scrolled = false,
-					timerId;
+			loaded = true;
+			clearTimeout( timerId );
 
-				function load() {
-					if ( loaded ) {
-						return;
-					}
+			window.removeEventListener( 'touchstart', load );
+			document.body.removeEventListener( 'mouseenter', load );
+			document.body.removeEventListener( 'click', load );
+			window.removeEventListener( 'scroll', scrollHandler );
 
-					loaded = true;
-					clearTimeout( timerId );
+$js
+		}
 
-					window.removeEventListener( 'touchstart', load );
-					document.removeEventListener( 'mouseenter', load );
-					document.removeEventListener( 'mouseover', load );
-					document.removeEventListener( 'click', load );
-					window.removeEventListener( 'load', delayedLoad );
+		function scrollHandler() {
+			if ( ! scrolled ) {
+				// Ignore first scroll event, which can be on page load.
+				scrolled = true;
+				return;
+			}
 
-					let s;
-					<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $js;
-					?>
-				}
+			load();
+		}
 
-				function scrollHandler() {
-					if ( ! scrolled ) {
-						// Ignore first scroll event, which can be on page load.
-						scrolled = true;
-						return;
-					}
+		window.addEventListener( 'load', function() {
+			// noinspection JSAnnotator
+			const delay = $delay;
 
-					window.removeEventListener( 'scroll', scrollHandler );
-					load();
-				}
+			if ( delay >= 0 ) {
+				setTimeout( load, delay );
 
-				function delayedLoad() {
-					window.addEventListener( 'scroll', scrollHandler );
-					const delay = <?php echo (int) $delay; ?>;
+				return;
+			}
 
-					if ( delay >= 0 ) {
-						setTimeout( load, delay );
-					}
-				}
+			window.addEventListener( 'touchstart', load );
+			document.body.addEventListener( 'mouseenter', load );
+			document.body.addEventListener( 'click', load );
+			window.addEventListener( 'scroll', scrollHandler );
+		} );
+	} )();
+JS;
 
-				window.addEventListener( 'touchstart', load );
-				document.addEventListener( 'mouseenter', load );
-				document.addEventListener( 'mouseover', load );
-				document.addEventListener( 'click', load );
-				window.addEventListener( 'load', delayedLoad );
-			} )();
-		</script>
-
-		<?php
-		$js = ob_get_clean();
+		$js = "<script>\n" . $js . "\n</script>\n";
 
 		if ( ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG ) {
 			try {
@@ -122,9 +106,9 @@ class DelayedScript {
 	 * Launch script specified by source url.
 	 *
 	 * @param array $args  Arguments.
-	 * @param int   $delay Delay in ms.
+	 * @param int   $delay Delay in ms. Negative means no delay, just wait for user interaction.
 	 */
-	public static function launch( array $args, int $delay = - 1 ) {
+	public static function launch( array $args, int $delay = -1 ): void {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo self::create( self::get_js( $args ), $delay );
 	}
@@ -139,7 +123,7 @@ class DelayedScript {
 	 * @param string $html  HTMl code with scripts.
 	 * @param int    $delay Delay in ms.
 	 */
-	public static function launch_html( string $html, int $delay = - 1 ) {
+	public static function launch_html( string $html, int $delay = - 1 ): void {
 		$found = preg_match_all( '#<script.*?>(.*?)</script>#s', $html, $matches );
 
 		if ( $found ) {
@@ -166,14 +150,14 @@ class DelayedScript {
 	 * @param array $args  Arguments.
 	 * @param int   $delay Delay in ms.
 	 */
-	public static function store( array $args, int $delay = - 1 ) {
+	public static function store( array $args, int $delay = - 1 ): void {
 		self::$delayed_scripts[ $delay ][] = $args;
 	}
 
 	/**
 	 * Launch stored scripts.
 	 */
-	public static function launch_stored_scripts() {
+	public static function launch_stored_scripts(): void {
 		foreach ( self::$delayed_scripts as $delay => $delayed_scripts ) {
 			$scripts = [];
 
@@ -197,29 +181,32 @@ class DelayedScript {
 	 * @return string
 	 */
 	private static function get_js( array $args, bool $async = true ): string {
-		ob_start();
+		$js = <<<JS
+			const t = document.getElementsByTagName( 'script' )[0];
+			const s = document.createElement( 'script' );
+			s.type  = 'text/javascript';
+JS;
 
-		?>
-		s = document.createElement('script');
-		s.type  = 'text/javascript';
-		<?php
+		$js = "$js\n";
+
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		foreach ( $args as $key => $arg ) {
 			if ( 'data' === $key ) {
 				foreach ( $arg as $data_key => $data_arg ) {
-					echo "s.dataset.$data_key = '$data_arg';\n";
+					$js .= "\t\t\ts.dataset.$data_key = '$data_arg';\n";
 				}
 				continue;
 			}
 
-			echo "s['$key'] = '$arg';\n";
+			$js .= "\t\t\ts['$key'] = '$arg';\n";
 		}
-		?>
-		s.async = <?php echo $async ? 'true' : 'false'; ?>;
-		document.body.appendChild( s );
-		<?php
 
-		return ob_get_clean();
+		$js .= <<<JS
+			s.async = $async;
+			t.parentNode.insertBefore( s, t );
+JS;
+
+		return $js;
 		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
