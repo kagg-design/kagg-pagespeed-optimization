@@ -182,6 +182,8 @@ JS;
 	 * @noinspection JSUnusedLocalSymbols
 	 */
 	private static function get_js( array $args, bool $async = true ): string {
+		$async_string = $async ? 'true' : 'false';
+
 		$js = <<<JS
 			const t = document.getElementsByTagName( 'script' )[0];
 			const s = document.createElement( 'script' );
@@ -203,7 +205,7 @@ JS;
 		}
 
 		$js .= <<<JS
-			s.async = $async;
+			s.async = $async_string;
 			t.parentNode.insertBefore( s, t );
 JS;
 
