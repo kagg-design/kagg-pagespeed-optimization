@@ -71,11 +71,11 @@ class MonsterInsights {
 
 			$args['data'] = $data;
 
-			$g_tag  = str_replace( $script_tag, '', $g_tag );
+			$g_tag = str_replace( $script_tag, '', $g_tag );
 
 			DelayedScript::launch( $args );
 		}
 
-        DelayedScript::launch_html( $g_tag );
+		DelayedScript::launch_html( $g_tag );
 	}
 }
